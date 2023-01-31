@@ -1,0 +1,20 @@
+{
+    "name": "phalconeer/view",
+    "description": "Phalconeer package for handling simple rendering",
+    "type": "package",
+    "require": {
+        "php": ">=8.0.0"
+    },
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Marton Kufferstein",
+            "email": "martin@fantas.ee"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Phalconeer\\View\\": "src/"
+        }
+    }
+}
