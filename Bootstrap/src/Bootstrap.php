@@ -43,12 +43,11 @@ abstract class Bootstrap
         // normal namespaces without the /src directory
         spl_autoload_register([$this, 'autoloader']);
 
-        if (DEBUG_ON) {
-            $debug = new Support\Debug();
+        // if (DEBUG_ON) {
+        //     $debug = new Support\Debug();
 
-            $debug->listen();
-        }
-
+        //     $debug->listen();
+        // }
         $this->di = $di;
     }
 
@@ -58,16 +57,18 @@ abstract class Bootstrap
          * Loader takes care of the autolaod behavior. Before it is loaded, the modules need to be loaded manually.
          */
         // TODO: decide if it is worth manipulating the autolaoder to deal with the /src bacuase of composer
-        // if (isset($this->di['loader'])) {
+        // if ($this->di->offsetExists('loader')) {
         //     return false;
         // } 
         $classPieces = explode('\\', $class);
         $namespace = array_shift($classPieces);
         if ($namespace !== 'Phalconeer') {
-            throw new Exception\InvalidArgumentException(
-                "Basic autoloader can only load Phalconeer classes, " . $class,
-                Exception\Helper\ExceptionHelper::INVALID_NAMESPACE
-            );
+            return false;
+            // TODO: log these errors, as per PSR-4 no exceptions are to be thrown during autoload
+            // throw new Exception\InvalidArgumentException(
+            //     "Basic autoloader can only load Phalconeer classes, " . $class,
+            //     Exception\Helper\ExceptionHelper::INVALID_NAMESPACE
+            // );
         }
         $moduleName = array_shift($classPieces);
         array_unshift($classPieces, PHALCONEER_SOURCE_PATH, $moduleName, 'src');
@@ -75,9 +76,40 @@ abstract class Bootstrap
         $fileName = implode('/', $classPieces) . '.php';
 
         if (!file_exists($fileName)) {
-            throw new Exception\NotFound\FileNotFoundException($fileName, Exception\Helper\ExceptionHelper::FILE_NOT_FOUND);
+            return false;
+            // TODO: log these errors, as per PSR-4 no exceptions are to be thrown during autoload
+            // throw new Exception\NotFound\FileNotFoundException($fileName, Exception\Helper\ExceptionHelper::FILE_NOT_FOUND);
         }
         require_once $fileName;
+    }
+
+    protected function addNamespaceToLoader($moduleInitiator)
+    {
+        if (!$this->di->offsetExists('loader')) {
+            return;
+        }
+        $loader = $this->di->get('loader');
+        $classPieces = explode('\\', $moduleInitiator);
+        $namespace = implode(
+            '\\',
+            [
+                $classPieces[0],
+                $classPieces[1]
+            ]
+        );
+        $folder = implode(
+            '/',
+            [
+                PHALCONEER_SOURCE_PATH,
+                $classPieces[1],
+                'src'
+            ]
+        );
+        $loader->addNamespace(
+            $namespace,
+            $folder,
+            true
+        );
     }
 
     /**
@@ -107,6 +139,7 @@ abstract class Bootstrap
      */
     protected function loadService(string $moduleInitiator)
     {
+        $this->addNamespaceToLoader($moduleInitiator);
         if (!class_exists($moduleInitiator)) {
             throw new Exception\NotFound\ClassNotFoundException($moduleInitiator, Exception\Helper\ExceptionHelper::CLASS_NOT_FOUND);
         }
@@ -120,6 +153,7 @@ abstract class Bootstrap
      */
     protected function runApplication()
     {
+        $this->addNamespaceToLoader(Exception\NotFound\DependencyNotFoundException::class);
         if (!class_exists(Exception\NotFound\DependencyNotFoundException::class)) {
             throw new Exception\NotFoundException('Autoloader is not configured', Exception\Helper\ExceptionHelper::AUTOLOADER_NOT_CONFIGURED);
         }

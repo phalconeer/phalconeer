@@ -45,4 +45,17 @@ class LoaderBo
     {
         $this->loader->setNamespaces($namespaces->toArray(), $merge);
     }
+
+    public function addNamespace(
+        string $name,
+        $directories,
+        bool $prepend = false
+    )
+    {
+        $this->loader = $this->loader->addNamespace(
+            $name,
+            $directories,
+            $prepend
+        );
+    }
 }
