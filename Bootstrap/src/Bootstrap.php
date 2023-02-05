@@ -74,7 +74,6 @@ abstract class Bootstrap
         array_unshift($classPieces, PHALCONEER_SOURCE_PATH, $moduleName, 'src');
 
         $fileName = implode('/', $classPieces) . '.php';
-
         if (!file_exists($fileName)) {
             return false;
             // TODO: log these errors, as per PSR-4 no exceptions are to be thrown during autoload

@@ -2,8 +2,9 @@
 namespace Phalconeer\Data;
 
 use Phalconeer\Data as This;
+use Phalconeer\Exception;
 
-abstract class ImmutableObject implements This\DataInterface
+abstract class ImmutableData implements This\DataInterface
 {
     /**
      * List of all the protected fields which do not contain data
@@ -39,7 +40,46 @@ abstract class ImmutableObject implements This\DataInterface
      * This property can be used to control if saving this needs to create a new record or update an existing.
      * By default it is overwritten by checking the value of the primary key.
      */
-    protected bool $_stored = false;
+    protected ?bool $_stored = false;
+
+    /**
+     * Loads data from either an array or ArrayObject
+     * @TODO: include the behavior of Default properties, which help differentiate between null values and deleted values.
+     */
+    public function __construct(array $input = null, \ArrayObject $inputObject = null)
+    {
+
+        if (is_null($inputObject)) {
+            if (is_null($input)) {
+                $input = [];
+            }
+            $inputObject = new \ArrayObject($input);
+        }
+        $inputObject = $this->initializeData($inputObject);
+        $this->_propertiesCache = $this->parseTypes(static::getProperties());
+        foreach ($this->_propertiesCache as $propertyName => $propertyType) {
+            if (!$inputObject->offsetExists($propertyName)) {
+                continue;
+            }
+            try {
+                $this->{$propertyName} = This\Helper\ParseValueHelper::parseValue(
+                    $inputObject->offsetGet($propertyName),
+                    $propertyType
+                );
+            } catch (Exception\TypeMismatchException $exception) {
+                throw new Exception\TypeMismatchException(
+                    'Invalid type, expected: `' . $propertyType . '` or array for [' . $propertyName . '] @' . static::class,
+                    $exception->getCode() ?? This\Helper\ExceptionHelper::TYPE_MISMATCH,
+                    $exception
+                );
+            }
+        }
+    }
+
+    public function initializeData(\ArrayObject $inputObject) : \ArrayObject
+    {
+        return $inputObject;
+    }
 
     /**
      * Recursive loads internal properties crawling up the inheritence tree
@@ -47,7 +87,8 @@ abstract class ImmutableObject implements This\DataInterface
     public static function getInternalProperties() : array
     {
         $parentClassName = get_parent_class(static::class);
-        return method_exists($parentClassName, __FUNCTION__) ? 
+        return ($parentClassName
+            && method_exists($parentClassName, __FUNCTION__)) ? 
             array_merge($parentClassName::getInternalProperties(), static::$_internalProperties) : 
             static::$_internalProperties;
     }
@@ -58,20 +99,20 @@ abstract class ImmutableObject implements This\DataInterface
     public static function getProperties(array $baseProperties = []) : array
     {
         $parentClassName = get_parent_class(static::class);
-        return method_exists($parentClassName, __FUNCTION__) ? 
+        return ($parentClassName
+            && method_exists($parentClassName, __FUNCTION__)) ? 
             array_merge($parentClassName::getProperties(), static::$_properties, $baseProperties) : 
             array_merge(static::$_properties, $baseProperties);
     }
 
     /**
      * This function parses the types of the objects.
-     * It can be overwritten by ParseTypesTrait, in which case the the PHPDoc of the Obejct is aprsed to get the types.
+     * It can be overwritten by ParseTypes, in which case the the PHPDoc of the Obejct is aprsed to get the types.
      */
     protected function parseTypes(array $predefinedProperties) : array
     {
         return $predefinedProperties;
     }
-
 
     /**
      * Formats the value to the desired format and makes sure that nested objects are immutable.
@@ -79,16 +120,14 @@ abstract class ImmutableObject implements This\DataInterface
      */
     protected function getValue($propertyName)
     {
-        if (is_null($this->{$propertyName})) {
+        if (!isset($this->{$propertyName}) // Added as with typed properties, the object can be in uninitialzed state, which throws property "must not be accessed before initialization"
+            || is_null($this->{$propertyName})
+            || !array_key_exists($propertyName, $this->_propertiesCache)) {
             return null;
         }
 
-        if (!array_key_exists($propertyName, $this->_propertiesCache)) {
-            return null;
-        }
-
-        if (ParseValueHelper::isSimpleValue($this->_propertiesCache[$propertyName])
-            || ($this->_propertiesCache[$propertyName] === AnyProperty::class
+        if (This\Helper\ParseValueHelper::isSimpleValue($this->_propertiesCache[$propertyName])
+            || ($this->_propertiesCache[$propertyName] === This\Property\Any::class
                 && !is_object($this->{$propertyName}))) {
             return $this->{$propertyName};
         } else {
@@ -107,24 +146,15 @@ abstract class ImmutableObject implements This\DataInterface
         return array_slice($arrayKeys, 0, 1);
     }
 
-
     /**
      * Returns the value of the primary key
-     *
-     * @param boolean $convertChildren
-     * @param boolean $copyNullsAsDefaults
-     * @return mixed
      */
-    public function getPrimaryKeyValue(bool $convertChildren = true, bool $copyNullsAsDefaults = true) : array
+    public function getPrimaryKeyValue() : array
     {
         $primaryKey = $this->getPrimaryKey();
         return array_map(
-            function ($attribute) use ($convertChildren, $copyNullsAsDefaults) {
-                return $this->getValue(
-                    $attribute,
-                    $convertChildren,
-                    $copyNullsAsDefaults
-                );
+            function ($attribute) {
+                return $this->getValue($attribute);
             },
             $primaryKey
         );
@@ -134,43 +164,88 @@ abstract class ImmutableObject implements This\DataInterface
      * Takes in an object with new values and merges them with the existing data..
      * The object internals are not updated, a new instance is returned.
      */
-    public function applyChange(self $changes) : self
+    public function merge(This\DataInterface $changes) : This\DataInterface
     {
-        $oldArray = $this->toArrayCopy(false, false);
-        $newArray = $changes->toArrayCopy(false, false);
+        $new = clone($this);
+        foreach ($changes->properties() as $propertyName) {
+            if (isset($changes->{$propertyName})
+                && !is_null($changes->{$propertyName})) {
+                $new = $new->setValueByKey(
+                    $propertyName,
+                    $changes->{$propertyName}
+                );
+            }
+        }
 
-        return new static(array_merge($oldArray, $newArray));
+        return $new;
     }
+
+    public function doesValueNeedUpdate($key, $value)
+    {
+        $propertyType = $this->propertyType($key);
+        if (is_null($propertyType)) {
+            throw new Exception\InvalidArgumentException(
+                'Object property does not exist: ' . $key . ' @ ' . static::class,
+                This\Helper\ExceptionHelper::PROPERTY_NOT_FOUND
+            );
+        }
+        try {
+            $valueParsed = This\Helper\ParseValueHelper::parseValue($value, $propertyType);
+        } catch (Exception\TypeMismatchException $exception) {
+            throw new Exception\TypeMismatchException(
+                'Invalid type, expected: `' . $propertyType . '` or array for [' . $key . '] @' . static::class,
+                $exception->getCode() ?? This\Helper\ExceptionHelper::TYPE_MISMATCH,
+                $exception
+            );
+        }
+        if (!is_callable($valueParsed, false, $callableName)
+            || $callableName !== 'Closure::__invoke' ) {
+            // This case happens when a closure - anonymus function - is inserted
+            // There is no way to tell if toe closures are different functions, so it will always overwrite the key
+            if (isset($this->{$key})
+                && This\Helper\CompareValueHelper::hasSameData($this->{$key}, $valueParsed)) {
+                return $this;
+            }
+        }
+    }
+
     /**
      * Updates a field and return a new instance of the object
      */
-    public function setKeyValue(string $key, $value, $isSilent = false) : self
+    public function setValueByKey(
+        string $key,
+        $value,
+        $isSilent = false
+    ) : self
     {
-        if (!property_exists($this, $key)) {
-            throw new InvalidArgumentException('Object property does not exist: ' . $key . ' @ ' . static::class, ExceptionHelper::PROPERTY_NOT_FOUND);
+        $propertyType = $this->propertyType($key);
+        if (is_null($propertyType)) {
+            throw new Exception\InvalidArgumentException(
+                'Object property does not exist: ' . $key . ' @ ' . static::class,
+                This\Helper\ExceptionHelper::PROPERTY_NOT_FOUND
+            );
         }
-        if (is_object($value)) {
-            $value = clone($value);
-            switch (true) {
-                case $value instanceof ImmutableObject:
-                    $valueToCompare = $value->toArrayCopy();
-                default:
-                    // TODO: make this smarter....
-                    $valueToCompare = 'UNABLE TO TRANSFORM';
+        try {
+            $valueParsed = This\Helper\ParseValueHelper::parseValue($value, $propertyType);
+        } catch (Exception\TypeMismatchException $exception) {
+            throw new Exception\TypeMismatchException(
+                'Invalid type, expected: `' . $propertyType . '` or array for [' . $key . '] @' . static::class,
+                $exception->getCode() ?? This\Helper\ExceptionHelper::TYPE_MISMATCH,
+                $exception
+            );
+        }
+        if (!is_callable($valueParsed, false, $callableName)
+            || $callableName !== 'Closure::__invoke' ) {
+            // This case happens when a closure - anonymus function - is inserted
+            // There is no way to tell if toe closures are different functions, so it will always overwrite the key
+            if (isset($this->{$key})
+                && This\Helper\CompareValueHelper::hasSameData($this->{$key}, $valueParsed)) {
+                return $this;
             }
-        } else {
-            $valueToCompare = $value;
         }
-
-        $oldArray = $this->toArrayCopy(false, false);
-        $oldValue = (array_key_exists($key, $oldArray))
-            ? $this->getValue($key)
-            : null;
-        $oldArray[$key] = $value;
-        $new = new static($oldArray);
-        $new->setDirty($this->_dirty);
-        if ($oldValue != $valueToCompare
-            && !$isSilent) {
+        $new = clone($this);
+        $new->{$key} = $valueParsed;
+        if (!$isSilent) {
             $new->addFieldToDirty($key);
         }
         return $new;
@@ -178,18 +253,33 @@ abstract class ImmutableObject implements This\DataInterface
 
     /**
      * Read the types of class properties
-     *
-     * @return array
      */
     public function properties() : array
+    {
+        return array_keys($this->_propertiesCache);
+    }
+
+    /**
+     * Read the types of class properties
+     */
+    public function propertyTypes() : array
     {
         return $this->_propertiesCache;
     }
 
     /**
+     * Read the types of class properties
+     */
+    public function propertyType(string $key) : ?string
+    {
+        if (!array_key_exists($key, $this->_propertiesCache)) {
+            return null;
+        }
+        return $this->_propertiesCache[$key];
+    }
+
+    /**
      * Returns which fields has to be cleared on saving
-     * 
-     * @return array
      */
     public function addFieldToDirty(string $field) : self
     {

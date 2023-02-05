@@ -1,0 +1,20 @@
+{
+    "name": "phalconeer/dev",
+    "description": "Phalconeer package for helpers in development",
+    "type": "package",
+    "require": {
+        "php": ">=8.0.0"
+    },
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Marton Kufferstein",
+            "email": "martin@fantas.ee"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Phalconeer\\Dev\\": "src/"
+        }
+    }
+}

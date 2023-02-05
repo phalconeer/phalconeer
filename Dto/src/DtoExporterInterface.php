@@ -1,9 +1,7 @@
 <?php
 namespace Phalconeer\Dto;
 
-use Phalconeer\Data;
-
-interface DtoLoaderInterface
+interface DtoExporterInterface
 {
-    public function export() : string | array | \ArrayObject | Data\DataInterface;
+    public function export();
 }
