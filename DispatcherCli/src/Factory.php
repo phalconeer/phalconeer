@@ -1,12 +1,12 @@
 <?php
 
-namespace Phalconeer\Dispatcher;
+namespace Phalconeer\DispatcherCli;
 
 use Phalcon;
-use Phalcon\Mvc;
+use Phalcon\Cli;
 use Phalconeer\Bootstrap;
 use Phalconeer\Config;
-use Phalconeer\Dispatcher as This;
+use Phalconeer\DispatcherCli as This;
 
 /**
  * Initializes the dispatcher.
@@ -19,11 +19,10 @@ class Factory extends Bootstrap\Factory
         Config\Factory::MODULE_NAME,
     ];
     
-    protected function configure() : Mvc\DispatcherInterface
-    {
+    protected function configure() {
         $config = $this->di->get(Config\Factory::MODULE_NAME)->get('dispatcher', new Phalcon\Config\Config());
-        $dispatcherBo = new This\Bo\DispatcherBo(
-            new Mvc\Dispatcher(),
+        $dispatcherBo = new This\Bo\DispatcherCliBo(
+            new Cli\Dispatcher(),
             $config
         );
         return $dispatcherBo->getDispatcher();

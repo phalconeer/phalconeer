@@ -3,9 +3,9 @@ namespace Phalconeer\Http\Data;
 
 use Phalconeer\Data;
 use Phalconeer\Http as This;
-use Psr\Http\Message\ResponseInterface;
+use Psr;
 
-class Response extends Data\ImmutableData implements ResponseInterface
+class Response extends Data\ImmutableData implements Psr\Http\Message\ResponseInterface
 {
     use This\Data\Traits\Message,
         Data\Traits\Data\ParseTypes;

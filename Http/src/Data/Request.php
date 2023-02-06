@@ -1,5 +1,5 @@
 <?php
-namespace Phalconeer\Http\Dto;
+namespace Phalconeer\Http\Data;
 
 use Phalconeer\Id;
 use Phalconeer\Data;

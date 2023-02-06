@@ -3,6 +3,7 @@ namespace Phalconeer\Browser\Bo;
 
 use Phalconeer\Browser as This;
 use Phalconeer\CurlClient;
+use Phalconeer\Http;
 use Phalconeer\Middleware;
 use Psr;
 
@@ -40,35 +41,6 @@ class BrowserBo implements This\BrowserInterface
         $this->responseMiddlewares->offsetSet(null, $middleware);
     }
 
-    protected function getCacheKey(string $route) : string
-    {
-        return implode('_', [
-            'api_cache',
-            $this->getMethod(),
-            $route,
-            md5(serialize($this->getVariables())),
-            md5($this->header->get('Authorization', ''))
-        ]);
-    }
-
-    protected function getCached(string $route, int $cacheTime = 0) : ?string
-    {
-        return (is_null($this->cache)) ? null : $this->cache->get($this->getCacheKey($route), $cacheTime);
-    }
-
-    protected function setCached(string $route, string $response, int $cacheTime = 0) : void
-    {
-        if (is_null($this->cache) || $cacheTime = 0) {
-            return;
-        }
-
-        $this->cache->set(
-            $this->getCacheKey($route),
-            $response,
-            $cacheTime
-        );
-    }
-
     // public function handleResponse(Psr\Http\Message\ResponseInterface $response)
     // {
     //     return $response;
@@ -87,20 +59,20 @@ class BrowserBo implements This\BrowserInterface
 
     public function call(Psr\Http\Message\RequestInterface $request) : Psr\Http\Message\ResponseInterface
     {
+        /**
+         * @var \Phalconeer\Http\Data\Request $request
+         */
         $this->resetClientOptions();
         $this->setClientOptions();
-        /**
-         * @var \Phalconeer\CurlClient\Data\CurlResponse $response
-         */
-        $response = null;
+        $response = new CurlClient\Data\CurlResponse(
+            new Http\Data\Response([
+                'requestId'         => $request->requestId()
+            ])
+        );
         $requestHandlerChain = Middleware\Helper\MiddlewareHelper::createChain(
             $this->requestMiddlewares,
             function (Psr\Http\Message\RequestInterface $request) use (&$response) {
-                /**
-                 * @var \Phalconeer\CurlClient\Data\CurlResponse $response
-                 */
-                $response = $this->client->sendRequest($request);
-                $response = $response->setRequestId($request->requestId());
+                $response = $this->client->sendRequest($request, $response);
             },
             This\RequestMiddlewareInterface::class
         );

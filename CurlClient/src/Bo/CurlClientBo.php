@@ -1,7 +1,6 @@
 <?php
 namespace Phalconeer\CurlClient\Bo;
 
-use CurlHandle;
 use Phalconeer\CurlClient as This;
 use Phalconeer\Http;
 use Psr;
@@ -179,10 +178,13 @@ class CurlClientBo implements This\CurlClientInterface
     }
 
     public function sendRequest(
-        Psr\Http\Message\RequestInterface $request
+        Psr\Http\Message\RequestInterface $request,
+        Psr\Http\Message\ResponseInterface $response = null
     ) : Psr\Http\Message\ResponseInterface
     {
-        $response = new This\Data\CurlResponse();
+        if (is_null($response)) {
+            $response = new This\Data\CurlResponse();
+        }
         $curl = $this->prepare(curl_init(), $request, $response);
         $curlInfo = null;
         try {
