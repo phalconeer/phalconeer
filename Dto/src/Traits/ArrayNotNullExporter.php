@@ -1,6 +1,7 @@
 <?php
 namespace Phalconeer\Dto\Traits;
 
+use Phalconeer\Data;
 use Phalconeer\Dto as This;
 
 trait ArrayNotNullExporter
@@ -13,12 +14,16 @@ trait ArrayNotNullExporter
      * If copyNullsAsDefaults is false, null values are not exported
      *
      */
-    public function export(
-        bool $convertChildren = true,
-        bool $preserveKeys = false
-    ) : array
+    public function toArrayWithoutNulls() : array
     {
-        if ($this instanceof \ArrayAccess) {
+        $convertChildren = isset(static::$_convertChildren)
+            ? static::$_convertChildren
+            : true;
+
+        $preserveKeys = isset(static::$_preserveKeys)
+            ? static::$_preserveKeys
+            : true;
+        if ($this instanceof Data\CollectionInterface) {
             return $this->convertCollection($convertChildren, $preserveKeys);
         }
         return array_reduce(

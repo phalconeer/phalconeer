@@ -65,9 +65,9 @@ class BrowserBo implements This\BrowserInterface
         $this->resetClientOptions();
         $this->setClientOptions();
         $response = new CurlClient\Data\CurlResponse(
-            new Http\Data\Response([
+            new Http\Data\Response(new \ArrayObject([
                 'requestId'         => $request->requestId()
-            ])
+            ]))
         );
         $requestHandlerChain = Middleware\Helper\MiddlewareHelper::createChain(
             $this->requestMiddlewares,

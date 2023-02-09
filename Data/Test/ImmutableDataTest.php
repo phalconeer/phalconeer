@@ -10,7 +10,7 @@ class ImmutableDataTest extends Test\UnitTestCase
 {
     public function testPropertyValues()
     {
-        $testData = [
+        $testData = new \ArrayObject([
             'stringProperty'    => 'This is a string',
             'intProperty'       => 10,
             'floatProperty'     => 1.2342342,
@@ -19,15 +19,15 @@ class ImmutableDataTest extends Test\UnitTestCase
             'callableProperty'  => function () {},
             'arrayObject'       => new \ArrayObject(['--', '!!']),
             'dateTimeObject'    => new \DateTime('@0'),
-            'nestedObject'      => new This\Mock\Test([
+            'nestedObject'      => new This\Mock\Test(new \ArrayObject([
                 'stringProperty'    => 'This is a nested string',
                 'intProperty'       => 99,
                 'floatProperty'     => 0.000003,
                 'boolProperty'      => false,
                 'arrayProperty'     => [3, 4]
-            ]),
+            ])),
             'undocumented'      => '123'
-        ];
+        ]);
         $dto = new This\Mock\Test($testData);
         $dtoPrototypeTrait = new This\Mock\TestPrototypeTrait($testData);
         $dtoParseTypesTrait = new This\Mock\TestParseTypesTrait($testData);
@@ -447,9 +447,9 @@ class ImmutableDataTest extends Test\UnitTestCase
             'dateTimeObject'    => new \DateTime('@0')
         ];
 
-        $dto = new This\Mock\Test($testData);
-        $dtoPrototypeTrait = new This\Mock\TestPrototypeTrait($testData);
-        $dtoParseTypesTrait = new This\Mock\TestParseTypesTrait($testData);
+        $dto = new This\Mock\Test(new \ArrayObject($testData));
+        $dtoPrototypeTrait = new This\Mock\TestPrototypeTrait(new \ArrayObject($testData));
+        $dtoParseTypesTrait = new This\Mock\TestParseTypesTrait(new \ArrayObject($testData));
 
         $arrayObject = $dto->arrayObject();
         $arrayObject->offsetSet(null, '!!');
@@ -561,81 +561,81 @@ class ImmutableDataTest extends Test\UnitTestCase
     public function testInvalidStringValueThrowsException()
     {
         $this->expectException(TypeMismatchException::class);
-        $dto = new This\Mock\Test([
+        $dto = new This\Mock\Test(new \ArrayObject([
           'stringProperty'      => []
-        ]);
+        ]));
     }
 
     public function testParsedInvalidStringValueThrowsException()
     {
         $this->expectException(TypeMismatchException::class);
-        $dto = new This\Mock\TestParseTypesTrait([
+        $dto = new This\Mock\TestParseTypesTrait(new \ArrayObject([
           'stringProperty'      => []
-        ]);
+        ]));
     }
 
     public function testInvalidIntValueThrowsException()
     {
         $this->expectException(TypeMismatchException::class);
-        $dto = new This\Mock\Test([
+        $dto = new This\Mock\Test(new \ArrayObject([
           'intProperty'      => []
-        ]);
+        ]));
     }
 
     public function testParsedInvalidIntValueThrowsException()
     {
         $this->expectException(TypeMismatchException::class);
-        $dto = new This\Mock\TestParseTypesTrait([
+        $dto = new This\Mock\TestParseTypesTrait(new \ArrayObject([
           'intProperty'      => []
-        ]);
+        ]));
     }
 
     public function testInvalidFloatValueThrowsException()
     {
         $this->expectException(TypeMismatchException::class);
-        $dto = new This\Mock\Test([
+        $dto = new This\Mock\Test(new \ArrayObject([
           'floatProperty'      => []
-        ]);
+        ]));
     }
 
     public function testParsedInvalidFloatValueThrowsException()
     {
         $this->expectException(TypeMismatchException::class);
-        $dto = new This\Mock\TestParseTypesTrait([
+        $dto = new This\Mock\TestParseTypesTrait(new \ArrayObject([
           'floatProperty'      => []
-        ]);
+        ]));
     }
 
     public function testInvalidBoolValueThrowsException()
     {
         $this->expectException(TypeMismatchException::class);
-        $dto = new This\Mock\Test([
+        $dto = new This\Mock\Test(new \ArrayObject([
           'boolProperty'      => []
-        ]);
+        ]));
     }
 
     public function testParsedInvalidBoolValueThrowsException()
     {
         $this->expectException(TypeMismatchException::class);
-        $dto = new This\Mock\TestParseTypesTrait([
+        $dto = new This\Mock\TestParseTypesTrait(new \ArrayObject([
           'boolProperty'      => []
-        ]);
+        ]));
     }
 
     public function testInvalidNestedValueThrowsException()
     {
         $this->expectException(TypeMismatchException::class);
-        $dto = new This\Mock\Test([
+        $dto = new This\Mock\Test(new \ArrayObject([
           'nestedObject'     => new \DateTime()
-        ]);
+        ]));
     }
 
     public function testParsedInvalidNestedValueThrowsException()
     {
         $this->expectException(TypeMismatchException::class);
-        $dto = new This\Mock\TestParseTypesTrait([
+        $dto = new This\Mock\TestParseTypesTrait(new \ArrayObject([
           'nestedObject'     => new \DateTime()
-        ]);
+        ]));
     }
 
     public function testMerge()
@@ -647,17 +647,17 @@ class ImmutableDataTest extends Test\UnitTestCase
             'arrayProperty'     => ['a', 'b'],
             'arrayObject'       => new \ArrayObject(['--', '!!']),
             'dateTimeObject'    => new \DateTime('@0'),
-            'nestedObject'      => new This\Mock\Test([
+            'nestedObject'      => new This\Mock\Test(new \ArrayObject([
                 'stringProperty'    => 'This is a nested string',
                 'intProperty'       => 99,
                 'floatProperty'     => 0.000003,
                 'boolProperty'      => false,
                 'arrayProperty'     => [3, 4]
-            ]),
+            ])),
             'undocumented'      => '123'
         ];
 
-        $dto = new This\Mock\Test($testData);
+        $dto = new This\Mock\Test(new \ArrayObject($testData));
 
         $arrayProperty = $dto->arrayProperty();
         $arrayProperty[] = 'c';
@@ -665,28 +665,28 @@ class ImmutableDataTest extends Test\UnitTestCase
         $dateTimeProperty = $dto->dateTimeObject();
         $dateTimeProperty->modify('+1day');
 
-        $change = new This\Mock\Test([
+        $change = new This\Mock\Test(new \ArrayObject([
             'stringProperty'    => 'Changed string',
             'floatProperty'     => 1.2342342,
             'arrayProperty'     => $arrayProperty,
             'arrayObject'       => new \ArrayObject(['**', '$$']),
             'dateTimeObject'    => $dateTimeProperty,
-            'nestedObject'      => new This\Mock\Test([
+            'nestedObject'      => new This\Mock\Test(new \ArrayObject([
                 'stringProperty'    => 'This is going to be the only property set',
-            ]),
+            ])),
             'undocumented'      => null
-        ]);
+        ]));
 
-        $expectedOutput = new This\Mock\Test([
+        $expectedOutput = new This\Mock\Test(new \ArrayObject([
             'stringProperty'    => 'This is a string',
             'intProperty'       => 10,
             'floatProperty'     => null,
             'boolProperty'      => true,
             'arrayProperty'     => ['a', 'b'],
             'callableProperty'  => null,
-            'arrayObject'       => ['--', '!!'],
+            'arrayObject'       => new \ArrayObject(['--', '!!']),
             'dateTimeObject'    => '1970-01-01T00:00:00+00:00',
-            'nestedObject'      => [
+            'nestedObject'      => new \ArrayObject([
                 'stringProperty'    => 'This is a nested string',
                 'intProperty'       => 99,
                 'floatProperty'     => 0.000003,
@@ -696,19 +696,19 @@ class ImmutableDataTest extends Test\UnitTestCase
                 'arrayObject'       => null,
                 'dateTimeObject'    => null,
                 'nestedObject'      => null,
-            ],
-        ]);
+            ]),
+        ]));
 
-        $expectedOutputChanged = new This\Mock\Test([
+        $expectedOutputChanged = new This\Mock\Test(new \ArrayObject([
             'stringProperty'    => 'Changed string',
             'intProperty'       => 10,
             'boolProperty'      => true,
             'floatProperty'     => 1.2342342,
             'arrayProperty'     => ['a', 'b', 'c'],
             'callableProperty'  => null,
-            'arrayObject'       => ['**', '$$'],
+            'arrayObject'       => new \ArrayObject(['**', '$$']),
             'dateTimeObject'    => '1970-01-02T00:00:00+00:00',
-            'nestedObject'      => [
+            'nestedObject'      => new \ArrayObject([
                 'stringProperty'    => 'This is going to be the only property set',
                 'intProperty'       => null,
                 'floatProperty'     => null,
@@ -718,8 +718,8 @@ class ImmutableDataTest extends Test\UnitTestCase
                 'arrayObject'       => null,
                 'dateTimeObject'    => null,
                 'nestedObject'      => null,
-            ],
-        ]);
+            ]),
+        ]));
 
         $newDto = $dto->merge($change);
 

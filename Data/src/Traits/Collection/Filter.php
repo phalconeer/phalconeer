@@ -41,6 +41,6 @@ trait Filter
             $iterator->next();
         }
 
-        return new static(null, $filteredCollection);
+        return new static($filteredCollection);
     }
 }

@@ -22,9 +22,11 @@ class Factory extends Bootstrap\Factory
     protected function configure() : Mvc\DispatcherInterface
     {
         $config = $this->di->get(Config\Factory::MODULE_NAME)->get('dispatcher', new Phalcon\Config\Config());
+        $applicationConfig = $this->di->get(Config\Factory::MODULE_NAME)->get('application', new Phalcon\Config\Config());
         $dispatcherBo = new This\Bo\DispatcherBo(
             new Mvc\Dispatcher(),
-            $config
+            $config,
+            $applicationConfig
         );
         return $dispatcherBo->getDispatcher();
     }

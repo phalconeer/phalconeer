@@ -46,14 +46,11 @@ abstract class ImmutableData implements This\DataInterface
      * Loads data from either an array or ArrayObject
      * @TODO: include the behavior of Default properties, which help differentiate between null values and deleted values.
      */
-    public function __construct(array $input = null, \ArrayObject $inputObject = null)
+    public function __construct(\ArrayObject $inputObject = null)
     {
 
         if (is_null($inputObject)) {
-            if (is_null($input)) {
-                $input = [];
-            }
-            $inputObject = new \ArrayObject($input);
+            $inputObject = new \ArrayObject();
         }
         $inputObject = $this->initializeData($inputObject);
         $this->_propertiesCache = $this->parseTypes(static::getProperties());
@@ -68,7 +65,7 @@ abstract class ImmutableData implements This\DataInterface
                 );
             } catch (Exception\TypeMismatchException $exception) {
                 throw new Exception\TypeMismatchException(
-                    'Invalid type, expected: `' . $propertyType . '` or array for [' . $propertyName . '] @' . static::class,
+                    'Invalid type, expected: `' . $propertyType . '` or ArrayObject for [' . $propertyName . '] @' . static::class,
                     $exception->getCode() ?? This\Helper\ExceptionHelper::TYPE_MISMATCH,
                     $exception
                 );

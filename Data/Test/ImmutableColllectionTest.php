@@ -10,7 +10,7 @@ class ImmutableColllectionTest extends Test\UnitTestCase
 {
     public function testSettingCollectionValues()
     {
-        $testData = [
+        $testData = new \ArrayObject([
           [
             'stringProperty'    => 'This is a string',
             'intProperty'       => 10,
@@ -19,18 +19,18 @@ class ImmutableColllectionTest extends Test\UnitTestCase
             'arrayProperty'     => ['a', 'b'],
             'undocumented'      => '123'
           ],
-          new This\Mock\Test([
+          new This\Mock\Test(new \ArrayObject([
             'stringProperty'    => 'Another string',
             'intProperty'       => -5,
             'floatProperty'     => 0.00000009,
             'boolProperty'      => false,
             'arrayProperty'     => [5, 88],
             'undocumented'      => 'undocumenTED'
-          ])
-        ];
+          ]))
+        ]);
 
-        $expetedOutput = new This\Mock\TestCollection([
-          [
+        $expetedOutput = new This\Mock\TestCollection(new \ArrayObject([
+          new \ArrayObject([
             'stringProperty'    => 'This is a string',
             'intProperty'       => 10,
             'floatProperty'     => 1.2342342,
@@ -40,7 +40,7 @@ class ImmutableColllectionTest extends Test\UnitTestCase
             'nestedObject'      => null,
             'arrayObject'       => null,
             'dateTimeObject'    => null,
-          ],
+          ]),
           [
             'stringProperty'    => 'Another string',
             'intProperty'       => -5,
@@ -52,7 +52,7 @@ class ImmutableColllectionTest extends Test\UnitTestCase
             'arrayObject'       => null,
             'dateTimeObject'    => null,
           ]
-        ]);
+        ]));
 
         $collection = new This\Mock\TestCollection($testData);
 
@@ -78,7 +78,7 @@ class ImmutableColllectionTest extends Test\UnitTestCase
 
     public function testSettingCollectionValuesWithArrayObject()
     {
-        $testData = [
+        $testData = new \ArrayObject([
           [
             'stringProperty'    => 'This is a string',
             'intProperty'       => 10,
@@ -87,18 +87,18 @@ class ImmutableColllectionTest extends Test\UnitTestCase
             'arrayProperty'     => ['a', 'b'],
             'undocumented'      => '123'
           ],
-          new This\Mock\Test([
+          new This\Mock\Test(new \ArrayObject([
             'stringProperty'    => 'Another string',
             'intProperty'       => -5,
             'floatProperty'     => 0.00000009,
             'boolProperty'      => false,
             'arrayProperty'     => [5, 88],
             'undocumented'      => 'undocumenTED'
-          ])
-        ];
+          ]))
+        ]);
 
-        $expetedOutput = new This\Mock\TestCollection([
-          [
+        $expetedOutput = new This\Mock\TestCollection(new \ArrayObject([
+          new \ArrayObject([
             'stringProperty'    => 'This is a string',
             'intProperty'       => 10,
             'floatProperty'     => 1.2342342,
@@ -108,7 +108,7 @@ class ImmutableColllectionTest extends Test\UnitTestCase
             'nestedObject'      => null,
             'arrayObject'       => null,
             'dateTimeObject'    => null,
-          ],
+          ]),
           [
             'stringProperty'    => 'Another string',
             'intProperty'       => -5,
@@ -120,9 +120,9 @@ class ImmutableColllectionTest extends Test\UnitTestCase
             'arrayObject'       => null,
             'dateTimeObject'    => null,
           ]
-        ]);
+        ]));
 
-        $collection = new This\Mock\TestCollection(null, new \ArrayObject($testData));
+        $collection = new This\Mock\TestCollection(new \ArrayObject($testData));
 
         $this->assertEquals(
           This\Mock\Test::class,
@@ -147,7 +147,7 @@ class ImmutableColllectionTest extends Test\UnitTestCase
     public function testFilter()
     {
 
-        $testData = [
+        $testData = new \ArrayObject([
             [
                 'stringProperty'    => 'This is a string',
                 'intProperty'       => 10,
@@ -156,26 +156,26 @@ class ImmutableColllectionTest extends Test\UnitTestCase
                 'arrayProperty'     => ['a', 'b'],
                 'undocumented'      => '123'
             ],
-            [
+            new \ArrayObject([
                 'stringProperty'    => 'Middle string!',
                 'intProperty'       => 17,
                 'floatProperty'     => 999999.999,
                 'boolProperty'      => true,
                 'arrayProperty'     => [true, false],
                 'undocumented'      => 11111111111
-            ],
-            new This\Mock\Test([
+            ]),
+            new This\Mock\Test(new \ArrayObject([
                 'stringProperty'    => 'Another string',
                 'intProperty'       => -5,
                 'floatProperty'     => 0.00000009,
                 'boolProperty'      => false,
                 'arrayProperty'     => [5, 88],
                 'undocumented'      => 'undocumenTED'
-            ])
-        ];
+            ]))
+        ]);
 
-        $expetedOutput1 = new This\Mock\TestCollectionFilterTrait([
-            [
+        $expetedOutput1 = new This\Mock\TestCollectionFilterTrait(new \ArrayObject([
+            new \ArrayObject([
                 'stringProperty'    => 'This is a string',
                 'intProperty'       => 10,
                 'floatProperty'     => 1.2342342,
@@ -185,9 +185,9 @@ class ImmutableColllectionTest extends Test\UnitTestCase
                 'nestedObject'      => null,
                 'arrayObject'       => null,
                 'dateTimeObject'    => null,
-            ],
-        ]);
-        $expetedOutput2 = new This\Mock\TestCollectionFilterTrait([
+            ]),
+        ]));
+        $expetedOutput2 = new This\Mock\TestCollectionFilterTrait(new \ArrayObject([
             [
                 'stringProperty'    => 'Middle string!',
                 'intProperty'       => 17,
@@ -210,8 +210,8 @@ class ImmutableColllectionTest extends Test\UnitTestCase
                 'arrayObject'       => null,
                 'dateTimeObject'    => null,
             ]
-        ]);
-        $expetedOutput3 = new This\Mock\TestCollectionFilterTrait([
+        ]));
+        $expetedOutput3 = new This\Mock\TestCollectionFilterTrait(new \ArrayObject([
             [
                 'stringProperty'    => 'Another string',
                 'intProperty'       => -5,
@@ -223,7 +223,7 @@ class ImmutableColllectionTest extends Test\UnitTestCase
                 'arrayObject'       => null,
                 'dateTimeObject'    => null,
             ]
-        ]);
+        ]));
 
         $collection = new This\Mock\TestCollectionFilterTrait($testData);
         $collection = $collection->filter([
@@ -331,7 +331,7 @@ class ImmutableColllectionTest extends Test\UnitTestCase
 
     public function testOrder()
     {
-        $testData = [
+        $testData = new \ArrayObject([
             [
                 'stringProperty'    => 'This is a string',
                 'intProperty'       => 10,
@@ -340,39 +340,39 @@ class ImmutableColllectionTest extends Test\UnitTestCase
                 'arrayProperty'     => ['a', 'b'],
                 'undocumented'      => '123'
             ],
-            [
+            new \ArrayObject([
                 'stringProperty'    => 'Middle string!',
                 'intProperty'       => 17,
                 'floatProperty'     => 999999.999,
                 'boolProperty'      => true,
                 'arrayProperty'     => [true, false],
                 'undocumented'      => 11111111111
-            ],
-            new This\Mock\Test([
+            ]),
+            new This\Mock\Test(new \ArrayObject([
                 'stringProperty'    => 'Another string',
                 'intProperty'       => -5,
                 'floatProperty'     => 0.00000009,
                 'boolProperty'      => false,
                 'arrayProperty'     => [5, 88],
                 'undocumented'      => 'undocumenTED'
-            ])
-        ];
+            ]))
+        ]);
 
-        $expetedOutput1 = new This\Mock\TestCollectionOrderTrait([
-            $testData[2],
-            $testData[0],
-            $testData[1],
-        ]);
-        $expetedOutput2 = new This\Mock\TestCollectionOrderTrait([
-            $testData[1],
-            $testData[0],
-            $testData[2],
-        ]);
-        $expetedOutput3 = new This\Mock\TestCollectionOrderTrait([
-            $testData[2],
-            $testData[1],
-            $testData[0],
-        ]);
+        $expetedOutput1 = new This\Mock\TestCollectionOrderTrait(new \ArrayObject([
+            $testData->offsetGet(2),
+            $testData->offsetGet(0),
+            $testData->offsetGet(1),
+        ]));
+        $expetedOutput2 = new This\Mock\TestCollectionOrderTrait(new \ArrayObject([
+            $testData->offsetGet(1),
+            $testData->offsetGet(0),
+            $testData->offsetGet(2),
+        ]));
+        $expetedOutput3 = new This\Mock\TestCollectionOrderTrait(new \ArrayObject([
+            $testData->offsetGet(2),
+            $testData->offsetGet(1),
+            $testData->offsetGet(0),
+        ]));
 
         $collection = new This\Mock\TestCollectionOrderTrait($testData);
         $orderedCollection1 = $collection->getOrdered('intProperty');
@@ -418,7 +418,7 @@ class ImmutableColllectionTest extends Test\UnitTestCase
 
     public function testSort()
     {
-        $testData = [
+        $testData = new \ArrayObject([
             [
                 'stringProperty'    => 'This is a string',
                 'intProperty'       => 10,
@@ -427,34 +427,34 @@ class ImmutableColllectionTest extends Test\UnitTestCase
                 'arrayProperty'     => ['a', 'b'],
                 'undocumented'      => '123'
             ],
-            [
+            new \ArrayObject([
                 'stringProperty'    => 'Another string',
                 'intProperty'       => 10,
                 'floatProperty'     => 999999.999,
                 'boolProperty'      => true,
                 'arrayProperty'     => [true, false],
                 'undocumented'      => 11111111111
-            ],
-            new This\Mock\Test([
+            ]),
+            new This\Mock\Test(new \ArrayObject([
                 'stringProperty'    => 'Another string',
                 'intProperty'       => -5,
                 'floatProperty'     => 0.00000009,
                 'boolProperty'      => false,
                 'arrayProperty'     => [5, 88],
                 'undocumented'      => 'undocumenTED'
-            ])
-        ];
+            ]))
+        ]);
 
-        $expetedOutput1 = new This\Mock\TestCollectionOrderTrait([
-            $testData[2],
-            $testData[1],
-            $testData[0],
-        ]);
-        $expetedOutput2 = new This\Mock\TestCollectionOrderTrait([
-            $testData[0],
-            $testData[2],
-            $testData[1],
-        ]);
+        $expetedOutput1 = new This\Mock\TestCollectionOrderTrait(new \ArrayObject([
+            $testData->offsetGet(2),
+            $testData->offsetGet(1),
+            $testData->offsetGet(0),
+        ]));
+        $expetedOutput2 = new This\Mock\TestCollectionOrderTrait(new \ArrayObject([
+            $testData->offsetGet(0),
+            $testData->offsetGet(2),
+            $testData->offsetGet(1),
+        ]));
 
         $collection = new This\Mock\TestCollectionOrderTrait($testData);
         $orderedCollection1 = $collection->getSorted('intProperty,-floatProperty');
@@ -481,7 +481,7 @@ class ImmutableColllectionTest extends Test\UnitTestCase
 
     public function testGroup()
     {
-        $testData = [
+        $testData = new \ArrayObject([
             [
                 'stringProperty'    => 'GROUP B',
                 'intProperty'       => 10,
@@ -490,42 +490,42 @@ class ImmutableColllectionTest extends Test\UnitTestCase
                 'arrayProperty'     => ['a', 'b'],
                 'undocumented'      => '123'
             ],
-            [
+            new \ArrayObject([
                 'stringProperty'    => 'GROUP A',
                 'intProperty'       => 10,
                 'floatProperty'     => 999999.999,
                 'boolProperty'      => true,
                 'arrayProperty'     => [true, false],
                 'undocumented'      => 11111111111
-            ],
-            new This\Mock\Test([
+            ]),
+            new This\Mock\Test(new \ArrayObject([
                 'stringProperty'    => 'GROUP A',
                 'intProperty'       => -5,
                 'floatProperty'     => 0.00000009,
                 'boolProperty'      => false,
                 'arrayProperty'     => [5, 88],
                 'undocumented'      => 'undocumenTED'
-            ])
-        ];
+            ]))
+        ]);
 
         $expetedOutput1 = new \ArrayObject([
-            10 => new This\Mock\TestCollectionGroupTrait([
-                $testData[0],
-                $testData[1],
-            ]),
-            -5 => new This\Mock\TestCollectionGroupTrait([
-                $testData[2],
-            ]),
+            10 => new This\Mock\TestCollectionGroupTrait(new \ArrayObject([
+                $testData->offsetGet(0),
+                $testData->offsetGet(1),
+            ])),
+            -5 => new This\Mock\TestCollectionGroupTrait(new \ArrayObject([
+                $testData->offsetGet(2),
+            ])),
         ]);
 
         $expetedOutput2 = new \ArrayObject([
-            'GROUP B' => new This\Mock\TestCollectionGroupTrait([
-                $testData[0],
-            ]),
-            'GROUP A' => new This\Mock\TestCollectionGroupTrait([
-                $testData[1],
-                $testData[2],
-            ]),
+            'GROUP B' => new This\Mock\TestCollectionGroupTrait(new \ArrayObject([
+                $testData->offsetGet(0),
+            ])),
+            'GROUP A' => new This\Mock\TestCollectionGroupTrait(new \ArrayObject([
+                $testData->offsetGet(1),
+                $testData->offsetGet(2),
+            ])),
         ]);
 
         $collection = new This\Mock\TestCollectionGroupTrait($testData);
@@ -564,7 +564,7 @@ class ImmutableColllectionTest extends Test\UnitTestCase
 
     public function testMap()
     {
-        $testData = [
+        $testData = new \ArrayObject([
             [
                 'stringProperty'    => 'GROUP B',
                 'intProperty'       => 10,
@@ -573,34 +573,34 @@ class ImmutableColllectionTest extends Test\UnitTestCase
                 'arrayProperty'     => ['a', 'b'],
                 'undocumented'      => '123'
             ],
-            [
+            new \ArrayObject([
                 'stringProperty'    => 'GROUP A',
                 'intProperty'       => 17,
                 'floatProperty'     => 999999.999,
                 'boolProperty'      => true,
                 'arrayProperty'     => [true, false],
                 'undocumented'      => 11111111111
-            ],
-            new This\Mock\Test([
+            ]),
+            new This\Mock\Test(new \ArrayObject([
                 'stringProperty'    => 'GROUP A',
                 'intProperty'       => -5,
                 'floatProperty'     => 0.00000009,
                 'boolProperty'      => false,
                 'arrayProperty'     => [5, 88],
                 'undocumented'      => 'undocumenTED'
-            ])
-        ];
-
-        $expetedOutput1 = new This\Mock\TestCollectionMapTrait([
-            10 => $testData[0],
-            17 => $testData[1],
-            -5 => $testData[2],
+            ]))
         ]);
 
-        $expetedOutput2 = new This\Mock\TestCollectionMapTrait([
-            'GROUP B' => $testData[0], // Exiusiting maps are not overwritten
-            'GROUP A' => $testData[2],
-        ]);
+        $expetedOutput1 = new This\Mock\TestCollectionMapTrait(new \ArrayObject([
+            10 => $testData->offsetGet(0),
+            17 => $testData->offsetGet(1),
+            -5 => $testData->offsetGet(2),
+        ]));
+
+        $expetedOutput2 = new This\Mock\TestCollectionMapTrait(new \ArrayObject([
+            'GROUP B' => $testData->offsetGet(0), // Exiusiting maps are not overwritten
+            'GROUP A' => $testData->offsetGet(2),
+        ]));
 
         $collection = new This\Mock\TestCollectionMapTrait($testData);
         

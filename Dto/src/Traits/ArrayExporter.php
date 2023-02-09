@@ -1,11 +1,16 @@
 <?php
 namespace Phalconeer\Dto\Traits;
 
+use Phalconeer\Data;
 use Phalconeer\Dto as This;
 
 trait ArrayExporter
 {
     use This\Traits\ConvertedValue;
+
+    // protected bool $_convertChildren = true;
+
+    // protected bool $_preserveKeys = false;
 
     /**
      * Returns an array representation of the object.
@@ -13,13 +18,18 @@ trait ArrayExporter
      * If copyNullsAsDefaults is false, null values are not exported
      *
      */
-    public function export(
-        bool $convertChildren = true,
-        bool $preserveKeys = false
-    ) : array
+    public function toArray() : array
     {
-        if ($this instanceof \ArrayAccess) {
-            return $this->convertCollection($convertChildren, $preserveKeys);
+        $convertChildren = isset(static::$_convertChildren)
+            ? static::$_convertChildren
+            : true;
+
+        $preserveKeys = isset(static::$_preserveKeys)
+            ? static::$_preserveKeys
+            : true;
+
+        if ($this instanceof Data\CollectionInterface) {
+            return $this->convertCollection($convertChildren, $preserveKeys)->getArrayCopy();
         }
         return array_reduce(
             $this->properties(),

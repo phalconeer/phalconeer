@@ -39,10 +39,10 @@ class CacheControlBo
         $this->request = $request;
 
         $this->cacheHeaders = $this->readHeader();
-        $this->cacheSettings = new Cache\Data\CacheSettings([
+        $this->cacheSettings = new Cache\Data\CacheSettings(new \ArrayObject([
             'readCache'     => $this->getReadCache(),
             'writeCache'    => $this->getWriteCache()
-        ]);
+        ]));
     }
 
     public function getCacheControl() : ?Cache\Data\CacheSettings

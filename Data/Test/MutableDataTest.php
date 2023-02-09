@@ -1,21 +1,18 @@
 <?php
 namespace Phalconeer\Data\Test;
 use Test;
-use Phalconeer\Data;
 use Phalconeer\Data\Test as This;
-
-use Phalconeer\Exception\TypeMismatchException;
 
 class MutableDataTest extends Test\UnitTestCase
 {
     public function testMutability()
     {
-        $testData = [
+        $testData = new \ArrayObject([
             'dateTimeObject'    => new \DateTime('@0'),
-            'nestedObject'      => [
+            'nestedObject'      => new \ArrayObject([
                 'stringProperty'    => 'This is a nested string',
-            ],
-        ];
+            ]),
+        ]);
 
         $immutable = new This\Mock\Test($testData);
         $mutable = new This\Mock\MutableTest($testData);

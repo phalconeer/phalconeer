@@ -1,6 +1,7 @@
 <?php
 namespace Phalconeer\Http\Test;
 
+use ArrayObject;
 use Test;
 use Phalconeer\Http;
 
@@ -28,29 +29,29 @@ class UriTest extends Test\UnitTestCase
     public function testGetScheme()
     {
         $uri = new Http\Data\Uri();
-        $uri2 = new Http\Data\Uri([
+        $uri2 = new Http\Data\Uri(new ArrayObject([
             'scheme'    => null
-        ]);
+        ]));
         $this->assertEquals('', $uri->getScheme(), 'Unset port returns empty string');
         $this->assertEquals('', $uri2->getScheme(), 'Unset port returns empty string');
 
-        $uri = new Http\Data\Uri([
+        $uri = new Http\Data\Uri(new ArrayObject([
             'scheme'        => Http\Helper\HttpHelper::HTTP_PROTOCOL_NORMAL
-        ]);
+        ]));
         $this->assertEquals(Http\Helper\HttpHelper::HTTP_PROTOCOL_NORMAL, $uri->getScheme(), 'Constructor parameter works');
         $uri2 = $uri->withScheme(Http\Helper\HttpHelper::HTTP_PROTOCOL_SECURE);
         $this->assertEquals(Http\Helper\HttpHelper::HTTP_PROTOCOL_NORMAL, $uri->getScheme(), 'Uri object is immutable');
         $this->assertEquals(Http\Helper\HttpHelper::HTTP_PROTOCOL_SECURE, $uri2->getScheme(), 'New object contains correct value');
         
-        $uri = new Http\Data\Uri([
+        $uri = new Http\Data\Uri(new ArrayObject([
             'scheme'        => strtoupper(Http\Helper\HttpHelper::HTTP_PROTOCOL_NORMAL)
-        ]);
+        ]));
         $this->assertEquals(Http\Helper\HttpHelper::HTTP_PROTOCOL_NORMAL, $uri->getScheme(), 'Scheme is always returned as lowercase');
 
-        $uri = new Http\Data\Uri([
+        $uri = new Http\Data\Uri(new ArrayObject([
             'scheme'        => Http\Helper\HttpHelper::HTTP_PROTOCOL_NORMAL,
             'port'          => 8088
-        ]);
+        ]));
         $this->assertEquals(Http\Helper\HttpHelper::HTTP_PROTOCOL_NORMAL, $uri->getScheme(), 'Constructor parameter works');
         $this->assertEquals(8088, $uri->getPort(), 'Constructor parameter works for port');
         $uri2 = $uri->withScheme('file');
@@ -79,43 +80,43 @@ class UriTest extends Test\UnitTestCase
     public function testGetAuthority()
     {
         $uri = new Http\Data\Uri();
-        $uri2 = new Http\Data\Uri([
+        $uri2 = new Http\Data\Uri(new ArrayObject([
             'host'      => null
-        ]);
+        ]));
         $this->assertEquals('', $uri->getAuthority(), 'Unset authority returns empty string');
         $this->assertEquals('', $uri2->getAuthority(), 'Unset authority returns empty string');
 
-        $uri = new Http\Data\Uri([
+        $uri = new Http\Data\Uri(new ArrayObject([
             'user'      => 'test',
             'pass'      => 'pass123'
-        ]);
+        ]));
         $this->assertEquals('', $uri->getAuthority(), 'Unset host results in no authority');
 
-        $uri = new Http\Data\Uri([
+        $uri = new Http\Data\Uri(new ArrayObject([
             'user'      => 'test',
             'host'      => 'a.com'
-        ]);
+        ]));
         $uri2 = (new Http\Data\Uri())->withUserInfo('test')
                     ->withHost('a.com');
         $this->assertEquals('test@a.com', $uri->getAuthority(), 'Only username resolves correctly');
         $this->assertEquals('test@a.com', $uri2->getAuthority(), 'Only username resolves correctly');
 
-        $uri = new Http\Data\Uri([
+        $uri = new Http\Data\Uri(new ArrayObject([
             'user'      => 'test',
             'pass'      => 'pass123',
             'host'      => 'a.com'
-        ]);
+        ]));
         $uri2 = (new Http\Data\Uri())->withUserInfo('test', 'pass123')
                     ->withHost('a.com');
         $this->assertEquals('test:pass123@a.com', $uri->getAuthority(), 'User and pass resolved correclty');
         $this->assertEquals('test:pass123@a.com', $uri2->getAuthority(), 'User and pass resolved correclty');
 
-        $uri = new Http\Data\Uri([
+        $uri = new Http\Data\Uri(new ArrayObject([
             'user'      => 'test',
             'pass'      => 'pass123',
             'host'      => 'a.com',
             'port'      => 1111
-        ]);
+        ]));
         $uri2 = (new Http\Data\Uri())->withUserInfo('test', 'pass123')
                     ->withHost('a.com')
                     ->withPort(1111);
@@ -146,23 +147,23 @@ class UriTest extends Test\UnitTestCase
     public function testGetUserInfo()
     {
         $uri = new Http\Data\Uri();
-        $uri2 = new Http\Data\Uri([
+        $uri2 = new Http\Data\Uri(new ArrayObject([
             'user'      => null
-        ]);
+        ]));
         $this->assertEquals('', $uri->getUserInfo(), 'Unset user info returns empty string');
         $this->assertEquals('', $uri2->getUserInfo(), 'Unset user info returns empty string');
 
-        $uri = new Http\Data\Uri([
+        $uri = new Http\Data\Uri(new ArrayObject([
             'user'      => 'test'
-        ]);
+        ]));
         $uri2 = (new Http\Data\Uri())->withUserInfo('test');
         $this->assertEquals('test', $uri->getUserInfo(), 'Userinfo is returned correctly with only user');
         $this->assertEquals('test', $uri2->getUserInfo(), 'Userinfo is returned correctly with only user');
 
-        $uri = new Http\Data\Uri([
+        $uri = new Http\Data\Uri(new ArrayObject([
             'user'      => 'test',
             'pass'      => 'pass123'
-        ]);
+        ]));
         $uri2 = (new Http\Data\Uri())->withUserInfo('test', 'pass123');
         $this->assertEquals('test:pass123', $uri->getUserInfo(), 'Userinfo is returned correctly');
         $this->assertEquals('test:pass123', $uri2->getUserInfo(), 'Userinfo is returned correctly');
@@ -182,22 +183,22 @@ class UriTest extends Test\UnitTestCase
     public function testGetHost()
     {
         $uri = new Http\Data\Uri();
-        $uri2 = new Http\Data\Uri([
+        $uri2 = new Http\Data\Uri(new ArrayObject([
             'host'      => null
-        ]);
+        ]));
         $this->assertEquals('', $uri->getHost(), 'Unset host returns empty string');
         $this->assertEquals('', $uri2->getHost(), 'Unset host returns empty string');
 
-        $uri = new Http\Data\Uri([
+        $uri = new Http\Data\Uri(new ArrayObject([
             'host'      => 'a.com'
-        ]);
+        ]));
         $uri2 = (new Http\Data\Uri())->withHost('a.com');
         $this->assertEquals('a.com', $uri->getHost(), 'Host is returned properly');
         $this->assertEquals('a.com', $uri2->getHost(), 'Host is returned properly');
 
-        $uri = new Http\Data\Uri([
+        $uri = new Http\Data\Uri(new ArrayObject([
             'host'      => 'A.COM'
-        ]);
+        ]));
         $uri2 = (new Http\Data\Uri())->withHost('A.COM');
         $this->assertEquals('a.com', $uri->getHost(), 'Host is returned lowercase');
         $this->assertEquals('a.com', $uri2->getHost(), 'Host is returned lowercase');
@@ -223,17 +224,17 @@ class UriTest extends Test\UnitTestCase
         $uri = new Http\Data\Uri();
         $this->assertEquals(null, $uri->getPort(), 'Unset port returns null');
 
-        $uri = new Http\Data\Uri([
+        $uri = new Http\Data\Uri(new ArrayObject([
             'port'      => 1111
-        ]);
+        ]));
         $uri2 = (new Http\Data\Uri())->withPort(1111);
         $this->assertEquals(1111, $uri->getPort(), 'Unset protocol keeps custom port');
         $this->assertEquals(1111, $uri2->getPort(), 'Unset protocol keeps custom port');
 
-        $uri = new Http\Data\Uri([
+        $uri = new Http\Data\Uri(new ArrayObject([
             'scheme'    => Http\Helper\HttpHelper::HTTP_PROTOCOL_NORMAL,
             'port'      => 80
-        ]);
+        ]));
         $uri2 = (new Http\Data\Uri())->withScheme(Http\Helper\HttpHelper::HTTP_PROTOCOL_NORMAL)
                 ->withPort(80);
         $uri3 = (new Http\Data\Uri())->withPort(80)
@@ -242,10 +243,10 @@ class UriTest extends Test\UnitTestCase
         $this->assertEquals(null, $uri2->getPort(), 'Standard protocol with standard port returns null');
         $this->assertEquals(null, $uri3->getPort(), 'Standard protocol with standard port returns null');
 
-        $uri = new Http\Data\Uri([
+        $uri = new Http\Data\Uri(new ArrayObject([
             'scheme'    => Http\Helper\HttpHelper::HTTP_PROTOCOL_NORMAL,
             'port'      => 1111
-        ]);
+        ]));
         $uri2 = (new Http\Data\Uri())->withScheme(Http\Helper\HttpHelper::HTTP_PROTOCOL_NORMAL)
                 ->withPort(1111);
         $uri3 = (new Http\Data\Uri())->withPort(1111)
@@ -254,10 +255,10 @@ class UriTest extends Test\UnitTestCase
         $this->assertEquals(1111, $uri2->getPort(), 'Standard protocol with custom port keeps custom port');
         $this->assertEquals(1111, $uri3->getPort(), 'Standard protocol with custom port keeps custom port');
 
-        $uri = new Http\Data\Uri([
+        $uri = new Http\Data\Uri(new ArrayObject([
             'scheme'    => 'file',
             'port'      => 1111
-        ]);
+        ]));
         $uri2 = (new Http\Data\Uri())->withScheme('file')
                 ->withPort(1111);
         $uri3 = (new Http\Data\Uri())->withPort(1111)
@@ -266,9 +267,9 @@ class UriTest extends Test\UnitTestCase
         $this->assertEquals(1111, $uri2->getPort(), 'Non Standard protocol keeps custom port');
         $this->assertEquals(1111, $uri3->getPort(), 'Non Standard protocol keeps custom port');
 
-        $uri = new Http\Data\Uri([
+        $uri = new Http\Data\Uri(new ArrayObject([
             'port'      => '8080'
-        ]);
+        ]));
 
         $this->assertEquals(8080, $uri->getPort(), 'Port is returned as integer');
 
@@ -307,43 +308,43 @@ class UriTest extends Test\UnitTestCase
     public function testGetPath()
     {
         $uri = new Http\Data\Uri();
-        $uri2 = new Http\Data\Uri([
+        $uri2 = new Http\Data\Uri(new ArrayObject([
             'path'      => null
-        ]);
+        ]));
         $this->assertEquals('', $uri->getPath(), 'Unset path returns empty string');
         $this->assertEquals('', $uri2->getPath(), 'Unset path returns empty string');
 
-        $uri = new Http\Data\Uri([
+        $uri = new Http\Data\Uri(new ArrayObject([
             'path'      => '/this/is/a/valid/path'
-        ]);
+        ]));
         $uri2 = (new Http\Data\Uri())->withPath('/this/is/a/valid/path');
         $this->assertEquals('/this/is/a/valid/path', $uri->getPath(), 'Path returns correctly using only reserved characters');
         $this->assertEquals('/this/is/a/valid/path', $uri2->getPath(), 'Path returns correctly using only reserved characters');
 
-        $uri = new Http\Data\Uri([
+        $uri = new Http\Data\Uri(new ArrayObject([
             'path'      => '/valid but unsafe'
-        ]);
+        ]));
         $uri2 = (new Http\Data\Uri())->withPath('/valid but unsafe');
         $this->assertEquals('/valid%20but%20unsafe', $uri->getPath(), 'Path returns encoded');
         $this->assertEquals('/valid%20but%20unsafe', $uri2->getPath(), 'Path returns encoded');
 
-        $uri = new Http\Data\Uri([
+        $uri = new Http\Data\Uri(new ArrayObject([
             'path'      => '/avoid%20double enconding'
-        ]);
+        ]));
         $uri2 = (new Http\Data\Uri())->withPath('/avoid%20double enconding');
         $this->assertEquals('/avoid%20double%20enconding', $uri->getPath(), 'Path returns encoded');
         $this->assertEquals('/avoid%20double%20enconding', $uri2->getPath(), 'Path returns encoded');
 
-        $uri = new Http\Data\Uri([
+        $uri = new Http\Data\Uri(new ArrayObject([
             'path'      => 'test@a.com'
-        ]);
+        ]));
         $uri2 = (new Http\Data\Uri())->withPath('test@a.com');
         $this->assertEquals('test@a.com', $uri->getPath(), 'Path returns encoded');
         $this->assertEquals('test@a.com', $uri2->getPath(), 'Path returns encoded');
 
-        $uri = new Http\Data\Uri([
+        $uri = new Http\Data\Uri(new ArrayObject([
             'path'      => '/baz?#€/b%61r'
-        ]);
+        ]));
         // Query and fragment delimiters and multibyte chars are encoded.
         $this->assertSame('/baz%3F%23%E2%82%AC/b%61r', $uri->getPath());
         $this->assertSame('/baz%3F%23%E2%82%AC/b%61r', $uri->__toString());
@@ -372,36 +373,36 @@ class UriTest extends Test\UnitTestCase
     public function testGetQuery()
     {
         $uri = new Http\Data\Uri();
-        $uri2 = new Http\Data\Uri([
+        $uri2 = new Http\Data\Uri(new ArrayObject([
             'query'     => null
-        ]);
+        ]));
         $this->assertEquals('', $uri->getQuery(), 'Unset query returns empty string');
         $this->assertEquals('', $uri2->getQuery(), 'Unset query returns empty string');
 
-        $uri = new Http\Data\Uri([
+        $uri = new Http\Data\Uri(new ArrayObject([
             'query'         => 'key=value&path=this/is/valid?'
-        ]);
+        ]));
         $uri2 = (new Http\Data\Uri())->withQuery('key=value&path=this/is/valid?');
         $this->assertEquals('key=value&path=this/is/valid?', $uri->getQuery(), 'Query returns correctly using only reserved characters');
         $this->assertEquals('key=value&path=this/is/valid?', $uri2->getQuery(), 'Query returns correctly using only reserved characters');
 
-        $uri = new Http\Data\Uri([
+        $uri = new Http\Data\Uri(new ArrayObject([
             'query'         => 'encode=should work fine'
-        ]);
+        ]));
         $uri2 = (new Http\Data\Uri())->withQuery('encode=should work fine');
         $this->assertEquals('encode=should%20work%20fine', $uri->getQuery(), 'Query returns correctly using only reserved characters');
         $this->assertEquals('encode=should%20work%20fine', $uri2->getQuery(), 'Query returns correctly using only reserved characters');
 
-        $uri = new Http\Data\Uri([
+        $uri = new Http\Data\Uri(new ArrayObject([
             'query'         => 'avoid=double%20enconding any input'
-        ]);
+        ]));
         $uri2 = (new Http\Data\Uri())->withQuery('avoid=double%20enconding any input');
         $this->assertEquals('avoid=double%20enconding%20any%20input', $uri->getQuery(), 'Query returns correctly using only reserved characters');
         $this->assertEquals('avoid=double%20enconding%20any%20input', $uri2->getQuery(), 'Query returns correctly using only reserved characters');
 
-        $uri = new Http\Data\Uri([
+        $uri = new Http\Data\Uri(new ArrayObject([
             'query'     => '?=#&€=/&b%61r'
-        ]);
+        ]));
         // A query starting with a "?" is valid and must not be magically removed. Otherwise it would be impossible to
         // construct such an URI. Also the "?" and "/" does not need to be encoded in the query.
         $this->assertEquals('?=%23&%E2%82%AC=/&b%61r', $uri->getQuery());
@@ -428,36 +429,36 @@ class UriTest extends Test\UnitTestCase
     public function testGetFragment()
     {
         $uri = new Http\Data\Uri();
-        $uri2 = new Http\Data\Uri([
+        $uri2 = new Http\Data\Uri(new ArrayObject([
             'fragment'     => null
-        ]);
+        ]));
         $this->assertEquals('', $uri->getFragment(), 'Unset fragment returns empty string');
         $this->assertEquals('', $uri2->getFragment(), 'Unset fragment returns empty string');
 
-        $uri = new Http\Data\Uri([
+        $uri = new Http\Data\Uri(new ArrayObject([
             'fragment'         => 'key=value&path=this/is/valid?'
-        ]);
+        ]));
         $uri2 = (new Http\Data\Uri())->withFragment('key=value&path=this/is/valid?');
         $this->assertEquals('key=value&path=this/is/valid?', $uri->getFragment(), 'Fragment returns correctly using only reserved characters');
         $this->assertEquals('key=value&path=this/is/valid?', $uri2->getFragment(), 'Fragment returns correctly using only reserved characters');
 
-        $uri = new Http\Data\Uri([
+        $uri = new Http\Data\Uri(new ArrayObject([
             'fragment'         => 'encode=should work fine'
-        ]);
+        ]));
         $uri2 = (new Http\Data\Uri())->withFragment('encode=should work fine');
         $this->assertEquals('encode=should%20work%20fine', $uri->getFragment(), 'Fragment returns correctly using only reserved characters');
         $this->assertEquals('encode=should%20work%20fine', $uri2->getFragment(), 'Fragment returns correctly using only reserved characters');
 
-        $uri = new Http\Data\Uri([
+        $uri = new Http\Data\Uri(new ArrayObject([
             'fragment'         => 'avoid=double%20enconding any input'
-        ]);
+        ]));
         $uri2 = (new Http\Data\Uri())->withFragment('avoid=double%20enconding any input');
         $this->assertEquals('avoid=double%20enconding%20any%20input', $uri->getFragment(), 'Fragment returns correctly using only reserved characters');
         $this->assertEquals('avoid=double%20enconding%20any%20input', $uri2->getFragment(), 'Fragment returns correctly using only reserved characters');
 
-        $uri = new Http\Data\Uri([
+        $uri = new Http\Data\Uri(new ArrayObject([
             'fragment'      => '#€?/b%61r'
-        ]);
+        ]));
         // A fragment starting with a "#" is valid and must not be magically removed. Otherwise it would be impossible to
         // construct such an URI. Also the "?" and "/" does not need to be encoded in the fragment.
         $this->assertEquals('%23%E2%82%AC?/b%61r', $uri->getFragment());
@@ -495,7 +496,7 @@ class UriTest extends Test\UnitTestCase
         $this->assertEquals('', $uri->__toString(), 'Unset URL returns empty string');
         $this->assertEquals('', $uri2->__toString(), 'Unset URL returns empty string');
 
-        $uri = new Http\Data\Uri([
+        $uri = new Http\Data\Uri(new ArrayObject([
             'scheme'        => Http\Helper\HttpHelper::HTTP_PROTOCOL_SECURE,
             'user'          => 'test',
             'pass'          => 'pass123',
@@ -504,7 +505,7 @@ class UriTest extends Test\UnitTestCase
             'path'          => '/some/valid/path',
             'query'         => 'key=value',
             'fragment'      => 'bookmark'
-        ]);
+        ]));
         $uri2 = (new Http\Data\Uri())
             ->withScheme('https')
             ->withUserInfo('test', 'pass123')
@@ -530,20 +531,20 @@ class UriTest extends Test\UnitTestCase
             'String conversion of all items set is okay'
         );
 
-        $uri = new Http\Data\Uri([
+        $uri = new Http\Data\Uri(new ArrayObject([
             'path'      => 'foo'
-        ]);
+        ]));
         $this->assertEquals('foo', $uri->__toString());
 
-        $uri = new Http\Data\Uri([
+        $uri = new Http\Data\Uri(new ArrayObject([
             'path'      => 'foo',
             'host'      => 'a.com'
-        ]);
+        ]));
         $this->assertEquals('//a.com/foo', $uri->__toString());
 
-        $uri = new Http\Data\Uri([
+        $uri = new Http\Data\Uri(new ArrayObject([
             'path'      => '//foo',
-        ]);
+        ]));
         $this->assertEquals('/foo', $uri->__toString());
     }
 

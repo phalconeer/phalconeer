@@ -2,6 +2,7 @@
 namespace Phalconeer\RestResponse\Data\Traits;
 
 use Phalconeer\Exception;
+use Phalconeer\Data;
 use Phalconeer\Dto;
 use Phalconeer\RestResponse as This;
 
@@ -35,9 +36,9 @@ Trait Resource
     {
         switch ($format) {
             case This\Helper\RestResponseHelper::FORMAT_JSON:
-                return $this->toJSON();
+                return $this->exportJSON();
             case This\Helper\RestResponseHelper::FORMAT_CSV:
-                return $this->toCSV();
+                return $this->exportCSV();
             case This\Helper\RestResponseHelper::FORMAT_XML:
             case This\Helper\RestResponseHelper::FORMAT_XHTML:
             case This\Helper\RestResponseHelper::FORMAT_HTML:
@@ -83,11 +84,11 @@ Trait Resource
         return $this;
     }
 
-    protected function toJSONApiError()
+    protected function exportJSONApiError()
     {
         return json_encode([
             'errors'    => [
-                $this->export()
+                $this->toArray()
             ]
         ]);
     }
@@ -104,7 +105,7 @@ Trait Resource
             $reponse['data'][] = [
                 'type'          => $resourceType,
                 'id'            => implode('-', $current->getPrimaryKeyValue()),
-                'attributes'    => $current->export()
+                'attributes'    => $current->toArray()
             ];
             $iterator->next();
         }
@@ -119,7 +120,7 @@ Trait Resource
 
     protected function dataToJSONApi() : array
     {
-        $data = $this->export();
+        $data = $this->toArray();
         unset($data['links']);
         unset($data['meta']);
 
@@ -132,20 +133,20 @@ Trait Resource
         ];
     }
 
-    public function toArray() : array
+    public function exportArray() : array
     {
-        return ($this instanceof \ArrayAccess)
+        return ($this instanceof Data\CollectionInterface)
             ? $this->collectionToJSONApi()
             : $this->dataToJSONApi();
     }
 
-    public function toJSON() : string
+    public function exportJSON() : string
     {
         if ($this instanceof Exception\ExceptionInterface) {
-            return $this->toJSONApiError();
+            return $this->exportJSONApiError();
         }
 
-        return json_encode($this->toArray());
+        return json_encode($this->exportArray());
     }
 
     protected function convertCsvLine(
@@ -179,16 +180,16 @@ Trait Resource
         )) . $lineEnd;
     }
 
-    public function toCSV(string $separator = "\t", $lineEnd = PHP_EOL) : string
+    public function exportCSV(string $separator = "\t", $lineEnd = PHP_EOL) : string
     {
         if ($this instanceof Exception\ExceptionInterface) {
-            return $this->toJSONApiError();
+            return $this->exportJSONApiError();
         }
 
         $response = '';
-        $data = ($this instanceof \ArrayAccess)
-            ? $this->export()
-            : [$this->export()];
+        $data = ($this instanceof Data\CollectionInterface)
+            ? $this->toArray()
+            : [$this->toArray()];
         $response .= implode($separator, array_keys($data[0])) . $lineEnd;
 
         foreach ($data as $current) {

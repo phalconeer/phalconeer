@@ -6,28 +6,21 @@ use Phalconeer\Dto as This;
 
 trait ConvertedValue
 {
-    public function convertCollection(
-        bool $convertChildren = true,
-        bool $preserveKeys = false
-    )
+    public function convertCollection(bool $preserveKeys = false) : \ArrayObject
     {
         $iterator = $this->getIterator();
-        $result = [];
+        $result = new \ArrayObject();
         while ($iterator->valid()) {
-            if ($preserveKeys) {
-                $result[$iterator->key()] = $iterator->current()->export($convertChildren, $preserveKeys);
-            } else {
-                $result[] = $iterator->current()->export($convertChildren, $preserveKeys);
-            }
+            $result->offsetSet(
+                ($preserveKeys) ? $iterator->key() : null,
+                $iterator->current()->export()
+            );
             $iterator->next();
         }
         return $result;
     }
 
-    public function convertDataInterface(
-        $propertyName,
-        $preserveKeys = false
-    )
+    public function convertDataInterface($propertyName)
     {
         if (!method_exists($this->{$propertyName}, 'export')) {
             throw new This\Exception\ExportFunctionMissingException(
@@ -35,10 +28,7 @@ trait ConvertedValue
                 This\Helper\ExceptionHelper::DTO__MISSING_EXPORT_FUNCTION
             );
         }
-        return $this->{$propertyName}->export(
-            true,
-            $preserveKeys
-        );
+        return $this->{$propertyName}->export();
     }
 
     public function getConvertedValue(

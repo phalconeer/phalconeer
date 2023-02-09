@@ -7,31 +7,28 @@ use Phalcon\Events;
 
 class DispatcherBo
 {
-    protected Mvc\Dispatcher $dispatcher;
-
-    protected Config\Config $config;
-
-    protected function configureDispatcher()
-    {
-        $this->dispatcher->setDefaultNamespace($this->config->application->defaultNamespace);
-        if ($this->config->dispatcher->has('eventListeners')) {
-            $eventsManager = new Events\Manager();
-            foreach ($this->config->dispatcher->eventListeners as $event => $listener) {
-                $eventsManager->attach($event, new $listener);
-            }
-            $this->dispatcher->setEventsManager($eventsManager);
-        }
-    }
-
     public function __construct(
-        Mvc\DispatcherInterface $dispatcher,
-        Config\Config $config
+        protected Mvc\DispatcherInterface $dispatcher,
+        protected Config\Config $config,
+        protected Config\Config $applicationConfig,
     )
     {
         $this->dispatcher = $dispatcher;
         $this->config = $config;
 
         $this->configureDispatcher();
+    }
+
+    protected function configureDispatcher()
+    {
+        $this->dispatcher->setDefaultNamespace($this->applicationConfig->defaultNamespace);
+        if ($this->config->has('eventListeners')) {
+            $eventsManager = new Events\Manager();
+            foreach ($this->config->eventListeners as $event => $listener) {
+                $eventsManager->attach($event, new $listener);
+            }
+            $this->dispatcher->setEventsManager($eventsManager);
+        }
     }
 
     public function getDispatcher() : Mvc\DispatcherInterface

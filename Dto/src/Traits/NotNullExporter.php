@@ -1,6 +1,7 @@
 <?php
 namespace Phalconeer\Dto\Traits;
 
+use Phalconeer\Data;
 use Phalconeer\Dto as This;
 
 trait NotNullExporter
@@ -11,7 +12,7 @@ trait NotNullExporter
         bool $preserveKeys = false
     ) : array
     {
-        if ($this instanceof \ArrayAccess) {
+        if ($this instanceof Data\CollectionInterface) {
             return $this->convertCollection(false, $preserveKeys);
         }
         return array_reduce(

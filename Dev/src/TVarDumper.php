@@ -120,10 +120,21 @@ class TVarDumper
                             'isPersistent'      => $var->isPersistent(),
                             'stats'             => $var->getStats(),
                         ];
-                    //} elseif ($var instanceof Data\ImmutableData) {
-                    //     $members = $var->toArrayCopy();
+                    } elseif ($var instanceof Data\ImmutableData) {
+                        $reflect = new \ReflectionClass(get_class($var));
+                        $members = [];
+                        foreach($reflect->getProperties() as $property){
+                            if (is_callable([$var, $property->name])) {
+                                $members[$property->name] = $var->{$property->name}();
+                            }
+                        }
                     } elseif ($var instanceof Data\ImmutableCollection) {
-                        $members = $var->toArrayCopy(true, true, true);
+                        $iterator = $var->getIterator();
+                        $members = [];
+                        while($iterator->valid()){
+                            $members[] = $iterator->current();
+                            $iterator->next();
+                        }
                     } elseif ($var instanceof \ArrayObject) {
                         $members = $var->getArrayCopy();
                     } elseif ($var instanceof \SplDoublyLinkedList) {

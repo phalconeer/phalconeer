@@ -341,7 +341,7 @@ final class Uri extends Data\ImmutableData implements Psr\Http\Message\UriInterf
         if (false === $parts = \parse_url($uri)) {
             throw new \InvalidArgumentException("Unable to parse URI: $uri");
         }
-        return new static($parts);
+        return new static(new \ArrayObject($parts));
     }
 
     /**

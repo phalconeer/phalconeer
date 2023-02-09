@@ -142,7 +142,7 @@ class CompareValueHelperTest extends UnitTestCase
 
     public function testCompareDataValues()
     {
-        $base = new Test\Mock\Test([
+        $base = new Test\Mock\Test(new \ArrayObject([
             'stringProperty'    => 'This is a string',
             'intProperty'       => 10,
             'floatProperty'     => 1.2342342,
@@ -153,8 +153,8 @@ class CompareValueHelperTest extends UnitTestCase
             'dateTimeObject'    => new DateTime('@0'),
             'nestedObject'      => new Test\Mock\Test(),
             'undocumented'      => '123'
-        ]);
-        $check = new Test\Mock\Test([
+        ]));
+        $check = new Test\Mock\Test(new \ArrayObject([
             'stringProperty'    => 'This is a string',
             'intProperty'       => 10,
             'floatProperty'     => 1.2342342,
@@ -165,14 +165,14 @@ class CompareValueHelperTest extends UnitTestCase
             'dateTimeObject'    => new DateTime('@0'),
             'nestedObject'      => new Test\Mock\Test(),
             'undocumented'      => '123'
-        ]);
+        ]));
         $this->assertEquals(
             true,
             Data\Helper\CompareValueHelper::hasSameData($base, $check),
             'Compare value failed for simple data Objects'
         );
 
-        $check2 = new Test\Mock\Test([]);
+        $check2 = new Test\Mock\Test();
         $this->assertEquals(
             false,
             Data\Helper\CompareValueHelper::hasSameData($base, $check2),

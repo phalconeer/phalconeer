@@ -11,4 +11,8 @@ class TestArrayNotNullExporter extends This\Mock\TestArrayExporter
     protected static array $_properties = [
         'nestedObject'          => TestArrayNotNullExporter::class,
     ];
+
+    protected static array $_exportTransformers = [
+        Dto\Helper\TraitsHelper::EXPORT_METHOD_TO_ARRAY_WITHOUT_NULLS,
+    ];
 }

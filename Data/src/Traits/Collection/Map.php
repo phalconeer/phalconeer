@@ -15,6 +15,6 @@ trait Map
             $iterator->next();
         }
 
-        return new static(null, $mappedData);
+        return new static($mappedData);
     }
 }

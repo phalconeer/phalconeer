@@ -1,15 +1,14 @@
 <?php
 namespace Phalconeer\Dto\Test;
 
-use Test\UnitTestCase;
-use Phalconeer\Data;
+use Test;
 use Phalconeer\Dto\Test as This;
 
-class ArrayExporterTest extends UnitTestCase
+class ArrayExporterTest extends Test\UnitTestCase
 {
     public function testExport()
     {
-        $testData = [
+        $testData = new \ArrayObject([
             'stringProperty'    => 'This is a string',
             'intProperty'       => 10,
             'floatProperty'     => 1.2342342,
@@ -18,16 +17,16 @@ class ArrayExporterTest extends UnitTestCase
             'callableProperty'  => function () {},
             'arrayObject'       => new \ArrayObject(['--', '!!']),
             'dateTimeObject'    => new \DateTime('@0'),
-            'nestedObject'      => [
+            'nestedObject'      => new \ArrayObject([
                 'stringProperty'    => 'This is a nested string',
                 'intProperty'       => 99,
                 'floatProperty'     => 0.000003,
                 'boolProperty'      => false,
                 'arrayProperty'     => [3, 4],
-            ],
+            ]),
             'undocumented'      => '123'
-        ];
-        $testData2 = [
+        ]);
+        $testData2 = new \ArrayObject([
             'stringProperty'    => 'This is a string',
             'intProperty'       => 10,
             'floatProperty'     => 1.2342342,
@@ -36,15 +35,15 @@ class ArrayExporterTest extends UnitTestCase
             'callableProperty'  => function () {},
             'arrayObject'       => new \ArrayObject(['--', '!!']),
             'dateTimeObject'    => new \DateTime('@0'),
-            'nestedObject'      => [
+            'nestedObject'      => new \ArrayObject([
                 'stringProperty'    => 'This is a nested string',
                 'intProperty'       => 99,
                 'floatProperty'     => 0.000003,
                 'boolProperty'      => false,
                 'arrayProperty'     => [3, 4],
-            ],
+            ]),
             'undocumented'      => '123'
-        ];
+        ]);
         $expectedOutput = [
             'stringProperty'    => 'This is a string',
             'intProperty'       => 10,
@@ -132,8 +131,8 @@ class ArrayExporterTest extends UnitTestCase
             'undocumented'      => '123'
         ];
         $dto = new This\Mock\TestArrayExporter($testData);
-        $dtoWithoutParseTypes = new This\Mock\TestArrayExporterWithoutParseTypes($testData);
         $dtoWithoutNull = new This\Mock\TestArrayNotNullExporter($testData);
+        $dtoWithoutParseTypes = new This\Mock\TestArrayExporterWithoutParseTypes($testData);
 
         $this->assertEquals(
             $expectedOutput,
@@ -162,7 +161,7 @@ class ArrayExporterTest extends UnitTestCase
 
     public function testCollectionExport()
     {
-        $testData = [
+        $testData = new \ArrayObject([
           [
             'stringProperty'    => 'This is a string',
             'intProperty'       => 10,
@@ -171,15 +170,15 @@ class ArrayExporterTest extends UnitTestCase
             'arrayProperty'     => ['a', 'b'],
             'undocumented'      => '123'
           ],
-          new This\Mock\TestArrayExporter([
+          new This\Mock\TestArrayExporter(new \ArrayObject([
             'stringProperty'    => 'Another string',
             'intProperty'       => -5,
             'floatProperty'     => 0.00000009,
             'boolProperty'      => false,
             'arrayProperty'     => [5, 88],
             'undocumented'      => 'undocumenTED'
-          ])
-        ];
+          ]))
+        ]);
 
         $expectedOutput = [
           [

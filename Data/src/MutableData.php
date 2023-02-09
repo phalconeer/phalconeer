@@ -60,7 +60,7 @@ abstract class MutableData extends This\ImmutableData
             $valueParsed = This\Helper\ParseValueHelper::parseValue($value, $propertyType);
         } catch (Exception\TypeMismatchException $exception) {
             throw new Exception\TypeMismatchException(
-                'Invalid type, expected: `' . $propertyType . '` or array for [' . $key . '] @' . static::class,
+                'Invalid type, expected: `' . $propertyType . '` or ArrayObject for [' . $key . '] @' . static::class,
                 $exception->getCode() ?? This\Helper\ExceptionHelper::TYPE_MISMATCH,
                 $exception
             );

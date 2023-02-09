@@ -116,9 +116,15 @@ class ParseValueHelper
 
     public static function parseComplexType($value, $type)
     {
+        if (is_null($value)) {
+            return null;
+        }
         if (is_object($value)
                 && is_a($value, $type)) {
             return $value;
+        }
+        if ($value instanceof \ArrayObject) {
+            return new $type($value);
         }
 
         if (interface_exists($type)) {
@@ -126,12 +132,6 @@ class ParseValueHelper
                 'Expected class implementing interface `' . $type . '`, received: ' . ((is_object($value)) ? get_class($value) : gettype($value)),
                 This\Helper\ExceptionHelper::TYPE_MISMATCH
             );
-        }
-        if (is_array($value)) {
-            return new $type($value);
-        }
-        if (is_null($value)) {
-            return null;
         }
 
         if ($type === \DateTime::class) {
@@ -141,8 +141,15 @@ class ParseValueHelper
                 return true;
             }
         }
+    
         throw new Exception\TypeMismatchException(
-            'Expected class `' . $type . '`or array, received: ' . ((is_object($value)) ? get_class($value) : $value),
+            'Expected class `' . $type . '`or ArrayObject, received: ' . (
+                (is_object($value))
+                ? get_class($value)
+                : ((is_array($value))
+                    ? 'array with keys: ' . implode(', ', array_keys($value))
+                    : $value)
+                ),
             This\Helper\ExceptionHelper::TYPE_MISMATCH
         );
     }

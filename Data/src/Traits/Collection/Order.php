@@ -28,7 +28,7 @@ trait Order
             array_keys($order)
         );
 
-        return new static($ordered);
+        return new static(new \ArrayObject($ordered));
     }
 
     public function getSorted(string $sort) : ?self

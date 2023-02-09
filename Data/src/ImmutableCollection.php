@@ -4,19 +4,16 @@ namespace Phalconeer\Data;
 use Phalconeer\Exception;
 use Phalconeer\Data as This;
 
-abstract class ImmutableCollection implements This\DataInterface, \ArrayAccess
+abstract class ImmutableCollection implements This\DataInterface, This\CollectionInterface, \ArrayAccess
 {
     protected string $collectionType;
 
     protected \ArrayObject $collection;
 
-    public function __construct(array $data = null, \ArrayObject $dataObject = null)
+    public function __construct(\ArrayObject $dataObject = null)
     {
         if (is_null($dataObject)) {
-            if (is_null($data)) {
-                $data = [];
-            }
-            $dataObject = new \ArrayObject($data);
+            $dataObject = new \ArrayObject();
         }
         $this->collection = new \ArrayObject();
 
@@ -38,15 +35,15 @@ abstract class ImmutableCollection implements This\DataInterface, \ArrayAccess
     private function parseComplexType($value)
     {
         if (is_array($value)) {
-            return new $this->collectionType($value);
+            return new $this->collectionType(new \ArrayObject($value));
         }
 
         if ($value instanceof \ArrayObject) {
-            return new $this->collectionType(null, $value);
+            return new $this->collectionType($value);
         }
 
         if ($value instanceof \stdClass) {
-            return new $this->collectionType(get_object_vars($value));
+            return new $this->collectionType(new \ArrayObject(get_object_vars($value)));
         }
 
         if (!is_object($value)
