@@ -21,6 +21,10 @@ class ExceptionHelper
 
     const ELASTIC_QUERY_BUILDER__INVALID_CONDITION              = 140200002;
 
+    const ELASTIC_DAO_BASE__INVALID_BROWSER_INSTANCE            = 140300001;
+
+    const ELASTIC_DAO_BASE__INVALID_DATA_OBJECT_TO_SAVE         = 140300002;
+
     const NODE_ERROR_TYPE = 'type';
 
     const NODE_ERROR_REASON = 'reason';

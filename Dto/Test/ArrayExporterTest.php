@@ -2,6 +2,7 @@
 namespace Phalconeer\Dto\Test;
 
 use Test;
+use Phalconeer\Data;
 use Phalconeer\Dto\Test as This;
 
 class ArrayExporterTest extends Test\UnitTestCase
@@ -130,6 +131,30 @@ class ArrayExporterTest extends Test\UnitTestCase
             ],
             'undocumented'      => '123'
         ];
+        $expectedOutputConvertFalse = [
+            'stringProperty'    => 'This is a string',
+            'intProperty'       => 10,
+            'floatProperty'     => 1.2342342,
+            'boolProperty'      => true,
+            'arrayProperty'     => ['a', 'b'],
+            'callableProperty'  => function () {},
+            'arrayObject'       => new \ArrayObject(['--', '!!']),
+            'dateTimeObject'    => new \DateTime('@0'),
+            'nestedObject'      => new This\Mock\TestArrayExporterConvertFalse(new \ArrayObject([
+                'stringProperty'    => 'This is a nested string',
+                'intProperty'       => 99,
+                'floatProperty'     => 0.000003,
+                'boolProperty'      => false,
+                'arrayProperty'     => [3, 4],
+                'callableProperty'  => null,
+                // 'nestedObject'      => null, // These thre commented properties are technically unset as they were not initialised
+                // 'arrayObject'       => null, // They cause the Compare function to fail, as they do not return
+                // 'dateTimeObject'    => null, // Eventhough NotNull exporter was not asked, the export fuinction is not run as the entire obejct is returned
+                'undocumented'      => null //Added because of ParseTypes
+            ])),
+            'undocumented'      => '123' //Added because of ParseTypes
+        ];
+
         $dto = new This\Mock\TestArrayExporter($testData);
         $dtoWithoutNull = new This\Mock\TestArrayNotNullExporter($testData);
         $dtoWithoutParseTypes = new This\Mock\TestArrayExporterWithoutParseTypes($testData);
@@ -156,6 +181,14 @@ class ArrayExporterTest extends Test\UnitTestCase
             $expectedOutput2,
             $dto2->export(),
             'Dto did not use export function'
+        );
+
+        $dtoConvertFalse = new This\Mock\TestArrayExporterConvertFalse($testData);
+
+        $this->assertEquals(
+            $expectedOutputConvertFalse,
+            $dtoConvertFalse->export(),
+            'Array export with convert false did not work'
         );
     }
 

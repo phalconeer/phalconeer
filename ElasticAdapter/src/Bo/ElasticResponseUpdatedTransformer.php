@@ -3,9 +3,8 @@ namespace Phalconeer\ElasticAdapter\Bo;
 
 use Psr;
 use Phalconeer\Browser;
-use Phalconeer\ElasticAdapter as This;
+use Phalconeer\ElasticAdapter\Helper\ElasticResponseHelper as ERH;
 use Phalconeer\Middleware;
-use Phalconeer\Module\Middleware\Dto\TerminateMiddleware;
 
 class ElasticResponseUpdatedTransformer extends Middleware\Bo\DefaultMiddleware implements Browser\ResponseMiddlewareInterface
 {
@@ -14,9 +13,12 @@ class ElasticResponseUpdatedTransformer extends Middleware\Bo\DefaultMiddleware 
     public function handleResponse(Psr\Http\Message\ResponseInterface $response, callable $next) : ?bool
     {
         // This assumes that the response has already been json_decoded
-        if ($response->bodyVariableExists(This\Helper\ElasticResponseHelper::NODE_RESULT)
-            && $response->bodyVariable(This\Helper\ElasticResponseHelper::NODE_RESULT) === This\Helper\ElasticResponseHelper::VALUE_UPDATED) {
-            $next($response, new TerminateMiddleware());
+        /**
+         * @var \Phalconeer\Http\Data\Response $response
+         */
+        if ($response->bodyVariableExists(ERH::NODE_RESULT)
+            && $response->bodyVariable(ERH::NODE_RESULT) === ERH::VALUE_UPDATED) {
+            $next($response, new Middleware\Data\TerminateMiddleware());
             return null;
         }
 

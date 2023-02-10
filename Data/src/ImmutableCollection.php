@@ -4,7 +4,9 @@ namespace Phalconeer\Data;
 use Phalconeer\Exception;
 use Phalconeer\Data as This;
 
-abstract class ImmutableCollection implements This\DataInterface, This\CollectionInterface, \ArrayAccess
+abstract class ImmutableCollection implements This\DataInterface,
+                                                This\CollectionInterface,
+                                                \ArrayAccess
 {
     protected string $collectionType;
 

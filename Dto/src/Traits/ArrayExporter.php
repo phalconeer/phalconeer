@@ -20,23 +20,18 @@ trait ArrayExporter
      */
     public function toArray() : array
     {
-        $convertChildren = isset(static::$_convertChildren)
-            ? static::$_convertChildren
-            : true;
-
-        $preserveKeys = isset(static::$_preserveKeys)
-            ? static::$_preserveKeys
-            : true;
-
         if ($this instanceof Data\CollectionInterface) {
-            return $this->convertCollection($convertChildren, $preserveKeys)->getArrayCopy();
+            return $this->convertCollection(
+                $this->getConvertChildren(),
+                $this->getPreserveKeys()
+            )->getArrayCopy();
         }
         return array_reduce(
             $this->properties(),
-            function (array $aggregator, $propertyName) use ($convertChildren, $preserveKeys)
+            function (array $aggregator, $propertyName)
             {
-                if ($convertChildren) {
-                    $aggregator[$propertyName] = $this->getConvertedValue($propertyName, $preserveKeys);
+                if ($this->getConvertChildren()) {
+                    $aggregator[$propertyName] = $this->getConvertedValue($propertyName, $this->getPreserveKeys());
                 } else {
                     $aggregator[$propertyName] = $this->getValue($propertyName);
                 }

@@ -3,9 +3,9 @@ namespace Phalconeer\Dto\Traits;
 
 use Phalconeer\Dto as This;
 
-trait ArrayObjectExporter
+trait NotNullExporter
 {
-    use This\Traits\ArrayExporter;
+    use This\Traits\ArrayNotNullExporter;
 
     /**
      * Returns an arrayObject representation of the object.
@@ -13,8 +13,8 @@ trait ArrayObjectExporter
      * If copyNullsAsDefaults is false, null values are not exported
      *
      */
-    public function toArrayObject() : \ArrayObject
+    public function toArrayObjectWithoutNulls() : \ArrayObject
     {
-        return new \ArrayObject($this->toArray());
+        return new \ArrayObject($this->toArrayWithoutNulls());
     }
 }

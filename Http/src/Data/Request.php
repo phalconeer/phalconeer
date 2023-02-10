@@ -3,13 +3,15 @@ namespace Phalconeer\Http\Data;
 
 use Phalconeer\Id;
 use Phalconeer\Data;
+use Phalconeer\Dto;
 use Phalconeer\Http as This;
 use Psr;
 
 class Request extends Data\ImmutableData implements Psr\Http\Message\RequestInterface
 {
     use This\Data\Traits\Message,
-        Data\Traits\Data\ParseTypes;
+        Data\Traits\Data\ParseTypes,
+        Dto\Traits\ArrayLoader;
 
     protected string $method = This\Helper\HttpHelper::HTTP_METHOD_GET;
 

@@ -1,31 +1,34 @@
 <?php
 namespace Phalconeer\ElasticAdapter\Bo;
 
-use Psr\Http\Message\ResponseInterface;
-use Phalconeer\Module\Browser\ResponseMiddlewareInterface;
-use Phalconeer\Module\ElasticAdapter\Helper\ElasticResponseHelper;
-use Phalconeer\Module\Middleware\DefaultMiddleware;
+use Psr;
+use Phalconeer\Browser;
+use Phalconeer\ElasticAdapter\Helper\ElasticResponseHelper as ERH;
+use Phalconeer\Middleware;
 
-class ElasticResponseSimpleResultTransformer extends DefaultMiddleware implements ResponseMiddlewareInterface
+class ElasticResponseSimpleResultTransformer extends Middleware\Bo\DefaultMiddleware implements Browser\ResponseMiddlewareInterface
 {
     protected static $handlerName = 'handleResponse';
 
-    protected function handleSimpleresult(ResponseInterface $response)
+    protected function handleSimpleresult(Psr\Http\Message\ResponseInterface $response)
     {
+        /**
+         * @var \Phalconeer\Http\Data\Response $response
+         */
         [
-            ElasticResponseHelper::NODE_HITS_TOTAL => $total,
-            ElasticResponseHelper::NODE_HITS_MAX_SCORE => $maxScore,
-            ElasticResponseHelper::NODE_HITS => $list
-        ] = $response->bodyVariable(ElasticResponseHelper::NODE_HITS);
+            ERH::NODE_HITS_TOTAL => $total,
+            ERH::NODE_HITS_MAX_SCORE => $maxScore,
+            ERH::NODE_HITS => $list
+        ] = $response->bodyVariable(ERH::NODE_HITS);
 
         return $response
             ->withBodyVariables([
-                ElasticResponseHelper::NODE_HITS_TOTAL        => $total[ElasticResponseHelper::NODE_VALUE],
-                ElasticResponseHelper::NODE_HITS_MAX_SCORE    => $maxScore,
-                ElasticResponseHelper::NODE_HITS              => array_map(
+                ERH::NODE_HITS_TOTAL        => $total[ERH::NODE_VALUE],
+                ERH::NODE_HITS_MAX_SCORE    => $maxScore,
+                ERH::NODE_HITS              => array_map(
                     function ($currentElement) {
-                        $return = array_merge($currentElement[ElasticResponseHelper::NODE_HITS_SOURCE], $currentElement);
-                        unset($return[ElasticResponseHelper::NODE_HITS_SOURCE]);
+                        $return = array_merge($currentElement[ERH::NODE_HITS_SOURCE], $currentElement);
+                        unset($return[ERH::NODE_HITS_SOURCE]);
                         return $return;
                     },
                     $list
@@ -33,10 +36,13 @@ class ElasticResponseSimpleResultTransformer extends DefaultMiddleware implement
             ]);
     }
 
-    public function handleResponse(ResponseInterface $response, callable $next) : ?bool
+    public function handleResponse(Psr\Http\Message\ResponseInterface $response, callable $next) : ?bool
     {
         // This assumes that the response has already been json_decoded
-        if ($response->bodyVariableExists(ElasticResponseHelper::NODE_HITS)) {
+        /**
+         * @var \Phalconeer\Http\Data\Response $response
+         */
+        if ($response->bodyVariableExists(ERH::NODE_HITS)) {
             $response = $this->handleSimpleResult($response);
         }
 

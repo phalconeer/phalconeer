@@ -1,8 +1,8 @@
 <?php
-namespace Phalconeer\Modul\ElasticAdapter\Test;
+namespace Phalconeer\ElasticAdapter\Test;
 
-use Phalconeer\Module\ElasticAdapter;
-use Phalconeer\Module\ElasticAdapter\Helper\ElasticQueryHelper as EQH;
+use Phalconeer\ElasticAdapter;
+use Phalconeer\ElasticAdapter\Helper\ElasticQueryHelper as EQH;
 use Test\UnitTestCase;
 
 /**

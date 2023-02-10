@@ -1,13 +1,12 @@
 <?php
 namespace Phalconeer\ElasticAdapter\Bo;
 
-use Psr\Http\Message\ResponseInterface;
-use Phalconeer\Module\Browser\ResponseMiddlewareInterface;
-use Phalconeer\Module\ElasticAdapter\Helper\ElasticResponseHelper;
-use Phalconeer\Module\Middleware\DefaultMiddleware;
-use Phalconeer\Module\Middleware\Dto\TerminateMiddleware;
+use Psr;
+use Phalconeer\Browser;
+use Phalconeer\ElasticAdapter\Helper\ElasticResponseHelper as ERH;
+use Phalconeer\Middleware;
 
-class ElasticResponseAggregateTransformer extends DefaultMiddleware implements ResponseMiddlewareInterface
+class ElasticResponseAggregateTransformer extends Middleware\Bo\DefaultMiddleware implements Browser\ResponseMiddlewareInterface
 {
     protected static $handlerName = 'handleResponse';
 
@@ -19,18 +18,18 @@ class ElasticResponseAggregateTransformer extends DefaultMiddleware implements R
      */
     protected function handleAggregate(array $aggregate)
     {
-        $dataKeys = array_diff(array_keys($aggregate), ElasticResponseHelper::NODE_NOT_AGGREGATE_DEFINITIONS);
+        $dataKeys = array_diff(array_keys($aggregate), ERH::NODE_NOT_AGGREGATE_DEFINITIONS);
         if (empty($dataKeys)) {
             // #1
-            return $aggregate[ElasticResponseHelper::NODE_DOC_COUNT];
+            return $aggregate[ERH::NODE_DOC_COUNT];
         }
 
-        if (array_key_exists(ElasticResponseHelper::NODE_BUCKETS, $aggregate)) {
+        if (array_key_exists(ERH::NODE_BUCKETS, $aggregate)) {
             // #2
             return array_reduce(
-                $aggregate[ElasticResponseHelper::NODE_BUCKETS],
+                $aggregate[ERH::NODE_BUCKETS],
                 function ($result, $currentBucket) {
-                    $result[$currentBucket[ElasticResponseHelper::NODE_KEY]] = $this->handleAggregate($currentBucket);
+                    $result[$currentBucket[ERH::NODE_KEY]] = $this->handleAggregate($currentBucket);
                     return $result;
                 },
                 []
@@ -41,7 +40,7 @@ class ElasticResponseAggregateTransformer extends DefaultMiddleware implements R
         return array_reduce(
             array_keys($aggregate),
             function ($result, $key) use ($aggregate) {
-                if (in_array($key, ElasticResponseHelper::NODE_NOT_AGGREGATE_DEFINITIONS)) {
+                if (in_array($key, ERH::NODE_NOT_AGGREGATE_DEFINITIONS)) {
                     return $result;
                 }
 
@@ -52,12 +51,15 @@ class ElasticResponseAggregateTransformer extends DefaultMiddleware implements R
         );
     }
 
-    public function handleResponse(ResponseInterface $response, callable $next) : ?bool
+    public function handleResponse(Psr\Http\Message\ResponseInterface $response, callable $next) : ?bool
     {
         // This assumes that the response has already been json_decoded
+        /**
+         * @var \Phalconeer\Http\Data\Response $response
+         */
         $result = [];
-        if ($response->bodyVariableExists(ElasticResponseHelper::NODE_AGGS)) {
-            $aggregates = $response->bodyVariable(ElasticResponseHelper::NODE_AGGS);
+        if ($response->bodyVariableExists(ERH::NODE_AGGS)) {
+            $aggregates = $response->bodyVariable(ERH::NODE_AGGS);
             $result = array_reduce(
                 array_keys($aggregates),
                 function ($result, $key) use ($aggregates) {
@@ -68,7 +70,7 @@ class ElasticResponseAggregateTransformer extends DefaultMiddleware implements R
             );
 
             $response = $response->withBodyVariables($result);
-            $next($response, new TerminateMiddleware());
+            $next($response, new Middleware\Data\TerminateMiddleware());
             return null;
         }
 

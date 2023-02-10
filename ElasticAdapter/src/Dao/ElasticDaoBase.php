@@ -1,73 +1,50 @@
 <?php
 namespace Phalconeer\ElasticAdapter\Dao;
 
-use ArrayObject;
-use DateTime;
-use Psr\Http\Message\ResponseInterface;
+use Psr;
 use Phalcon\Config;
-use Phalconeer\Module\Dao\DaoReadAndWriteInterface;
-use Phalconeer\Module\Dao\DaoReadInterface;
-use Phalconeer\Module\Dao\DaoWriteInterface;
-use Phalconeer\Module\Dao\Helper\DaoHelper;
-use Phalconeer\Module\Dto\ImmutableObject;
-use Phalconeer\Module\Browser\Bo\BrowserBo;
-use Phalconeer\Module\ElasticAdapter\Exception\InvalidBrowserInstanceException;
-use Phalconeer\Module\ElasticAdapter\Helper\ElasticQueryBodyHelper;
-use Phalconeer\Module\ElasticAdapter\Helper\ElasticQueryHelper;
-use Phalconeer\Module\ElasticAdapter\Helper\ElasticQueryRouteHelper;
-use Phalconeer\Module\ElasticAdapter\Helper\ElasticResponseHelper;
-use Phalconeer\Module\Http\Dto\Request;
-use Phalconeer\Module\Http\Dto\Uri;
-use Phalconeer\Module\Http\Helper\HttpHelper;
-use Phalconeer\Module\ElasticAdapter\Dto\ElasticBase;
+use Phalconeer\Dao;
+use Phalconeer\Data;
+use Phalconeer\Browser;
+use Phalconeer\ElasticAdapter as This;
+use Phalconeer\ElasticAdapter\Helper\ElasticQueryBodyHelper as EQBH;
+use Phalconeer\ElasticAdapter\Helper\ElasticQueryHelper as EQH;
+use Phalconeer\ElasticAdapter\Helper\ElasticQueryRouteHelper as EQRH;
+use Phalconeer\ElasticAdapter\Helper\ElasticResponseHelper as ERH;
+use Phalconeer\Http;
 
-class ElasticDaoBase implements DaoReadInterface, DaoWriteInterface, DaoReadAndWriteInterface
+class ElasticDaoBase implements Dao\DaoReadAndWriteInterface
 {
     const MAX_DELETE_ONCE = 1000;
 
-    /**
-     * @var \Phalconeer\Module\Browser\Bo\BrowserBo
-     */
-    protected $browser;
+    protected Browser\Bo\BrowserBo $browser;
 
-    /**
-     * @var \Phalcon\Config
-     */
-    protected $config;
-
-    /**
-     *@var Phalconeer\Module\Http\Dto\Uri
-     */
-    protected $defaultUri;
+    protected Http\Data\Uri $defaultUri;
 
     /**
      * Index name. If index is date segmented, it serves as a prefix;
-     * @var string
      */
-    protected $indexName;
+    protected string $indexName = '';
 
     /**
      * Format to use when generating the various date based index names.
      * Help on what format strings mean: http://php.net/manual/en/dateinterval.format.php
-     * @var string
      */
-    protected $indexSegmentFormat = 'Y.m';
+    protected string $indexSegmentFormat = 'Y.m';
 
-    /**
-     * The constructor.
-     *
-     * @param array $connections
-     */
     public function __construct(
-        Config $config
+        protected Config\Config $config
     )
     {
-        if (!$config->browser instanceof BrowserBo) {
-            throw new InvalidBrowserInstanceException(static::class);
+        if (!$config->browser instanceof Browser\Bo\BrowserBo) {
+            throw new This\Exception\InvalidBrowserInstanceException(
+                static::class,
+                This\Helper\ExceptionHelper::ELASTIC_DAO_BASE__INVALID_BROWSER_INSTANCE
+            );
         }
         $this->browser = $config->browser;
         $this->config = $config;
-        $this->defaultUri = (new Uri)
+        $this->defaultUri = (new Http\Data\Uri)
             ->withScheme($this->config->protocol)
             ->withHost($this->config->host)
             ->withPort($this->config->port);
@@ -78,10 +55,8 @@ class ElasticDaoBase implements DaoReadInterface, DaoWriteInterface, DaoReadAndW
 
     /**
      * Generates a dateSegmented index name.
-     * @param \DateTime $date
-     * @return string
      */
-    public function createIndexName(DateTime $date = null)
+    public function createIndexName(\DateTime $date = null) : string
     {
         if (strpos($this->indexName, '*') === false) {
             return $this->indexName;
@@ -101,7 +76,7 @@ class ElasticDaoBase implements DaoReadInterface, DaoWriteInterface, DaoReadAndW
     public function getRecord(
         array $whereConditions = [],
         bool $getSequenceInformation = true
-    ) : ?ArrayObject
+    ) : ?\ArrayObject
     {
         $result = $this->getRecords(
             $whereConditions,
@@ -111,7 +86,7 @@ class ElasticDaoBase implements DaoReadInterface, DaoWriteInterface, DaoReadAndW
             $getSequenceInformation
         );
 
-        return new ArrayObject($result->offsetGet('hits')[0]);
+        return new \ArrayObject($result->offsetGet('hits')[0]);
     }
 
     public function getRecords(
@@ -120,40 +95,43 @@ class ElasticDaoBase implements DaoReadInterface, DaoWriteInterface, DaoReadAndW
         int $offset = 0,
         string $orderString = '',
         bool $getSequenceInformation = false
-    ) : ?ArrayObject
+    ) : ?\ArrayObject
     {
         $url = $this->defaultUri->withPath($this->indexName . '/_search')
-                ->withQuery(ElasticQueryRouteHelper::VAR_IGNORE_UNAVAILBLE . '=true');
+                ->withQuery(EQRH::VAR_IGNORE_UNAVAILBLE . '=true');
 
-        $sort = ElasticQueryHelper::buildOrderClause($orderString);
-        $query = ElasticQueryHelper::buildQuery($whereConditions);
+        $sort = EQH::buildOrderClause($orderString);
+        $query = EQH::buildQuery($whereConditions);
 
         $bodyVariables = [
-                ElasticQueryBodyHelper::NODE_FROM     => $offset,
-                ElasticQueryBodyHelper::NODE_SIZE     => $limit,
+                EQBH::NODE_FROM     => $offset,
+                EQBH::NODE_SIZE     => $limit,
             ];
         if (!empty($sort)) {
-            $bodyVariables[ElasticQueryBodyHelper::NODE_SORT] = $sort;
+            $bodyVariables[EQBH::NODE_SORT] = $sort;
         }
         if (!empty($query)) {
-            $bodyVariables[ElasticQueryBodyHelper::NODE_QUERY] = $query;
+            $bodyVariables[EQBH::NODE_QUERY] = $query;
         }
         if ($getSequenceInformation) {
-            $bodyVariables[ElasticQueryBodyHelper::NODE_SEQ_NO_PRIMARY_TERM] = true;
+            $bodyVariables[EQBH::NODE_SEQ_NO_PRIMARY_TERM] = true;
         }
 
-        $request = new Request([
-            'method'            => HttpHelper::HTTP_METHOD_POST,
+        $request = Http\Data\Request::fromArray([
+            'method'            => Http\Helper\HttpHelper::HTTP_METHOD_POST,
             'url'               => $url,
             'bodyVariables'     => $bodyVariables
         ]);
 
         $response = $this->browser->call($request);
+        /**
+         * @var \Phalconeer\Http\Data\Response $response
+         */
 // echo $limit . PHP_EOL;
 // echo \Phalconeer\Helper\TVarDumper::dump($request);
 // echo \Phalconeer\Helper\TVarDumper::dump($response);
 
-        return new ArrayObject($response->bodyVariables());
+        return new \ArrayObject($response->bodyVariables());
     }
 
     public function getCount(array $whereConditions = []) : int
@@ -163,10 +141,10 @@ class ElasticDaoBase implements DaoReadInterface, DaoWriteInterface, DaoReadAndW
             0
         );
 
-        return $data->offsetGet(ElasticResponseHelper::NODE_HITS_TOTAL);
+        return $data->offsetGet(ERH::NODE_HITS_TOTAL);
     }
 
-    protected function getUrl(ElasticBase $elasticData, string $uri) : Uri
+    protected function getUrl(This\Data\ElasticBase $elasticData, string $uri) : Http\Data\Uri
     {
         return $this->defaultUri->withPath(
             $this->createIndexName($elasticData->getIndexDateValue()) . 
@@ -174,46 +152,58 @@ class ElasticDaoBase implements DaoReadInterface, DaoWriteInterface, DaoReadAndW
         );
     }
 
-    protected function updateDataWithResult(ElasticBase $elasticData, ResponseInterface $response) : ElasticBase
+    protected function updateDataWithResult(This\Data\ElasticBase $elasticData, Psr\Http\Message\ResponseInterface $response) : This\Data\ElasticBase
     {
-        $result = $response->bodyVariable(ElasticResponseHelper::NODE_RESULT);
+        /**
+         * @var \Phalconeer\Http\Data\Response $response
+         */
+        $result = $response->bodyVariable(ERH::NODE_RESULT);
 
     // echo \Phalconeer\Helper\TVarDumper::dump($result);die();
 
         switch ($result) {
-            case ElasticResponseHelper::VALUE_CREATED:
-                return $elasticData->setId($response->bodyVariable(ElasticResponseHelper::NODE_ID))
-                    ->setIndex($response->bodyVariable(ElasticResponseHelper::NODE_INDEX));
-            case ElasticResponseHelper::VALUE_UPDATED:
-                return $elasticData->setIndex($response->bodyVariable(ElasticResponseHelper::NODE_INDEX));
+            case ERH::VALUE_CREATED:
+                return $elasticData->setId($response->bodyVariable(ERH::NODE_ID))
+                    ->setIndex($response->bodyVariable(ERH::NODE_INDEX));
+            case ERH::VALUE_UPDATED:
+                return $elasticData->setIndex($response->bodyVariable(ERH::NODE_INDEX));
         }
 
         return $elasticData;
     }
 
     public function save(
-        ImmutableObject $data,
+        Data\DataInterface $data,
         $forceInsert = false,
-        $insertMode = DaoHelper::INSERT_MODE_NORMAL,
+        $insertMode = Dao\Helper\DaoHelper::INSERT_MODE_NORMAL,
         $blockOperationOnWrongSequence = false
-    ) : ?ImmutableObject
+    ) : ?Data\ImmutableData
     {
+        if (!$data instanceof This\Data\ElasticBase) {
+            throw new This\Exception\InvalidDataObjectException(
+                'Expected ElasticBase received: ' . get_class($data),
+                This\Helper\ExceptionHelper::ELASTIC_DAO_BASE__INVALID_DATA_OBJECT_TO_SAVE
+            );
+        }
+        /**
+         * @var \Phalconeer\ElasticAdapter\Data\ElasticBase $data
+         */
         $newRecord = !$data->isStored() || $forceInsert;
 
         $primaryKeyValue = $data->getPrimaryKeyValue();
-        [$method, $uri] = ElasticQueryRouteHelper::generateIndexUri($newRecord, implode('-', $primaryKeyValue));
+        [$method, $uri] = EQRH::generateIndexUri($newRecord, implode('-', $primaryKeyValue));
 
         $url = $this->getUrl($data, $uri);
         if ($blockOperationOnWrongSequence
             && !is_null($data->sequenceNumber())
             && !is_null($data->primaryTerm())) {
-            $url = $url->withQueryVariable(ElasticQueryRouteHelper::VAR_IF_SEQ_NO, $data->sequenceNumber())
-                ->withQueryVariable(ElasticQueryRouteHelper::VAR_IF_PRIMARY_TERM, $data->primaryTerm());
+            $url = $url->withQueryVariable(EQRH::VAR_IF_SEQ_NO, $data->sequenceNumber())
+                ->withQueryVariable(EQRH::VAR_IF_PRIMARY_TERM, $data->primaryTerm());
         }
 
         $masked = clone($data);
         $masked->setExlcudeMask(['id', 'index', 'sequenceNumber', 'primaryTerm']);
-        $request = new Request([
+        $request = Http\Data\Request::fromArray([
             'method'            => $method,
             'url'               => $url,
             'bodyVariables'     => $masked->toArrayCopy(true, false)
@@ -230,24 +220,26 @@ class ElasticDaoBase implements DaoReadInterface, DaoWriteInterface, DaoReadAndW
         int $sequenceNumber = null
     ) : bool
     {
-        $url = $this->defaultUri->withPath($this->indexName . '/' . ElasticQueryRouteHelper::URI_DELETE_BY_QUERY);
+        $url = $this->defaultUri->withPath($this->indexName . '/' . EQRH::URI_DELETE_BY_QUERY);
         if (!is_null($primaryTerm)
             && !is_null($sequenceNumber)) {
-            $url = $url->withQueryVariable(ElasticQueryRouteHelper::VAR_IF_SEQ_NO, $sequenceNumber)
-                ->withQueryVariable(ElasticQueryRouteHelper::VAR_IF_PRIMARY_TERM, $primaryTerm);
+            $url = $url->withQueryVariable(EQRH::VAR_IF_SEQ_NO, $sequenceNumber)
+                ->withQueryVariable(EQRH::VAR_IF_PRIMARY_TERM, $primaryTerm);
         }
 
 
-        $request = new Request([
-            'method'            => HttpHelper::HTTP_METHOD_POST,
+        $request = Http\Data\Request::fromArray([
+            'method'            => Http\Helper\HttpHelper::HTTP_METHOD_POST,
             'url'               => $url,
             'bodyVariables'     => [
-                ElasticQueryBodyHelper::NODE_QUERY    => ElasticQueryHelper::buildQuery($whereConditions)
+                EQBH::NODE_QUERY    => EQH::buildQuery($whereConditions)
             ]
         ]);
 
         $response = $this->browser->call($request);
-
+        /**
+         * @var \Phalconeer\Http\Data\Response $response
+         */
         $total = $response->bodyVariable('total');
         $deleted = $response->bodyVariable('deleted');
 

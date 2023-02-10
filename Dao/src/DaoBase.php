@@ -2,7 +2,7 @@
 namespace Phalconeer\Dao;
 
 use Phalcon\Db;
-use Phalconeer\Module\Dao as This;
+use Phalconeer\Dao as This;
 
 abstract class DaoBase
 {

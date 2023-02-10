@@ -4,14 +4,14 @@ namespace Phalconeer\Data;
 use Phalconeer\Data as This;
 use Phalconeer\Exception;
 
-abstract class ImmutableData implements This\DataInterface
+abstract class ImmutableData implements This\DataInterface,
+                                        This\PrimaryKeyInterface,
+                                        this\StorableInterface
 {
     /**
      * List of all the protected fields which do not contain data
      */
     protected static array $_internalProperties = [
-        '_internalProperties',
-        '_properties',
         '_propertiesCache',
         '_dirty',
         '_stored'
@@ -48,7 +48,6 @@ abstract class ImmutableData implements This\DataInterface
      */
     public function __construct(\ArrayObject $inputObject = null)
     {
-
         if (is_null($inputObject)) {
             $inputObject = new \ArrayObject();
         }

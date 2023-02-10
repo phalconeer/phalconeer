@@ -1,15 +1,14 @@
 <?php
 namespace Phalconeer\ElasticAdapter\Data;
 
-use ArrayObject;
 use Phalconeer\Data;
-use DateTime;
+use Phalconeer\Dto;
 use Phalconeer\Data\Helper\ParseValueHelper as PVH;
 
 class ElasticBase extends Data\ImmutableData
 {
-    use Data\Traits\Data\ParseTypes,
-        MaskableTrait;
+    use Dto\Traits\AliasLoader,
+        Dto\Traits\AliasExporter;
 
     protected static array $_internalProperties = [
         '_indexDateField',
@@ -22,11 +21,21 @@ class ElasticBase extends Data\ImmutableData
         'primaryTerm'           => PVH::TYPE_INT,
     ];
 
-    protected static array $_keyAliases = [
-        'id'                    => '_id',
-        'index'                 => '_index',
-        'sequenceNumber'        => '_seq_no',
-        'primaryTerm'           => '_primary_term',
+    protected static array $_loadAliases = [
+        '_id'                   => 'id',
+        '_index'                => 'index',
+        '_seq_no'               => 'sequenceNumber',
+        '_primary_term'         => 'primaryTerm',
+    ];
+
+    protected static array $_exportAliases = [
+        'index'                 => null,
+        'sequenceNumber'        => null,
+        'primaryTerm'           => null,
+    ];
+
+    protected static array $_loadTransformers = [
+        Dto\Helper\TraitsHelper::LOADER_METHOD_ALIAS,
     ];
 
     protected ?string $_indexDateField;
@@ -35,36 +44,18 @@ class ElasticBase extends Data\ImmutableData
 
     protected string $index;
 
-    protected int $sequenceNumber;
-
     /**
      * Where the document is stored, or to be stored.
      */
     protected int $primaryTerm;
 
-    /**
-     * Any additional data formatting required for the obejct can be included here.
-     *
-     * @param \ArrayObject $input
-     * @return \ArrayObject
-     */
-    protected function convertData(ArrayObject $inputObject) : ArrayObject 
-    {
-        foreach (static::getKeyAliases() as $newField => $oldField) {
-            if ($inputObject->offsetExists($oldField)) {
-                $inputObject->offsetSet($newField, $inputObject->offsetGet($oldField));
-                $inputObject->offsetUnset($oldField);
-            }
-        }
+    protected int $sequenceNumber;
 
-        return $inputObject;
-    }
-
-    public function getIndexDateValue() : ?DateTime
+    public function getIndexDateValue() : ?\DateTime
     {
         if (is_null($this->_indexDateField)
             || !array_key_exists($this->_indexDateField, $this->_propertiesCache)
-            || !$this->{$this->_indexDateField} instanceof DateTime) {
+            || !$this->{$this->_indexDateField} instanceof \DateTime) {
             return null;
         }
 
@@ -81,13 +72,23 @@ class ElasticBase extends Data\ImmutableData
         return $this->getValue('id');
     }
 
+    public function primaryTerm() : ?int
+    {
+        return $this->getValue('primaryTerm');
+    }
+
+    public function sequenceNumber() : ?int
+    {
+        return $this->getValue('sequenceNumber');
+    }
+
     public function setId(string $id) : self
     {
-        return $this->setKeyValue('id', $id);
+        return $this->setValueByKey('id', $id);
     }
 
     public function setIndex(string $index) : self
     {
-        return $this->setKeyValue('index', $index);
+        return $this->setValueByKey('index', $index);
     }
 }

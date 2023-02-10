@@ -1,18 +1,21 @@
 <?php
 namespace Phalconeer\ElasticAdapter\Bo;
 
-use Psr\Http\Message;
-use Phalconeer\Module\Browser;
-use Phalconeer\Module\ElasticAdapter as This;
-use Phalconeer\Module\Middleware;
+use Psr;
+use Phalconeer\Browser;
+use Phalconeer\ElasticAdapter as This;
+use Phalconeer\Middleware;
 
-class ElasticResponseErrorTransformer extends Middleware\DefaultMiddleware implements Browser\ResponseMiddlewareInterface
+class ElasticResponseErrorTransformer extends Middleware\Bo\DefaultMiddleware implements Browser\ResponseMiddlewareInterface
 {
     protected static $handlerName = 'handleResponse';
 
-    public function handleResponse(Message\ResponseInterface $response, callable $next) : ?bool
+    public function handleResponse(Psr\Http\Message\ResponseInterface $response, callable $next) : ?bool
     {
         // This assumes that the response has already been json_decoded
+        /**
+         * @var \Phalconeer\Http\Data\Response $response
+         */
         if ($response->bodyVariableExists(This\Helper\ElasticResponseHelper::NODE_ERROR)) {
             This\Helper\ExceptionHelper::handleException($response->bodyVariable(This\Helper\ElasticResponseHelper::NODE_ERROR));
         }
