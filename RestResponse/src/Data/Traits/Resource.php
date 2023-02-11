@@ -8,7 +8,7 @@ use Phalconeer\RestResponse as This;
 
 Trait Resource
 {
-    use Dto\Traits\ArrayExporter;
+    use Dto\Traits\ArrayObjectExporter;
 
     protected \ArrayObject $meta;
 
@@ -30,6 +30,19 @@ Trait Resource
     {
         $className = str_replace('Resource', '', get_called_class());
         return strtolower(preg_replace('/([A-Z])/', '-\\1', lcfirst(substr($className, strrpos($className, '\\') + 1))));
+    }
+
+    protected function getResourceContents() : \ArrayObject
+    {
+        $export = null;
+        if ($this instanceof Dto\DtoExporterInterface) {
+            $export = $this->export();
+        }
+        if (!$export instanceof \ArrayObject) {
+            // Fallback in case exportger is misconfigured
+            $export = $this->toArrayObject();
+        }
+        return $export;
     }
 
     public function convertTo(string $format) : string
@@ -88,7 +101,7 @@ Trait Resource
     {
         return json_encode([
             'errors'    => [
-                $this->toArray()
+                $this->getResourceContents()->getArrayCopy()
             ]
         ]);
     }
@@ -105,7 +118,7 @@ Trait Resource
             $reponse['data'][] = [
                 'type'          => $resourceType,
                 'id'            => implode('-', $current->getPrimaryKeyValue()),
-                'attributes'    => $current->toArray()
+                'attributes'    => $this->getResourceContents()->getArrayCopy()
             ];
             $iterator->next();
         }
@@ -120,15 +133,19 @@ Trait Resource
 
     protected function dataToJSONApi() : array
     {
-        $data = $this->toArray();
-        unset($data['links']);
-        unset($data['meta']);
+        $data = $this->getResourceContents();
+        if ($data->offsetExists('links')) {
+            $data->offsetUnset('links');
+        }
+        if ($data->offsetExists('meta')) {
+            $data->offsetUnset('meta');
+        }
 
         return [
             'data'    => [
                 'type'  => $this->getResourceType(),
                 'id'    => implode('-', $this->getPrimaryKeyValue()),
-                'attributes'    => $data
+                'attributes'    => $data->getArrayCopy()
             ]
         ];
     }
@@ -150,11 +167,12 @@ Trait Resource
     }
 
     protected function convertCsvLine(
-        array $line,
+        \ArrayObject $line,
         string $separator = "\t",
         $lineEnd = PHP_EOL
     ) : string
     {
+        $line = $line->getArrayCopy();
         return implode($separator, array_map(
             function ($value) use ($separator) {
                 if (empty($value)) {
@@ -185,17 +203,24 @@ Trait Resource
         if ($this instanceof Exception\ExceptionInterface) {
             return $this->exportJSONApiError();
         }
-
+        $data = $this->getResourceContents();
         $response = '';
         $data = ($this instanceof Data\CollectionInterface)
-            ? $this->toArray()
-            : [$this->toArray()];
-        $response .= implode($separator, array_keys($data[0])) . $lineEnd;
+            ? $data
+            : new \ArrayObject([$data]);
+        $response .= implode($separator, array_keys($data->offsetGet(0)->getArrayCopy())) . $lineEnd;
 
-        foreach ($data as $current) {
-            unset($current['links']);
-            unset($current['meta']);
+        $iterator = $data->getIterator();
+        while ($iterator->valid()) {
+            $current = $iterator->current();
+            if ($current->offsetExists('links')) {
+                $current->offsetUnset('links');
+            }
+            if ($current->offsetExists('meta')) {
+                $current->offsetUnset('meta');
+            }
             $response .= $this->convertCsvLine($current, $separator, $lineEnd);
+            $iterator->next();
         }
         return $response;
     }

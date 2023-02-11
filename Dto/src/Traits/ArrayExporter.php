@@ -6,11 +6,7 @@ use Phalconeer\Dto as This;
 
 trait ArrayExporter
 {
-    use This\Traits\ConvertedValue;
-
-    // protected bool $_convertChildren = true;
-
-    // protected bool $_preserveKeys = false;
+    use This\Traits\ArrayObjectExporter;
 
     /**
      * Returns an array representation of the object.
@@ -20,24 +16,6 @@ trait ArrayExporter
      */
     public function toArray() : array
     {
-        if ($this instanceof Data\CollectionInterface) {
-            return $this->convertCollection(
-                $this->getConvertChildren(),
-                $this->getPreserveKeys()
-            )->getArrayCopy();
-        }
-        return array_reduce(
-            $this->properties(),
-            function (array $aggregator, $propertyName)
-            {
-                if ($this->getConvertChildren()) {
-                    $aggregator[$propertyName] = $this->getConvertedValue($propertyName, $this->getPreserveKeys());
-                } else {
-                    $aggregator[$propertyName] = $this->getValue($propertyName);
-                }
-                return $aggregator;
-            },
-            []
-        );
+        return $this->toArrayObject()->getArrayCopy();
     }
 }

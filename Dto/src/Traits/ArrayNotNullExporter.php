@@ -6,7 +6,7 @@ use Phalconeer\Dto as This;
 
 trait ArrayNotNullExporter
 {
-    use This\Traits\ConvertedValue;
+    use This\Traits\ArrayObjectNotNullExporter;
 
     /**
      * Returns an array representation of the object.
@@ -16,22 +16,6 @@ trait ArrayNotNullExporter
      */
     public function toArrayWithoutNulls() : array
     {
-        return array_reduce(
-            $this->properties(),
-            function (array $aggregator, $propertyName)
-            {
-                if (!isset($this->{$propertyName})
-                    || is_null($this->{$propertyName})) {
-                    return $aggregator;
-                }
-                if ($this->getConvertChildren()) {
-                    $aggregator[$propertyName] = $this->getConvertedValue($propertyName, $this->getPreserveKeys());
-                } else {
-                    $aggregator[$propertyName] = $this->getValue($propertyName);
-                }
-                return $aggregator;
-            },
-            []
-        );
+        return $this->toArrayObjectWithoutNulls()->getArrayCopy();
     }
 }

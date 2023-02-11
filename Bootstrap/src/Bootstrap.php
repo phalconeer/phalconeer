@@ -19,11 +19,6 @@ use Phalcon\Support;
 abstract class Bootstrap
 {
     /**
-     * The dependency injector.
-     */
-    protected Di\DiInterface $di;
-
-    /**
      * List of options supplied for the Bootstrap to initialize the application
      */
     protected array $options = [];
@@ -34,10 +29,15 @@ abstract class Bootstrap
     protected Config\Config $config;
 
     /**
+     * Keeps a list of initiated modules to prevent circular dependencies
+     */
+    protected array $modulesInitiated = [];
+
+    /**
      * Constructor.
      *
      */
-    public function __construct(Di\DiInterface $di)
+    public function __construct(protected Di\DiInterface $di)
     {
         // Prepend all additional autoloaders as this will not work on
         // normal namespaces without the /src directory
@@ -48,7 +48,6 @@ abstract class Bootstrap
 
         //     $debug->listen();
         // }
-        $this->di = $di;
     }
 
     public function autoloader($class)
@@ -136,13 +135,13 @@ abstract class Bootstrap
     /**
      * Tries to load a Bootstrap module.
      */
-    protected function loadService(string $moduleInitiator)
+    public function loadService(string $moduleInitiator)
     {
         $this->addNamespaceToLoader($moduleInitiator);
         if (!class_exists($moduleInitiator)) {
             throw new Exception\NotFound\ClassNotFoundException($moduleInitiator, Exception\Helper\ExceptionHelper::CLASS_NOT_FOUND);
         }
-        (new $moduleInitiator($this->di, $this->config))->injectModule();
+        (new $moduleInitiator($this->di, $this->config, $this))->injectModule();
     }
 
     /**

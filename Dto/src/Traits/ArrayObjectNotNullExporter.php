@@ -1,11 +1,12 @@
 <?php
 namespace Phalconeer\Dto\Traits;
 
+use Phalconeer\Data;
 use Phalconeer\Dto as This;
 
-trait NotNullExporter
+trait ArrayObjectNotNullExporter
 {
-    use This\Traits\ArrayNotNullExporter;
+    use This\Traits\ConvertedValue;
 
     /**
      * Returns an arrayObject representation of the object.
@@ -15,6 +16,34 @@ trait NotNullExporter
      */
     public function toArrayObjectWithoutNulls() : \ArrayObject
     {
-        return new \ArrayObject($this->toArrayWithoutNulls());
+        if ($this instanceof Data\CollectionInterface) {
+            return $this->convertCollection(
+                $this->getConvertChildren(),
+                $this->getPreserveKeys()
+            );
+        }
+        $result = new \ArrayObject();
+        array_map(
+            function ($propertyName) use ($result)
+            {
+                if (!isset($this->{$propertyName})
+                    || is_null($this->{$propertyName})) {
+                    return;
+                }
+                if ($this->getConvertChildren()) {
+                    $result->offsetSet(
+                        $propertyName,
+                        $this->getConvertedValue($propertyName, $this->getPreserveKeys())
+                    );
+                } else {
+                    $result->offsetSet(
+                        $propertyName,
+                        $this->getValue($propertyName)
+                    );
+                }
+            },
+            $this->properties()
+        );
+        return $result;
     }
 }

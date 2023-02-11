@@ -26,25 +26,7 @@ class ArrayObjectExporterTest extends Test\UnitTestCase
             ]),
             'undocumented'      => '123'
         ]);
-        $testData2 = new \ArrayObject([
-            'stringProperty'    => 'This is a string',
-            'intProperty'       => 10,
-            'floatProperty'     => 1.2342342,
-            'boolProperty'      => true,
-            'arrayProperty'     => ['a', 'b'],
-            'callableProperty'  => function () {},
-            'arrayObject'       => new \ArrayObject(['--', '!!']),
-            'dateTimeObject'    => new \DateTime('@0'),
-            'nestedObject'      => new \ArrayObject([
-                'stringProperty'    => 'This is a nested string',
-                'intProperty'       => 99,
-                'floatProperty'     => 0.000003,
-                'boolProperty'      => false,
-                'arrayProperty'     => [3, 4],
-            ]),
-            'undocumented'      => '123'
-        ]);
-        $expectedOutput = [
+        $expectedOutput = new \ArrayObject([
             'stringProperty'    => 'This is a string',
             'intProperty'       => 10,
             'floatProperty'     => 1.2342342,
@@ -53,7 +35,7 @@ class ArrayObjectExporterTest extends Test\UnitTestCase
             'callableProperty'  => function () {},
             'arrayObject'       => ['--', '!!'],
             'dateTimeObject'    => '1970-01-01T00:00:00+00:00',
-            'nestedObject'      => [
+            'nestedObject'      => new \ArrayObject([
                 'stringProperty'    => 'This is a nested string',
                 'intProperty'       => 99,
                 'floatProperty'     => 0.000003,
@@ -64,10 +46,10 @@ class ArrayObjectExporterTest extends Test\UnitTestCase
                 'arrayObject'       => null,
                 'dateTimeObject'    => null,
                 'undocumented'      => null //Added because of ParseTypes
-            ],
+            ]),
             'undocumented'      => '123' //Added because of ParseTypes
-        ];
-        $expectedOutputWithoutParseTypes = [
+        ]);
+        $expectedOutputWithoutParseTypes = new \ArrayObject([
             'stringProperty'    => 'This is a string',
             'intProperty'       => 10,
             'floatProperty'     => 1.2342342,
@@ -76,7 +58,7 @@ class ArrayObjectExporterTest extends Test\UnitTestCase
             'callableProperty'  => function () {},
             'arrayObject'       => ['--', '!!'],
             'dateTimeObject'    => '1970-01-01T00:00:00+00:00',
-            'nestedObject'      => [
+            'nestedObject'      => new \ArrayObject([
                 'stringProperty'    => 'This is a nested string',
                 'intProperty'       => 99,
                 'floatProperty'     => 0.000003,
@@ -86,9 +68,9 @@ class ArrayObjectExporterTest extends Test\UnitTestCase
                 'nestedObject'      => null,
                 'arrayObject'       => null,
                 'dateTimeObject'    => null,
-            ],
-        ];
-        $expectedOutputWithoutNull = [
+            ]),
+        ]);
+        $expectedOutputWithoutNull = new \ArrayObject([
             'stringProperty'    => 'This is a string',
             'intProperty'       => 10,
             'floatProperty'     => 1.2342342,
@@ -97,42 +79,19 @@ class ArrayObjectExporterTest extends Test\UnitTestCase
             'callableProperty'  => function () {},
             'arrayObject'       => ['--', '!!'],
             'dateTimeObject'    => '1970-01-01T00:00:00+00:00',
-            'nestedObject'      => [
+            'nestedObject'      => new \ArrayObject([
                 'stringProperty'    => 'This is a nested string',
                 'intProperty'       => 99,
                 'floatProperty'     => 0.000003,
                 'boolProperty'      => false,
                 'arrayProperty'     => [3, 4],
-            ],
+            ]),
             'undocumented'      => '123' //Added because of ParseTypes
-        ];
+        ]);
 
-        $expectedOutput2 = [
-            'stringProperty'    => 'This is the exported value',
-            'intProperty'       => 10,
-            'floatProperty'     => 1.2342342,
-            'boolProperty'      => true,
-            'arrayProperty'     => ['a', 'b'],
-            'callableProperty'  => function () {},
-            'arrayObject'       => ['--', '!!'],
-            'dateTimeObject'    => '1970-01-01T00:00:00+00:00',
-            'nestedObject'      => [
-                'stringProperty'    => 'This is the exported value',
-                'intProperty'       => 99,
-                'floatProperty'     => 0.000003,
-                'boolProperty'      => false,
-                'arrayProperty'     => [3, 4],
-                'callableProperty'  => null,
-                'nestedObject'      => null,
-                'arrayObject'       => null,
-                'dateTimeObject'    => null,
-                'undocumented'      => null
-            ],
-            'undocumented'      => '123'
-        ];
-        $dto = new This\Mock\TestArrayExporter($testData);
-        $dtoWithoutNull = new This\Mock\TestArrayNotNullExporter($testData);
-        $dtoWithoutParseTypes = new This\Mock\TestArrayExporterWithoutParseTypes($testData);
+        $dto = new This\Mock\TestArrayObjectExporter($testData);
+        $dtoWithoutNull = new This\Mock\TestArrayObjectNotNullExporter($testData);
+        $dtoWithoutParseTypes = new This\Mock\TestArrayObjectExporterWithoutParseTypes($testData);
 
         $this->assertEquals(
             $expectedOutput,
@@ -149,14 +108,6 @@ class ArrayObjectExporterTest extends Test\UnitTestCase
             $dtoWithoutParseTypes->export(),
             'Dto was not able to transform object back to original shape'
         );
-
-        $dto2 = new This\Mock\TestArrayExporterWithExportFunction($testData2);
-
-        $this->assertEquals(
-            $expectedOutput2,
-            $dto2->export(),
-            'Dto did not use export function'
-        );
     }
 
     public function testCollectionExport()
@@ -170,7 +121,7 @@ class ArrayObjectExporterTest extends Test\UnitTestCase
             'arrayProperty'     => ['a', 'b'],
             'undocumented'      => '123'
           ],
-          new This\Mock\TestArrayExporter(new \ArrayObject([
+          new This\Mock\TestArrayObjectExporter(new \ArrayObject([
             'stringProperty'    => 'Another string',
             'intProperty'       => -5,
             'floatProperty'     => 0.00000009,
@@ -180,8 +131,8 @@ class ArrayObjectExporterTest extends Test\UnitTestCase
           ]))
         ]);
 
-        $expectedOutput = [
-          [
+        $expectedOutput = new \ArrayObject([
+          new \ArrayObject([
             'stringProperty'    => 'This is a string',
             'intProperty'       => 10,
             'floatProperty'     => 1.2342342,
@@ -192,8 +143,8 @@ class ArrayObjectExporterTest extends Test\UnitTestCase
             'arrayObject'       => null,
             'dateTimeObject'    => null,
             'undocumented'      => '123'
-          ],
-          [
+          ]),
+          new \ArrayObject([
             'stringProperty'    => 'Another string',
             'intProperty'       => -5,
             'floatProperty'     => 0.00000009,
@@ -204,9 +155,10 @@ class ArrayObjectExporterTest extends Test\UnitTestCase
             'arrayObject'       => null,
             'dateTimeObject'    => null,
             'undocumented'      => 'undocumenTED'
-          ]
-        ];
-        $dto = new This\Mock\TestArrayExporterCollection($testData);
+          ])
+        ]);
+        $dto = new This\Mock\TestArrayObjectExporterCollection($testData);
+
         $this->assertEquals(
             $expectedOutput,
             $dto->export(),

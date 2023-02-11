@@ -4,7 +4,7 @@ namespace Phalconeer\Dto;
 use Phalconeer\Data;
 use Phalconeer\Dto as This;
 
-class ImmutableDto extends Data\ImmutableData
+class ImmutableDto extends Data\ImmutableData implements This\DtoExporterInterface
 {
     protected static bool $_convertChildren = true;
 

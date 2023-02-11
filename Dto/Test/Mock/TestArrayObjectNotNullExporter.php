@@ -1,17 +1,15 @@
 <?php
 namespace Phalconeer\Dto\Test\Mock;
 
-use Phalconeer\Data;
 use Phalconeer\Dto;
 use Phalconeer\Dto\Test as This;
 
-class TestArrayObjectExporter extends This\Mock\Test
+class TestArrayObjectNotNullExporter extends This\Mock\TestArrayExporter
 {
-    use Dto\Traits\ArrayObjectExporter,
-        Data\Traits\Data\ParseTypes;
+    use Dto\Traits\ArrayObjectNotNullExporter;
 
     protected static array $_properties = [
-        'nestedObject'          => TestArrayObjectExporter::class,
+        'nestedObject'          => TestArrayObjectNotNullExporter::class,
     ];
 
     protected static bool $_convertChildren = true;
@@ -19,6 +17,6 @@ class TestArrayObjectExporter extends This\Mock\Test
     protected static bool $_preserveKeys = false;
 
     protected static array $_exportTransformers = [
-        Dto\Helper\TraitsHelper::EXPORT_METHOD_TO_ARRAY_OBJECT,
+        Dto\Helper\TraitsHelper::EXPORT_METHOD_TO_ARRAY_OBJECT_WITHOUT_NULLS,
     ];
 }

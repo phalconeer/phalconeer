@@ -3,6 +3,7 @@ namespace Phalconeer\Bootstrap;
 
 use Phalcon\Config;
 use Phalcon\Di;
+use Phalconeer\Bootstrap as This;
 use Phalconeer\Config as PhalconeerConfig;
 use Phalconeer\Exception;
 
@@ -23,31 +24,13 @@ abstract class Factory
      */
     protected static array $configFiles = [];
     
-    /**
-     * The dependency injector container.
-     */
-    protected Di\DiInterface $di;
-
-    protected Config\Config $config;
-
-    public function __construct(Di\DiInterface $di, Config\Config $config) {
-        $this->di = $di;
-        $this->config = $config;
-
+    public function __construct(
+        protected Di\DiInterface $di,
+        protected Config\Config $config,
+        protected This\Bootstrap $bootstrap
+    ) {
         $this->checkRequiredModules();
         $this->loadAdditionalConfig();
-    }
-    protected function getModule($requiredModule) : self
-    {
-        if (isset($this->di[$requiredModule])) {
-            return $this->di[$requiredModule];
-        } else {
-            throw new Exception\NotFound\ModuleNotFoundException(
-                '`' . $requiredModule . '` required for ' . get_called_class(),
-                Exception\Helper\ExceptionHelper::MODULE_NOT_LOADED
-            );
-        }
-
     }
 
     /**
@@ -69,10 +52,17 @@ abstract class Factory
     {
         foreach (static::getRequiredModules() as $requiredModule) {
             if (!isset($this->di[$requiredModule])) {
-                throw new Exception\NotFound\ModuleNotFoundException(
-                    '`' . $requiredModule . '` required for ' . get_called_class(),
-                    Exception\Helper\ExceptionHelper::MODULE_NOT_LOADED
-                );
+                /**
+                 * Try autoloading the default Phalconeer module
+                 * It only works of the module name is the same as the DI key with first letter being ujppercase
+                 */
+                $this->bootstrap->loadService('Phalconeer\\' . ucfirst($requiredModule) . '\\Factory');
+                if (!isset($this->di[$requiredModule])) {
+                    throw new Exception\NotFound\ModuleNotFoundException(
+                        '`' . $requiredModule . '` required for ' . get_called_class(),
+                        Exception\Helper\ExceptionHelper::MODULE_NOT_LOADED
+                    );
+                }
             }
         }
     }
