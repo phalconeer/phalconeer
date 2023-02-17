@@ -3,6 +3,7 @@ namespace Phalconeer\Config;
 
 use Phalconeer\Bootstrap;
 use Phalcon\Config;
+use Phalconeer\Config as This;
 use Phalconeer\Exception\NotFound\ConfigNotFoundException;
 use Phalconeer\Exception\InvalidArgumentException;
 
@@ -31,6 +32,8 @@ class Factory extends Bootstrap\Factory
             }
             $config = array_merge_recursive($config, include_once $configFile);
         }
+
+        This\Helper\ConfigHelper::$dummyConfig = new Config\Config();
 
         return new Config\Config($config);
     }

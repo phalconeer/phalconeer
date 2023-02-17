@@ -5,11 +5,6 @@ namespace Phalconeer\ElasticAdapter\Helper;
 use Phalcon\Text;
 use Phalconeer\Http;
 
-/**
- * This file contains the settings for Elastic search queries, which is passed through the query parameters.
- *
- * @author ikarasz
- */
 class ElasticQueryRouteHelper
 {
     /**

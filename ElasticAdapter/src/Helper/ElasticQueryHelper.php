@@ -5,11 +5,6 @@ use Phalconeer\Condition;
 use Phalconeer\ElasticAdapter as This;
 use Phalconeer\ElasticAdapter\Helper\ElasticQueryBodyHelper as QH;
 
-/**
- * Description of ElasticSearchHelper
- *
- * @author ikarasz
- */
 class ElasticQueryHelper
 {
     /**

@@ -2,7 +2,6 @@
 
 namespace Phalconeer\Dispatcher;
 
-use Phalcon;
 use Phalcon\Mvc;
 use Phalconeer\Bootstrap;
 use Phalconeer\Config;
@@ -21,8 +20,8 @@ class Factory extends Bootstrap\Factory
     
     protected function configure() : Mvc\DispatcherInterface
     {
-        $config = $this->di->get(Config\Factory::MODULE_NAME)->get('dispatcher', new Phalcon\Config\Config());
-        $applicationConfig = $this->di->get(Config\Factory::MODULE_NAME)->get('application', new Phalcon\Config\Config());
+        $config = $this->di->get(Config\Factory::MODULE_NAME)->get('dispatcher', Config\Helper\ConfigHelper::$dummyConfig);
+        $applicationConfig = $this->di->get(Config\Factory::MODULE_NAME)->get('application', Config\Helper\ConfigHelper::$dummyConfig);
         $dispatcherBo = new This\Bo\DispatcherBo(
             new Mvc\Dispatcher(),
             $config,

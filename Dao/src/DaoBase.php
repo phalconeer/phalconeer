@@ -23,10 +23,13 @@ abstract class DaoBase
      */
     protected function getConnection(
         string $type = This\Helper\DaoHelper::CONNECTION_TYPE_READ_ONLY
-    ) : ?Db\Adapter\Pdo\AbstractPdo
+    ) : Db\Adapter\Pdo\AbstractPdo
     {
         if (!array_key_exists($type, $this->connections)) {
-            return null;
+            throw new This\Exception\UndefinedConnectionException(
+                $type,
+                This\Helper\ExceptionHelper::DAO__CONNECTION_NOT_CONFIGURED
+            );
         }
         return $this->connections[$type];
     }

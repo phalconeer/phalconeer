@@ -1,11 +1,10 @@
 <?php
 namespace Phalconeer\ElasticAdapter\Data;
 
-use Phalconeer\Data;
 use Phalconeer\Dto;
 use Phalconeer\Data\Helper\ParseValueHelper as PVH;
 
-class ElasticBase extends Data\ImmutableData
+class ElasticBase extends Dto\ImmutableDto
 {
     use Dto\Traits\AliasLoader,
         Dto\Traits\AliasExporter;

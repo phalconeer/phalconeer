@@ -12,7 +12,7 @@ class AliasExporter implements This\TransformerInterface
 
     public function transform(
         $source,
-        Data\DataInterface $baseObject = null,
+        Data\CommonInterface $baseObject = null,
         \ArrayObject $parameters = null
     )
     {

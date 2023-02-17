@@ -1,7 +1,7 @@
 <?php
 namespace Phalconeer\Data;
 
-interface CollectionInterface
+interface CollectionInterface extends CommonInterface
 {
     public function getFieldValues(
         string $fieldName,

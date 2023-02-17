@@ -5,6 +5,7 @@ use Psr;
 use Phalcon\Config;
 use Phalconeer\Dao;
 use Phalconeer\Data;
+use Phalconeer\Dto;
 use Phalconeer\Browser;
 use Phalconeer\ElasticAdapter as This;
 use Phalconeer\ElasticAdapter\Helper\ElasticQueryBodyHelper as EQBH;
@@ -173,11 +174,11 @@ class ElasticDaoBase implements Dao\DaoReadAndWriteInterface
     }
 
     public function save(
-        Data\DataInterface $data,
+        Dto\ArrayObjectExporterInterface $data,
         $forceInsert = false,
         $insertMode = Dao\Helper\DaoHelper::INSERT_MODE_NORMAL,
         $blockOperationOnWrongSequence = false
-    ) : ?Data\ImmutableData
+    ) : ?Dto\ImmutableDto
     {
         if (!$data instanceof This\Data\ElasticBase) {
             throw new This\Exception\InvalidDataObjectException(

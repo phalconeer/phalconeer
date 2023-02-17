@@ -1,7 +1,6 @@
 <?php
 namespace Phalconeer\Router;
 
-use Phalcon;
 use Phalcon\Mvc;
 use Phalconeer\Bootstrap;
 use Phalconeer\Config;
@@ -20,8 +19,11 @@ class Factory extends Bootstrap\Factory
 
     protected function configure()
     {
-        $config = $this->di->get(Config\Factory::MODULE_NAME)->get('router', new Phalcon\Config\Config());
-        $applicationConfig = $this->di->get(Config\Factory::MODULE_NAME)->get('application', new Phalcon\Config\Config());
+        $config = $this->di->get(Config\Factory::MODULE_NAME)->get(
+            static::MODULE_NAME,
+            Config\Helper\ConfigHelper::$dummyConfig
+        );
+        $applicationConfig = $this->di->get(Config\Factory::MODULE_NAME)->get('application', Config\Helper\ConfigHelper::$dummyConfig);
 
         $router = new This\Bo\RouterBo(
             new Mvc\Router(false),

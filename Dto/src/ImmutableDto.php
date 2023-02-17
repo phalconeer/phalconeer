@@ -18,7 +18,7 @@ class ImmutableDto extends Data\ImmutableData implements This\DtoExporterInterfa
 
     protected static bool $_preserveKeys = false;
 
-    public function exportWithArray(
+    public function exportWithTransformers(
         array $transformers = [],
         \ArrayObject $parameters = null
     )
@@ -42,7 +42,7 @@ class ImmutableDto extends Data\ImmutableData implements This\DtoExporterInterfa
 
     public function export(\ArrayObject $parameters = null)
     {
-        return $this->exportWithArray(
+        return $this->exportWithTransformers(
             static::getExportTransformers(),
             $parameters
         );

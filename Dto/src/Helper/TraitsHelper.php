@@ -5,6 +5,8 @@ class TraitsHelper
 {
     const EXPORT_METHOD_ALIAS = 'exportAliases';
 
+    const EXPORT_METHOD_MYSQL_DATE = 'exportMySqlDate';
+
     const EXPORT_METHOD_TO_ARRAY = 'toArray';
 
     const EXPORT_METHOD_TO_ARRAY_OBJECT = 'toArrayObject'; 

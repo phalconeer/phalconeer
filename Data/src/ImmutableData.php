@@ -4,9 +4,7 @@ namespace Phalconeer\Data;
 use Phalconeer\Data as This;
 use Phalconeer\Exception;
 
-abstract class ImmutableData implements This\DataInterface,
-                                        This\PrimaryKeyInterface,
-                                        this\StorableInterface
+abstract class ImmutableData implements This\DataInterface
 {
     /**
      * List of all the protected fields which do not contain data

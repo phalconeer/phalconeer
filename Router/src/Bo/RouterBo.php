@@ -3,7 +3,7 @@ namespace Phalconeer\Router\Bo;
 
 use Phalcon\Mvc;
 use Phalcon\Mvc\Router;
-use Phalcon\Config;
+use Phalconeer\Config;
 use Phalconeer\Router as This;
 
 class RouterBo
@@ -112,7 +112,7 @@ class RouterBo
         }
 
         return array_reduce(
-            $this->routerConfiguration->get('routingTables', new Config\Config())->toArray(),
+            $this->routerConfiguration->get('routingTables', Config\Helper\ConfigHelper::$dummyConfig)->toArray(),
             function (array $aggregate, string $fileName) {
                 if (file_exists($fileName)) {
                     return array_merge_recursive($aggregate, include $fileName);

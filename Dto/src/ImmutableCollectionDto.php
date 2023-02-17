@@ -14,7 +14,7 @@ class ImmutableCollectionDto extends Data\ImmutableCollection
 
     protected static bool $_preserveKeys = false;
 
-    public function exportWithArray(
+    public function exportWithTransformers(
         array $transformers = [],
         \ArrayObject $parameters = null
     )
@@ -38,7 +38,7 @@ class ImmutableCollectionDto extends Data\ImmutableCollection
 
     public function export(\ArrayObject $parameters = null)
     {
-        return $this->exportWithArray(
+        return $this->exportWithTransformers(
             static::getExportTransformers(),
             $parameters
         );

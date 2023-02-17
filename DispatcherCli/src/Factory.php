@@ -2,7 +2,6 @@
 
 namespace Phalconeer\DispatcherCli;
 
-use Phalcon;
 use Phalcon\Cli;
 use Phalconeer\Bootstrap;
 use Phalconeer\Config;
@@ -20,7 +19,10 @@ class Factory extends Bootstrap\Factory
     ];
     
     protected function configure() {
-        $config = $this->di->get(Config\Factory::MODULE_NAME)->get('dispatcher', new Phalcon\Config\Config());
+        $config = $this->di->get(Config\Factory::MODULE_NAME)->get(
+            static::MODULE_NAME,
+            Config\Helper\ConfigHelper::$dummyConfig
+        );
         $dispatcherBo = new This\Bo\DispatcherCliBo(
             new Cli\Dispatcher(),
             $config

@@ -31,10 +31,10 @@ AMMZZYYXXX, where
         * 30 - any kind of payment related exception
 
 ## Module codes for Phalconeer
-* 10 - ?Application
+* 10 - Application
 * 11 - ?MySqlAdapter
-* 12 - ?Api
-* 13 - ?Memcache
+* 12 - Dao
+* 13 - Memcache
 * 14 - ?ElasticAdapter
 * 15 - ?Auth
 * 16 - ?User
@@ -59,7 +59,7 @@ AMMZZYYXXX, where
 * 35 - ?XmlDocumentParser
 * 36 - ?TemplateSvelte
 * 37 - ?Admin
-* 38 - ?
+* 38 - LiveSession
 * 39 - ?
 * 40 - ?
 * 41 - ?Task

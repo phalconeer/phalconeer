@@ -1,7 +1,6 @@
 <?php
 namespace Phalconeer\Cookie;
 
-use Phalcon;
 use Phalcon\Http\Response\Cookies;
 use Phalconeer\Bootstrap;
 use Phalconeer\Config;
@@ -33,7 +32,7 @@ class Factory extends Bootstrap\Factory
 
     protected function configure()
     {
-        $config = $this->di->get(Config\Factory::MODULE_NAME)->get('coookies', new Phalcon\Config\Config());
+        $config = $this->di->get(Config\Factory::MODULE_NAME)->get('coookies', Config\Helper\ConfigHelper::$dummyConfig);
         $cookies  = new Cookies();
 
         $cookies->useEncryption($config->get('useEncryption', true));

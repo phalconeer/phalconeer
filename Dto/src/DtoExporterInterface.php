@@ -1,7 +1,14 @@
 <?php
 namespace Phalconeer\Dto;
 
-interface DtoExporterInterface
+use Phalconeer\Data;
+
+interface DtoExporterInterface extends Data\DataInterface
 {
-    public function export();
+    public function exportWithTransformers(
+        array $transformers = [],
+        \ArrayObject $parameters = null
+    );
+
+    public function export(\ArrayObject $parameters = null);
 }

@@ -4,8 +4,7 @@ namespace Phalconeer\Data;
 use Phalconeer\Exception;
 use Phalconeer\Data as This;
 
-abstract class ImmutableCollection implements This\DataInterface,
-                                                This\CollectionInterface,
+abstract class ImmutableCollection implements This\CollectionInterface,
                                                 \ArrayAccess
 {
     protected string $collectionType;
@@ -67,7 +66,7 @@ abstract class ImmutableCollection implements This\DataInterface,
         return $dummyObject->properties();
     }
 
-    public function offsetGet($offset) : ?This\DataInterface
+    public function offsetGet($offset) : ?This\CommonInterface
     {
         return ($this->collection->offsetExists($offset)) ? clone($this->collection->offsetGet($offset)) : null;
     }
@@ -123,5 +122,14 @@ abstract class ImmutableCollection implements This\DataInterface,
         }
 
         return $baseArray;
+    }
+
+    public function merge (self $newObject)
+    {
+        $iterator = $newObject->getIterator();
+        while ($iterator->valid()) {
+            $this->collection->offsetSet(null, $iterator->current());
+            $iterator->next();
+        }
     }
 }
