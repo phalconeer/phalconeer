@@ -8,4 +8,6 @@ interface ApplicationInterface
     public function getName() : ?string;
 
     public function getPrivilegeScheme() : ?string;
+
+    public function getVersion() : ?string;
 }

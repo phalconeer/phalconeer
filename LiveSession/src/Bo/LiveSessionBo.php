@@ -1,7 +1,7 @@
 <?php
 namespace Phalconeer\LiveSession\Bo;
 
-use Phalcon\Config;
+use Phalcon\Config as PhalconConfig;
 use Phalconeer\Application;
 use Phalconeer\Id;
 use Phalconeer\LiveSession as This;
@@ -11,7 +11,7 @@ class LiveSessionBo implements This\LiveSessionInterface
     public function __construct(
         protected ?This\LiveSessionAdapterInterface $adapter = null,
         protected Application\ApplicationInterface $application,
-        protected Config\Config $config
+        protected PhalconConfig\Config $config
     )
     {
     }

@@ -4,8 +4,7 @@ namespace Phalconeer\Data;
 use Phalconeer\Exception;
 use Phalconeer\Data as This;
 
-abstract class ImmutableCollection implements This\CollectionInterface,
-                                                \ArrayAccess
+abstract class ImmutableCollection implements This\CollectionInterface
 {
     protected string $collectionType;
 
@@ -124,12 +123,25 @@ abstract class ImmutableCollection implements This\CollectionInterface,
         return $baseArray;
     }
 
-    public function merge (self $newObject)
+    public function merge(
+        This\CollectionInterface $newObject = null,
+        bool $ignoreKeys = true
+    ) : This\CollectionInterface
     {
+        if (is_null($newObject)) {
+            return $this;
+        }
         $iterator = $newObject->getIterator();
         while ($iterator->valid()) {
-            $this->collection->offsetSet(null, $iterator->current());
+            $key = ($ignoreKeys)
+                ? null
+                : implode(
+                    '.',
+                    $iterator->current()->getPrimaryKeyValue()
+                );
+            $this->collection->offsetSet($key, $iterator->current());
             $iterator->next();
         }
+        return $this;
     }
 }

@@ -36,7 +36,7 @@ AMMZZYYXXX, where
 * 12 - Dao
 * 13 - Memcache
 * 14 - ?ElasticAdapter
-* 15 - ?Auth
+* 15 - Auth
 * 16 - ?User
 * 17 - ?LoginApplication
 * 18 - ?LoginBearer
@@ -60,7 +60,7 @@ AMMZZYYXXX, where
 * 36 - ?TemplateSvelte
 * 37 - ?Admin
 * 38 - LiveSession
-* 39 - ?
+* 39 - AuthAdmin
 * 40 - ?
 * 41 - ?Task
 * 42 - ?

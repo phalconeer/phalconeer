@@ -1,6 +1,7 @@
 <?php
 namespace Phalconeer\BrowserWithCache;
 
+use Phalcon\Config as PhalconConfig;
 use Phalconeer\Cache;
 use Phalconeer\Config;
 use Phalconeer\Bootstrap;
@@ -37,7 +38,7 @@ class Factpry extends Bootstrap\Factory
             Cache\Data\CacheSettings $cacheSettings,
             array $requestMiddlewares = [],
             array $responseMiddlewares = [],
-            Config\Config $config = null
+            PhalconConfig\Config $config = null
         ) use ($di) : This\Bo\BrowserWithCacheBo
        {
             $moduleConfig = $di->get(Config\Factory::MODULE_NAME)->get(

@@ -8,6 +8,7 @@ class LiveSession extends Dto\ImmutableDto
 {
     use Dto\Traits\MySqlDateExporter,
         Dto\Traits\ArrayLoader,
+        Dto\Traits\ArrayExporter,
         Data\Traits\Data\ParseTypes,
         Data\Traits\Data\AutoGetter;
 
@@ -17,9 +18,9 @@ class LiveSession extends Dto\ImmutableDto
 
     protected \DateTime $expires;
 
-    protected array $scopes;
+    protected \ArrayObject $scopes;
 
-    protected array $deniedPermissions;
+    protected \ArrayObject $deniedPermissions;
     
     public function setExpires(\DateTime $expires)
     {

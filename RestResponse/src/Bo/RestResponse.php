@@ -2,7 +2,7 @@
 
 namespace Phalconeer\RestResponse\Bo;
 
-use Phalcon\Config;
+use Phalcon\Config as PhalconConfig;
 use Phalcon\Mvc;
 use Phalcon\Http;
 use Phalconeer\RestRequest;
@@ -12,33 +12,22 @@ class RestResponse extends Http\Response
 {
     protected string $applicationName;
 
-    protected Config\Config $config;
-
     protected string $charset = 'UTF-8';
 
     protected string $format = This\Helper\RestResponseHelper::FORMAT_JSON;
 
-    protected RestRequest\Bo\RestRequest $request;
-
     protected This\ResourceInterface $resource;
-
-    protected Mvc\Url $url;
 
     public function __construct(
         $content = null,
         $code = null,
         $status = null,
-        Http\Request $request,
-        Mvc\Url\UrlInterface $url,
-        Config\Config $config
+        protected RestRequest\Bo\RestRequest $request,
+        protected Mvc\Url\UrlInterface $url,
+        protected PhalconConfig\Config $config = new PhalconConfig\Config()
     )
     {
         parent::__construct($content, $code, $status);
-        $this->request = $request;
-        $this->url = $url;
-        if (!is_null($config)) {
-            $this->config = $config;
-        }
     }
 
     public function setApplicationName(string $applicationName) : self

@@ -1,22 +1,14 @@
 <?php
 namespace Phalconeer\BrowserWithCache\Bo;
 
-use Phalcon\Config;
+use Phalcon\Config as PhalconConfig;
 use Phalconeer\Browser;
 use Phalconeer\Cache;
-use Phalconeer\BrowserWithCache as This;
 use Phalconeer\CurlClient;
-use Phalconeer\Middleware;
 use Psr;
 
 class BrowserWithCacheBo extends Browser\Bo\BrowserBo
 {
-    protected Cache\CacheAdapterInterface $cache;
-
-    protected Cache\Data\CacheSettings $cacheSettings;
-
-    protected Config\Config $config;
-
     /**
      * The constructor.
      *
@@ -25,9 +17,9 @@ class BrowserWithCacheBo extends Browser\Bo\BrowserBo
         CurlClient\CurlClientInterface $client,
         array $requestMiddlewares = [],
         array $responseMiddlewares = [],
-        Cache\CacheAdapterInterface $cache,
-        Cache\Data\CacheSettings $cacheSettings,
-        Config\Config $config = null
+        protected Cache\CacheAdapterInterface $cache,
+        protected Cache\Data\CacheSettings $cacheSettings,
+        protected PhalconConfig\Config $config = new PhalconConfig\Config
     )
     {
         parent::__construct(
@@ -35,9 +27,6 @@ class BrowserWithCacheBo extends Browser\Bo\BrowserBo
             $requestMiddlewares,
             $responseMiddlewares,
         );
-        $this->cache = $cache;
-        $this->cacheSettings = $cacheSettings;
-        $this->config = $config ?? new Config\COnfig;
     }
 
     protected function getCacheKey(Psr\Http\Message\RequestInterface $request) : string

@@ -1,5 +1,5 @@
 <?php
-namespace Phalconeer\Auth\Data;
+namespace Phalconeer\AuthMethod\Data;
 
 use Phalconeer\Data;
 

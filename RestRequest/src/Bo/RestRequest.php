@@ -1,7 +1,7 @@
 <?php
 namespace Phalconeer\RestRequest\Bo;
 
-use Phalcon\Config;
+use Phalcon\Config as PhalconConfig;
 use Phalcon\Filter;
 use Phalcon\Http;
 use Phalconeer\Condition;
@@ -18,13 +18,9 @@ class RestRequest extends Http\Request
         This\Helper\RestRequestHelper::PARAMETER_URL,
     ];
 
-    protected Config\Config $config;
-
-    protected Filter\Filter $filter;
-
     public function __construct(
-        Filter\Filter $filter,
-        Config\Config $config
+        protected Filter\Filter $filter,
+        protected PhalconConfig\Config $config
     )
     {
         $this->filter = $filter;

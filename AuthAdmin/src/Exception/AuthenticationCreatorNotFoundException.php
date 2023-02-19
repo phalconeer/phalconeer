@@ -1,5 +1,5 @@
 <?php
-namespace Phalconeer\Auth\Exception;
+namespace Phalconeer\AuthAdmin\Exception;
 
 use Phalconeer\Exception;
 

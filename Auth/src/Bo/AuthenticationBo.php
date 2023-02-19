@@ -2,13 +2,12 @@
 namespace Phalconeer\Auth\Bo;
 
 use Phalconeer\Auth as This;
-use Phalconeer\Id;
+use Phalconeer\AuthMethod;
 use Phalconeer\LiveSession;
+use Phalconeer\Scope;
 
 class AuthenticationBo
 {
-    protected \ArrayObject $authenticationCreators;
-
     protected \ArrayObject $authenticators;
 
     protected \ArrayObject $loginHandlers;
@@ -17,17 +16,12 @@ class AuthenticationBo
 
     public function __construct(
         protected LiveSession\LiveSessionInterface $liveSession,
+        protected Scope\ScopeAdapterInterface $scope
     )
     {
-        $this->authenticationCreators = new \ArrayObject();
         $this->authenticators = new \ArrayObject();
         $this->loginHandlers = new \ArrayObject();
         $this->logoutHandlers = new \ArrayObject();
-    }
-
-    public function addAuthenticationCreator (This\AuthenticationCreatorInterface $authenticationCreator)
-    {
-        $this->authenticationCreators->offsetSet(null, $authenticationCreator);
     }
 
     public function addAuthenticator (This\AuthenticatorInterface $authenticator)
@@ -63,64 +57,60 @@ class AuthenticationBo
         }
     }
 
-    protected function loadSession(This\Data\AuthenticationResponse $authenticationResponse) : ?LiveSession\Data\LiveSession
+    protected function loadSession(AuthMethod\Data\AuthenticationResponse $authenticationResponse) : ?LiveSession\Data\LiveSession
     {
         return $this->liveSession->getSession($authenticationResponse->sessionId());
     }
 
-    protected function createSession(This\Data\AuthenticationResponse $authenticationResponse) : ?LiveSession\Data\LiveSession
+    protected function createSession(AuthMethod\Data\AuthenticationResponse $authenticationResponse) : ?LiveSession\Data\LiveSession
     {
-        if (is_null($authenticationResponse->scopes())) {
-            $roles = $this->roleRepository->getApplicationRoles(
-                $authenticationResponse->userId()
-            );
-            $roles->merge(
-                $this->roleRepository->getUserRoles(
-                    $authenticationResponse->userId()
-                )
-            );
-            $privileges = $this->privilegeRepository
-                    ->getPrivilegesByRoles($roles)
-                    ->merge($this->privilegeRepository->getPrivilegesByUser($authenticationResponse->userId()));
-
-            $scopeNames = $this->scopeRepository->getScopeNames($privileges->getFieldValues('privilegeId', true));
-            $authenticationResponse = $authenticationResponse->setScopes(
-                $privileges->getScopes($scopeNames)
-            )->setDeniedPermissions(
-                $privileges->getDeniedPermissions($scopeNames)
-            );
-        }
-
         $session = $this->liveSession->createSession(
             LiveSession\Data\LiveSession::fromArray([
                 'userId'                => $authenticationResponse->userId(),
-                'scopes'                => $authenticationResponse->scopes(),
-                'deniedPermissions'     => $authenticationResponse->deniedPermissions(),
+                'scopes'                => $this->scope->getAllowedScopes($authenticationResponse),
+                'deniedPermissions'     => $this->scope->getDeniedScopes($authenticationResponse),
             ])
         );
 
         return $session;
     }
 
-    protected function handleAuthenticationFailure(This\Data\AuthenticationResponse $authenticationResponse) : bool
+    protected function handleAuthenticationFailure(AuthMethod\Data\AuthenticationResponse $authenticationResponse) : bool
     {
         return false;
     }
 
-    protected function handleAuthenticationResponse(This\Data\AuthenticationResponse $authenticationResponse) : bool
+    protected function handleAuthenticationResponse(AuthMethod\Data\AuthenticationResponse $authenticationResponse) : bool
     {
         return ($authenticationResponse->sessionValid())
             ? true
             : $this->handleAuthenticationFailure($authenticationResponse);
     }
 
-    public function authenticate(This\Data\AuthenticationRequest $authenticationRequest) : ?LiveSession\Data\LiveSession
+    public function authenticate(AuthMethod\Data\AuthenticationRequest $authenticationRequest) : ?LiveSession\Data\LiveSession
     {
-        $authenticationResponse = $this->authenticationBo->authenticate(
-            $authenticationRequest->username(),
-            $authenticationRequest->password(),
-            $authenticationRequest->method(),
-        );
+        if (!empty($authenticationRequest->method()) 
+            && !$this->authenticators->offsetExists($authenticationRequest->method())) {
+            throw new This\Exception\AuthenticatorNotFoundException($authenticationRequest->method());
+        }
+
+        $authenticationResponse = new AuthMethod\Data\AuthenticationResponse();
+        $authenticators = (empty($authenticationRequest->method()))
+            ? $this->authenticators
+            : [$this->authenticators->offsetGet($authenticationRequest->method())];
+
+        foreach ($authenticators as $authenticator) {
+            if (is_null($authenticationResponse->sessionValid())) {
+                if (empty($authenticationRequest->method())
+                    || $authenticationRequest->method() === $authenticator->getMethodName()) {
+                    $authenticationResponse = $authenticator->authenticate($authenticationRequest);
+                }
+                // TODO: figure out if there is a use case for this
+                // if ($authenticationResponse->sessionValid() === true) {
+                //     break;
+                // }
+            }
+        }
 
         if (!$this->handleAuthenticationResponse($authenticationResponse)) {
             return null;

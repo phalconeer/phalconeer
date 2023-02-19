@@ -1,12 +1,12 @@
 <?php
-namespace Phalconeer\Auth\Data;
+namespace Phalconeer\AuthMethod\Data;
 
 use Phalconeer\Data;
 
 class AuthenticationRequest extends Data\ImmutableData
 {
     use Data\Traits\Data\ParseTypes,
-    Data\Traits\Data\AutoGetter;
+        Data\Traits\Data\AutoGetter;
 
     protected string $method;
 

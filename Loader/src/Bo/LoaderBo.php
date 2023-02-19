@@ -2,18 +2,18 @@
 namespace Phalconeer\Loader\Bo;
 
 use Phalcon\Autoload;
-use Phalcon\Config;
+use Phalcon\Config as PhalconConfig;
 use Phalconeer\Loader as This;
 
 class LoaderBo
 {
     protected Autoload\Loader $loader;
 
-    protected Config\Config $config;
+    protected PhalconConfig\Config $config;
 
     public function __construct(
         Autoload\Loader $loader,
-        Config\Config $config = null
+        PhalconConfig\Config $config = null
     )
     {
         $this->loader = $loader;
@@ -36,12 +36,12 @@ class LoaderBo
         $this->loader->register(true);
     }
 
-    public function loadDirectories(Config\Config $directories, $merge = false)
+    public function loadDirectories(PhalconConfig\Config $directories, $merge = false)
     {
         $this->loader->setDirectories($directories->toArray(), $merge);
     }
 
-    public function loadNamespaces(Config\Config $namespaces, $merge = false)
+    public function loadNamespaces(PhalconConfig\Config $namespaces, $merge = false)
     {
         $this->loader->setNamespaces($namespaces->toArray(), $merge);
     }

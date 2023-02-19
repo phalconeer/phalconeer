@@ -1,7 +1,7 @@
 <?php
 namespace Phalconeer\Application\Bo;
 
-use Phalcon\Config;
+use Phalcon\Config as PhalconConfig;
 use Phalconeer\Application as This;
 
 class ApplicationBo implements This\ApplicationInterface
@@ -9,7 +9,7 @@ class ApplicationBo implements This\ApplicationInterface
     protected This\Data\Application $appData;
 
     public function __construct(
-        protected Config\Config $config
+        protected PhalconConfig\Config $config
     )
     {
         if (!$this->config->offsetExists('id')) {
@@ -55,8 +55,6 @@ class ApplicationBo implements This\ApplicationInterface
 
     /**
      * Returns application name.
-     *
-     * @return string
      */
     public function getVersion() : ?string
     {

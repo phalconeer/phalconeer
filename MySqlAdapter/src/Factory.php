@@ -17,13 +17,19 @@ class Factory extends Bootstrap\Factory
         Config\Factory::MODULE_NAME,
     ];
 
+    protected static array $configFiles = [
+        __DIR__ . '/_config/mysql_config.php',
+    ];
+
     /**
      * Configures the Bootstrap module
      * @return \Phalcon\Mvc\Dispatcher
      */
     protected function configure() {
         $config = $this->di->get(Config\Factory::MODULE_NAME)->get(static::MODULE_NAME);
-        $connectionParameters = $this->di->get(Config\Factory::MODULE_NAME)->database->mysql;
+        $connectionParameters = $this->di->get(Config\Factory::MODULE_NAME)
+            ->get('database', Config\Helper\ConfigHelper::$dummyConfig)
+            ->get('mysql', Config\Helper\ConfigHelper::$dummyConfig);
         return function (
             $connectionType = null,
             $readOnly = true,

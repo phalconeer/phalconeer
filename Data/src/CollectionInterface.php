@@ -1,7 +1,11 @@
 <?php
 namespace Phalconeer\Data;
 
-interface CollectionInterface extends CommonInterface
+use Phalconeer\Data as This;
+
+interface CollectionInterface extends CommonInterface,
+                                        \ArrayAccess,
+                                        \IteratorAggregate
 {
     public function getFieldValues(
         string $fieldName,
@@ -9,4 +13,11 @@ interface CollectionInterface extends CommonInterface
         bool $preserveKeys = false,
         array $baseArray = []
     ) : array;
+
+    public function getIterator() : \ArrayIterator;
+
+    public function merge(
+        This\CollectionInterface $newObject = null,
+        bool $ignoreKeys = true
+    ) : This\CollectionInterface;
 }

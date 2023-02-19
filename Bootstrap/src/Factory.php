@@ -1,10 +1,10 @@
 <?php
 namespace Phalconeer\Bootstrap;
 
-use Phalcon\Config;
+use Phalcon\Config as PhalconConfig;
 use Phalcon\Di;
 use Phalconeer\Bootstrap as This;
-use Phalconeer\Config as PhalconeerConfig;
+use Phalconeer\Config;
 use Phalconeer\Exception;
 
 /**
@@ -12,7 +12,7 @@ use Phalconeer\Exception;
  */
 abstract class Factory
 {
-    const MODULE_NAME = '';
+    const MODULE_NAME = '--invalid--';
 
     /**
      * List of bootstrap modules required to initializes this module.
@@ -26,7 +26,7 @@ abstract class Factory
     
     public function __construct(
         protected Di\DiInterface $di,
-        protected Config\Config $config,
+        protected PhalconConfig\Config $config,
         protected This\Bootstrap $bootstrap
     ) {
         $this->checkRequiredModules();
@@ -51,6 +51,9 @@ abstract class Factory
     protected function checkRequiredModules() : void
     {
         foreach (static::getRequiredModules() as $requiredModule) {
+            if ($requiredModule === self::MODULE_NAME) {
+                throw new Exception\InvalidConfigDataException('Module name is not set for a required module in ' . get_class($this));
+            }
             if (!isset($this->di[$requiredModule])) {
                 /**
                  * Try autoloading the default Phalconeer module
@@ -99,8 +102,8 @@ abstract class Factory
                         Exception\Helper\ExceptionHelper::INVLIAD_CONFIG_FILE_CONTENT
                     );
                 }
-                $this->di->get(PhalconeerConfig\Factory::MODULE_NAME)->merge(
-                    new Config\Config($configArray)
+                $this->di->get(Config\Factory::MODULE_NAME)->merge(
+                    new PhalconConfig\Config($configArray)
                 );
                 // $merged = array_replace_recursive($this->di->get('config')->toArray(), $configArray);
                 // $this->di->set('config', new Config($merged));
@@ -149,7 +152,7 @@ abstract class Factory
      */
     protected function getModuleName() : string
     {
-        if (empty(static::MODULE_NAME)) {
+        if (static::MODULE_NAME === self::MODULE_NAME) {
             throw new Exception\InvalidConfigDataException('Module name is not set, ' . get_class($this));
         }
         return static::MODULE_NAME;

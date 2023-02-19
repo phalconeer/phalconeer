@@ -1,13 +1,13 @@
 <?php
 namespace Phalconeer\Auth\Bo;
 
-use Phalconeer\Auth as This;
+use Phalconeer\AuthMethod;
 
 trait AuthenticationRequestLoggerTrait
 {
     protected function logAuthenticationRequest(
-        This\Data\AuthenticationRequest $authenticationRequest,
-        This\Data\AuthenticationResponse $authenticationResponse
+        AuthMethod\Data\AuthenticationRequest $authenticationRequest,
+        AuthMethod\Data\AuthenticationResponse $authenticationResponse
     )
     {
 

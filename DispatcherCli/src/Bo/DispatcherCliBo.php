@@ -1,21 +1,17 @@
 <?php
 namespace Phalconeer\DispatcherCli\Bo;
 
-use Phalcon\Config;
+use Phalcon\Config as PhalconConfig;
 use Phalcon\Cli;
 use Phalcon\Events;
 
 class DispatcherCliBo
 {
-    protected Config\Config $config;
 
-    protected Cli\Dispatcher $dispatcher;
-
-    public function __construct(Cli\DispatcherInterface $dispatcher, Config\Config $config)
+    public function __construct(
+        protected Cli\DispatcherInterface $dispatcher,
+        protected PhalconConfig\Config $config)
     {
-        $this->dispatcher = $dispatcher;
-        $this->config = $config;
-
         $this->configureDispatcher();
     }
 

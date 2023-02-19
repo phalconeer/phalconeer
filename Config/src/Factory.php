@@ -2,7 +2,7 @@
 namespace Phalconeer\Config;
 
 use Phalconeer\Bootstrap;
-use Phalcon\Config;
+use Phalcon\Config as PhalconConfig;
 use Phalconeer\Config as This;
 use Phalconeer\Exception\NotFound\ConfigNotFoundException;
 use Phalconeer\Exception\InvalidArgumentException;
@@ -14,12 +14,6 @@ class Factory extends Bootstrap\Factory
 {
     const MODULE_NAME = 'config';
     
-    /**
-     * Configures the Bootstrap module
-     * @return Phalcon\Config\Config
-     * @throws InvalidArgumentException   If the $this->option parameter doesn't have a non-empty 'configFiles' entry array.
-     * @throws ConfigNotFoundException
-     */
     protected function configure() {
         if (!$this->config->offsetExists('configFiles') || count($this->config->configFiles) == 0) {
             throw new InvalidArgumentException('The bootstrap parameter \'configFiles\' does not exist or is empty.');
@@ -33,8 +27,8 @@ class Factory extends Bootstrap\Factory
             $config = array_merge_recursive($config, include_once $configFile);
         }
 
-        This\Helper\ConfigHelper::$dummyConfig = new Config\Config();
+        This\Helper\ConfigHelper::$dummyConfig = new PhalconConfig\Config();
 
-        return new Config\Config($config);
+        return new PhalconConfig\Config($config);
     }
 }

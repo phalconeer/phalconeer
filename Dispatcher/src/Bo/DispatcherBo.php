@@ -1,7 +1,7 @@
 <?php
 namespace Phalconeer\Dispatcher\Bo;
 
-use Phalcon\Config;
+use Phalcon\Config as PhalconConfig;
 use Phalcon\Mvc;
 use Phalcon\Events;
 
@@ -9,13 +9,10 @@ class DispatcherBo
 {
     public function __construct(
         protected Mvc\DispatcherInterface $dispatcher,
-        protected Config\Config $config,
-        protected Config\Config $applicationConfig,
+        protected PhalconConfig\Config $config,
+        protected PhalconConfig\Config $applicationConfig,
     )
     {
-        $this->dispatcher = $dispatcher;
-        $this->config = $config;
-
         $this->configureDispatcher();
     }
 

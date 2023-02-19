@@ -6,7 +6,7 @@ namespace Phalconeer\Bootstrap;
  */
 
 use Phalconeer\Exception;
-use Phalcon\Config;
+use Phalcon\Config as PhalconConfig;
 use Phalcon\Di;
 use Phalcon\Mvc;
 use Phalcon\Support;
@@ -26,7 +26,7 @@ abstract class Bootstrap
     /**
      * Contains the application sepcific configurations.
      */
-    protected Config\Config $config;
+    protected PhalconConfig\Config $config;
 
     /**
      * Keeps a list of initiated modules to prevent circular dependencies
@@ -116,7 +116,7 @@ abstract class Bootstrap
     public function run(array $options = array()) : string
     {
         $this->options = array_merge_recursive($this->options, $options);
-        $this->config  = new Config\Config($this->options);
+        $this->config  = new PhalconConfig\Config($this->options);
         $this->loadServices();
 
         return $this->runApplication();
