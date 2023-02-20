@@ -7,8 +7,8 @@ use Phalconeer\Dto\Test as This;
 
 class TestChainedAliasLoader extends This\Mock\TestAliasLoader
 {
-    use Dto\Traits\AliasLoader,
-        Data\Traits\Data\ParseTypes;
+    use Dto\Trait\AliasLoader,
+        Data\Trait\Data\ParseTypes;
 
     protected static array $_properties = [
         'nestedObject'          => TestChainedAliasLoader::class,

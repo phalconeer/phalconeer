@@ -6,6 +6,7 @@ use Phalconeer\Dto as This;
 
 class MySqlDateExporter implements This\TransformerInterface
 {
+    const TRAIT_METHOD = 'exportAllMySqlDate';
 
     public function transform(
         $source,
@@ -19,10 +20,10 @@ class MySqlDateExporter implements This\TransformerInterface
         if (!$source instanceof \ArrayObject) {
             return $source;
         }
-        return self::exportMySqlDate($source);
+        return self::exportAllMySqlDate($source);
     }
 
-    public static function exportMySqlDate(
+    public static function exportAllMySqlDate(
         \ArrayObject $source
     ) : \ArrayObject 
     {
@@ -31,11 +32,18 @@ class MySqlDateExporter implements This\TransformerInterface
             if ($iterator->current() instanceof \DateTime) {
                 $source->offsetSet(
                     $iterator->key(),
-                    $iterator->current()->format('Y-m-d H:i:s')
+                    self::exportMySqlDate($iterator->current())
                 );
             }
             $iterator->next();
         }
         return $source;
+    }
+
+    public static function exportMySqlDate(
+        \DateTime $date
+    ) : string 
+    {
+        return $date->format('Y-m-d H:i:s');
     }
 }

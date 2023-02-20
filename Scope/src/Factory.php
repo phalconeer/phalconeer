@@ -10,6 +10,10 @@ class Factory extends Bootstrap\Factory
 {
     const MODULE_NAME = 'scope';
 
+    protected static array $configFiles = [
+        __DIR__ . '/_config/scope_config.php',
+    ];
+
     protected static array $requiredModules = [
         AuthMethod\Factory::MODULE_NAME,
         Config\Factory::MODULE_NAME,

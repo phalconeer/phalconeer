@@ -6,8 +6,8 @@ use Phalconeer\Data\Helper\ParseValueHelper as PVH;
 
 class ElasticBase extends Dto\ImmutableDto
 {
-    use Dto\Traits\AliasLoader,
-        Dto\Traits\AliasExporter;
+    use Dto\Trait\AliasLoader,
+        Dto\Trait\AliasExporter;
 
     protected static array $_internalProperties = [
         '_indexDateField',
@@ -34,7 +34,7 @@ class ElasticBase extends Dto\ImmutableDto
     ];
 
     protected static array $_loadTransformers = [
-        Dto\Helper\TraitsHelper::LOADER_METHOD_ALIAS,
+        Dto\Transformer\AliasLoader::TRAIT_METHOD,
     ];
 
     protected ?string $_indexDateField;

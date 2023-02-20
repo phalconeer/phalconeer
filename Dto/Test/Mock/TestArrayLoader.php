@@ -6,7 +6,7 @@ use Phalconeer\Dto\Test as This;
 
 class TestArrayLoader extends This\Mock\Test
 {
-    use Dto\Traits\ArrayLoader;
+    use Dto\Trait\ArrayLoader;
 
     protected static array $_properties = [
         'nestedObject'          => TestArrayLoader::class,

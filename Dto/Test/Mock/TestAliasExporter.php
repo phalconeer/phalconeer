@@ -6,7 +6,7 @@ use Phalconeer\Dto\Test as This;
 
 class TestAliasExporter extends This\Mock\Test
 {
-    use Dto\Traits\AliasExporter;
+    use Dto\Trait\AliasExporter;
 
     protected static array $_properties = [
         'nestedObject'          => TestAliasExporter::class,
@@ -17,6 +17,6 @@ class TestAliasExporter extends This\Mock\Test
     ];
 
     protected static array $_exportTransformers = [
-        Dto\Helper\TraitsHelper::EXPORT_METHOD_ALIAS,
+        Dto\Transformer\AliasExporter::TRAIT_METHOD,
     ];
 }

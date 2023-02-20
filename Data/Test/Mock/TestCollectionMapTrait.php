@@ -6,7 +6,7 @@ use Phalconeer\Data;
 
 class TestCollectionMapTrait extends Data\ImmutableCollection
 {
-    use Data\Traits\Collection\Map;
+    use Data\Trait\Collection\Map;
 
   protected string $collectionType = This\Mock\Test::class;
 }

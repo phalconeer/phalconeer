@@ -6,6 +6,8 @@ use Phalconeer\Dto as This;
 
 class AliasLoader implements This\TransformerInterface
 {
+    const TRAIT_METHOD = 'loadAliases';
+
     public function __construct(public array $loadAliases)
     {
     }

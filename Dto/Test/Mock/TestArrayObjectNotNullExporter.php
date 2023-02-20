@@ -6,7 +6,7 @@ use Phalconeer\Dto\Test as This;
 
 class TestArrayObjectNotNullExporter extends This\Mock\TestArrayExporter
 {
-    use Dto\Traits\ArrayObjectNotNullExporter;
+    use Dto\Trait\ArrayObjectNotNullExporter;
 
     protected static array $_properties = [
         'nestedObject'          => TestArrayObjectNotNullExporter::class,

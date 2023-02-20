@@ -6,7 +6,7 @@ use Phalconeer\Dto\Test as This;
 
 class TestArrayExporterCollection extends Dto\ImmutableCollectionDto
 {
-    use Dto\Traits\ArrayExporter;
+    use Dto\Trait\ArrayExporter;
 
     protected string $collectionType = This\Mock\TestArrayExporter::class;
 

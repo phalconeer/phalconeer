@@ -6,7 +6,7 @@ use Phalconeer\Data;
 
 class TestCollectionGroupTrait extends Data\ImmutableCollection
 {
-    use Data\Traits\Collection\Group;
+    use Data\Trait\Collection\Group;
 
   protected string $collectionType = This\Mock\Test::class;
 }

@@ -6,7 +6,7 @@ use Phalconeer\Dto\Test as This;
 
 class TestAliasExporterConvertFalse extends This\Mock\Test
 {
-    use Dto\Traits\AliasExporter;
+    use Dto\Trait\AliasExporter;
 
     protected static bool $_convertChildren = false;
 
@@ -19,6 +19,6 @@ class TestAliasExporterConvertFalse extends This\Mock\Test
     ];
 
     protected static array $_exportTransformers = [
-        Dto\Helper\TraitsHelper::EXPORT_METHOD_ALIAS,
+        Dto\Transformer\AliasExporter::TRAIT_METHOD,
     ];
 }

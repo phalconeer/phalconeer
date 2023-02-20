@@ -7,8 +7,8 @@ use Psr;
 
 class Response extends Data\ImmutableData implements Psr\Http\Message\ResponseInterface
 {
-    use This\Data\Traits\Message,
-        Data\Traits\Data\ParseTypes;
+    use This\Data\Trait\Message,
+        Data\Trait\Data\ParseTypes;
 
     protected int $statusCode;
 

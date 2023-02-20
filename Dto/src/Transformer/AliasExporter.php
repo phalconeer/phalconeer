@@ -6,6 +6,8 @@ use Phalconeer\Dto as This;
 
 class AliasExporter implements This\TransformerInterface
 {
+    const TRAIT_METHOD = 'exportAliases';
+
     public function __construct(public array $exportAliases)
     {
     }

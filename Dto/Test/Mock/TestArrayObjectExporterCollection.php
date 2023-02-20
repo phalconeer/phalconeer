@@ -7,7 +7,7 @@ use Phalconeer\Dto\Test as This;
 
 class TestArrayObjectExporterCollection extends This\Mock\TestCollection
 {
-    use Dto\Traits\ArrayObjectExporter;
+    use Dto\Trait\ArrayObjectExporter;
 
     protected string $collectionType = This\Mock\TestArrayObjectExporter::class;
 

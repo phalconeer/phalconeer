@@ -6,7 +6,7 @@ use Phalconeer\Data;
 
 class TestCollectionOrderTrait extends Data\ImmutableCollection
 {
-    use Data\Traits\Collection\Order;
+    use Data\Trait\Collection\Order;
 
   protected string $collectionType = This\Mock\Test::class;
 }

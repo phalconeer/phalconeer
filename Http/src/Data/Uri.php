@@ -16,7 +16,7 @@ use Phalconeer\Http as This;
  */
 final class Uri extends Data\ImmutableData implements Psr\Http\Message\UriInterface
 {
-    use Data\Traits\Data\ParseTypes;
+    use Data\Trait\Data\ParseTypes;
 
     private const SCHEMES = ['http' => 80, 'https' => 443];
 

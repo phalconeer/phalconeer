@@ -6,11 +6,11 @@ use Phalconeer\Dto;
 
 class LiveSession extends Dto\ImmutableDto
 {
-    use Dto\Traits\MySqlDateExporter,
-        Dto\Traits\ArrayLoader,
-        Dto\Traits\ArrayExporter,
-        Data\Traits\Data\ParseTypes,
-        Data\Traits\Data\AutoGetter;
+    use Dto\Trait\MySqlDateExporter,
+        Dto\Trait\ArrayLoader,
+        Dto\Trait\ArrayExporter,
+        Data\Trait\Data\ParseTypes,
+        Data\Trait\Data\AutoGetter;
 
     protected string $id;
     

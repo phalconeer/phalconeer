@@ -1,9 +1,9 @@
 <?php
 namespace Phalconeer\Dto;
 
-use Phalconeer\Dto\DtoExporterInterface as DtoDtoExporterInterface;
+use Phalconeer\Dto as This;
 
-interface ArrayObjectExporterInterface extends DtoDtoExporterInterface
+interface ArrayObjectExporterInterface extends This\DtoExporterInterface
 {
     public function toArrayObject();
 }

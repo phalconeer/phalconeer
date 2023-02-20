@@ -6,7 +6,7 @@ use Phalconeer\Data;
 
 class TestCollectionFilterTrait extends Data\ImmutableCollection
 {
-    use Data\Traits\Collection\Filter;
+    use Data\Trait\Collection\Filter;
 
   protected string $collectionType = This\Mock\Test::class;
 }

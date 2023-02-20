@@ -9,9 +9,9 @@ use Psr;
 
 class Request extends Data\ImmutableData implements Psr\Http\Message\RequestInterface
 {
-    use This\Data\Traits\Message,
-        Data\Traits\Data\ParseTypes,
-        Dto\Traits\ArrayLoader;
+    use This\Data\Trait\Message,
+        Data\Trait\Data\ParseTypes,
+        Dto\Trait\ArrayLoader;
 
     protected string $method = This\Helper\HttpHelper::HTTP_METHOD_GET;
 

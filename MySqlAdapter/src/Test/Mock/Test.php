@@ -6,7 +6,7 @@ use Phalconeer\Dto;
 
 class Test extends Dto\ImmutableDto implements Dto\ArrayObjectExporterInterface
 {
-    use Dto\Traits\ArrayObjectExporter;
+    use Dto\Trait\ArrayObjectExporter;
 
     protected static array $_properties = [
         'stringProperty'        => Data\Helper\ParseValueHelper::TYPE_STRING,
