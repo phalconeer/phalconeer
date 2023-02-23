@@ -2,11 +2,12 @@
 namespace Phalconeer\ElasticAdapter\Dao;
 
 use Psr;
-use Phalcon\Config;
+use Phalcon\Config as PhalconConfig;
+use Phalconeer\Browser;
+use Phalconeer\Config;
 use Phalconeer\Dao;
 use Phalconeer\Data;
 use Phalconeer\Dto;
-use Phalconeer\Browser;
 use Phalconeer\ElasticAdapter as This;
 use Phalconeer\ElasticAdapter\Helper\ElasticQueryBodyHelper as EQBH;
 use Phalconeer\ElasticAdapter\Helper\ElasticQueryHelper as EQH;
@@ -18,14 +19,16 @@ class ElasticDaoBase implements Dao\DaoReadAndWriteInterface
 {
     const MAX_DELETE_ONCE = 1000;
 
-    protected Browser\Bo\BrowserBo $browser;
+    protected Browser\BrowserInterface $browser;
 
-    protected Http\Data\Uri $defaultUri;
+    protected ?PhalconConfig\Config $config = null;
+    
+    protected ?Http\Data\Uri $defaultUri = null;
 
     /**
      * Index name. If index is date segmented, it serves as a prefix;
      */
-    protected string $indexName = '';
+    public string $indexName = '';
 
     /**
      * Format to use when generating the various date based index names.
@@ -34,21 +37,21 @@ class ElasticDaoBase implements Dao\DaoReadAndWriteInterface
     protected string $indexSegmentFormat = 'Y.m';
 
     public function __construct(
-        protected Config\Config $config
+        This\Data\ElasticDaoConfiguration $daoConfiguration
     )
     {
-        if (!$config->browser instanceof Browser\Bo\BrowserBo) {
-            throw new This\Exception\InvalidBrowserInstanceException(
-                static::class,
-                This\Helper\ExceptionHelper::ELASTIC_DAO_BASE__INVALID_BROWSER_INSTANCE
-            );
+        $this->browser = $daoConfiguration->browser();
+        $this->config = $daoConfiguration->config();
+        if (is_null($this->config)) {
+            $this->config = Config\Helper\ConfigHelper::$dummyConfig;
         }
-        $this->browser = $config->browser;
-        $this->config = $config;
-        $this->defaultUri = (new Http\Data\Uri)
-            ->withScheme($this->config->protocol)
-            ->withHost($this->config->host)
-            ->withPort($this->config->port);
+        $this->defaultUri = $daoConfiguration->defaultUri();
+        if (is_null($this->defaultUri)) {
+            $this->defaultUri = (new Http\Data\Uri())
+                ->withScheme($this->config->get('protocol', 'http'))
+                ->withHost($this->config->get('host', 'localhost'))
+                ->withPort($this->config->get('port', 9200));
+        }
         if ($this->config->offsetExists('indexName')) {
             $this->indexName = $this->config->offsetGet('indexName');
         }
@@ -129,8 +132,8 @@ class ElasticDaoBase implements Dao\DaoReadAndWriteInterface
          * @var \Phalconeer\Http\Data\Response $response
          */
 // echo $limit . PHP_EOL;
-// echo \Phalconeer\Helper\TVarDumper::dump($request);
-// echo \Phalconeer\Helper\TVarDumper::dump($response);
+// echo \Phalconeer\Dev\TVarDumper::dump($request);
+// echo \Phalconeer\Dev\TVarDumper::dump($response);
 
         return new \ArrayObject($response->bodyVariables());
     }
@@ -202,12 +205,10 @@ class ElasticDaoBase implements Dao\DaoReadAndWriteInterface
                 ->withQueryVariable(EQRH::VAR_IF_PRIMARY_TERM, $data->primaryTerm());
         }
 
-        $masked = clone($data);
-        $masked->setExlcudeMask(['id', 'index', 'sequenceNumber', 'primaryTerm']);
         $request = Http\Data\Request::fromArray([
             'method'            => $method,
             'url'               => $url,
-            'bodyVariables'     => $masked->toArrayCopy(true, false)
+            'bodyVariables'     => $data->export()
         ]);
 
     // echo \Phalconeer\Helper\TVarDumper::dump($request);die();

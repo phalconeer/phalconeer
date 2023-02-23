@@ -26,11 +26,11 @@ class AuthenticationResponse extends Data\ImmutableData
 
     public function setScopes(?\ArrayObject $scopes) : self
     {
-        return $this->setKeyValue('scopes', $scopes);
+        return $this->setValueByKey('scopes', $scopes);
     }
 
     public function setDeniedPermissions(?\ArrayObject $deniedPermissions) : self
     {
-        return $this->setKeyValue('deniedPermissions', $deniedPermissions);
+        return $this->setValueByKey('deniedPermissions', $deniedPermissions);
     }
 }

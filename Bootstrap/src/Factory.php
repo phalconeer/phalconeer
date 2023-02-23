@@ -125,7 +125,7 @@ abstract class Factory
             foreach ($module as $subName => $realModule) {
                 switch ($subName) {
                     case '0':
-                    case 'default':
+                    case This\Helper\BootstrapHelper::DEFAULT_MODULE:
                         $this->di->set($this->getModuleName(), $realModule);
                         break;
                     default:

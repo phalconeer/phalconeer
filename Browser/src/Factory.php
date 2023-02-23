@@ -16,7 +16,7 @@ class Factory extends Bootstrap\Factory
 {
     const MODULE_NAME = 'browser';
     
-    protected static $requiredModules = [
+    protected static array $requiredModules = [
         CurlClient\Factory::MODULE_NAME,
         Http\Factory::MODULE_NAME,
         Loader\Factory::MODULE_NAME,

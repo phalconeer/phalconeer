@@ -1,7 +1,7 @@
 <?php
 namespace Phalconeer\Impression\Trait;
 
-trait RequestId
+trait Server
 {
-    protected string $requestId;
+    protected ?string $server;
 }

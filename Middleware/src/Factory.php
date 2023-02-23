@@ -9,6 +9,6 @@ class Factory extends Bootstrap\Factory
     
     protected function configure()
     {
-        return 'loaded';
+        return Bootstrap\Helper\BootstrapHelper::MODULE_LOADED;
     }
 }

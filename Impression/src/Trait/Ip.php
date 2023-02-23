@@ -1,10 +1,10 @@
 <?php
 namespace Phalconeer\Impression\Trait;
 
-trait Session
+trait Ip
 {
     /**
-     * Session ID.
+     * IP of the visitor.
      */
-    protected string $session;
+    protected ?array $ip;
 }

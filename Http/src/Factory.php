@@ -14,8 +14,12 @@ class Factory extends Bootstrap\Factory
         Loader\Factory::MODULE_NAME,
     ];
 
+    protected static array $configFiles = [
+        __DIR__ . '/_config/http_config.php',
+    ];
+
     protected function configure() {
-        $config = $this->di->get(Config\Factory::MODULE_NAME)->get('http');
+        $config = $this->di->get(Config\Factory::MODULE_NAME)->get(static::MODULE_NAME);
         if (!is_null($config)
             && $config->has('namespaces')) {
             $this->di->get(Loader\Factory::MODULE_NAME)->loadNamespaces(
@@ -24,6 +28,6 @@ class Factory extends Bootstrap\Factory
             );
         }
 
-        return 'loaded';
+        return Bootstrap\Helper\BootstrapHelper::MODULE_LOADED;
     }
 }

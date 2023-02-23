@@ -41,6 +41,6 @@ class Factory extends Bootstrap\Factory
 
         $this->di->get(LiveSession\Factory::MODULE_NAME)->setAdapter($adapter);
 
-        return 'loaded';
+        return Bootstrap\Helper\BootstrapHelper::MODULE_LOADED;
     }
 }

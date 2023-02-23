@@ -8,7 +8,7 @@ use Phalconeer\Http;
 
 trait Message
 {
-    use Data\Traits\Data\TraitWithProperties;
+    use Data\Trait\Data\TraitWithProperties;
 
     /**
     * TODO: add filtering logic
@@ -121,7 +121,7 @@ trait Message
             );
         }
 
-        return $this->setKeyValue(
+        return $this->setValueByKey(
             'headerVariables',
             new \ArrayObject($variables)
         );
@@ -140,7 +140,7 @@ trait Message
             );
         }
 
-        return $this->setKeyValue(
+        return $this->setValueByKey(
             'bodyVariables',
             new \ArrayObject($variables)
         );
@@ -153,7 +153,7 @@ trait Message
                 $body = $this->bodyVariable(Http\Helper\MessageHelper::FULL_TEXT_BODY) . $body;
             }
 
-        return $this->setKeyValue(
+        return $this->setValueByKey(
             'bodyVariables',
             new \ArrayObject([
                 Http\Helper\MessageHelper::FULL_TEXT_BODY => $body
@@ -291,7 +291,7 @@ trait Message
     public function withHeader($name, $value) : self
     {
         //TODO: lowercase check for the header names, to not have conflicting entries
-        return $this->setKeyValue(
+        return $this->setValueByKey(
             'headerVariables',
             new \ArrayObject([$name => $value])
         );
@@ -332,7 +332,7 @@ trait Message
      */
     public function withoutHeader($name) : self
     {
-        return $this->setKeyValue(
+        return $this->setValueByKey(
             'headerVariables',
             new \ArrayObject(
                 array_filter(
@@ -395,6 +395,6 @@ trait Message
      */
     public function withProtocolVersion($version) : self
     {
-        return $this->setKeyValue('protocolVersion', $version);
+        return $this->setValueByKey('protocolVersion', $version);
     }
 }

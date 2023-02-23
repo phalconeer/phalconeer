@@ -8,11 +8,9 @@ use Phalconeer\CurlClient;
 use Phalconeer\ElasticAdapter as This;
 use Phalconeer\Http;
 
-class ElasticAdapterModule extends Bootstrap\Factory
+class Factory extends Bootstrap\Factory
 {
     const MODULE_NAME = 'elasticAdapter';
-    
-    const DEFAULT_CONFIG = 'default';
 
     protected static array $requiredModules = [
         Config\Factory::MODULE_NAME,
@@ -21,7 +19,7 @@ class ElasticAdapterModule extends Bootstrap\Factory
         CurlClient\Factory::MODULE_NAME,
     ];
 
-    protected static $configFiles = [];
+    protected static array $configFiles = [];
 
     protected function getDefaultRequestMiddlewares() : array
     {
@@ -43,13 +41,14 @@ class ElasticAdapterModule extends Bootstrap\Factory
     }
 
     protected function configure() {
-        $connectionParameters = $this->di->get(Config\Factory::MODULE_NAME)->elasticsearch;
+        $connectionParameters = $this->di->get(Config\Factory::MODULE_NAME)
+            ->get('elasticsearch', Config\Helper\ConfigHelper::$dummyConfig);
         $di = $this->di;
         $defaultRequestMiddlewares = $this->getDefaultRequestMiddlewares();
         $defaultResponseMiddlewares = $this->getDefaultResponseMiddlewares();
 
         return function (
-            $connectionType = self::DEFAULT_CONFIG,
+            $connectionType = This\HElper\ElasticAdapterHelper::DEFAULT_CONFIG,
             array $requestMiddlewares = [],
             array $responseMiddlewares = []
         ) use ($connectionParameters, $di, $defaultRequestMiddlewares, $defaultResponseMiddlewares) {
@@ -63,29 +62,30 @@ class ElasticAdapterModule extends Bootstrap\Factory
             foreach ($defaultResponseMiddlewares as $middleware) {
                 $responseMiddlewares[] = $middleware;
             }
-            $config = clone($connectionParameters->offsetGet($connectionType)); // Makes individual connection config immutable
+            $config = clone($connectionParameters->get($connectionType, Config\Helper\ConfigHelper::$dummyConfig));
 
             $curlOptions = new CurlClient\Data\CurlOptions();
 
-            if ($config->xpack
-                && $config->xpack->username) {
+            if ($config->has('xpack')
+                && $config->xpack->has('username')) {
                 $curlOptions = $curlOptions->setHttpAuth(CURLAUTH_BASIC)
                                     ->setUserPwd($config->xpack->username . ':' . $config->xpack->password);
             }
 
-            $config->offsetSet(
-                Browser\Factory::MODULE_NAME,
-                $di->get(
+            return new This\Data\ElasticDaoConfiguration(new \ArrayObject([
+                'browser'       => $di->get(
                     Browser\Factory::MODULE_NAME,
                     [
                         $di->get(CurlClient\Factory::MODULE_NAME, [$curlOptions]),
                         $requestMiddlewares,
                         $responseMiddlewares
                     ]
-                )
-            );
-
-            return $config;
+                ),
+                'config'        => $config,
+                'defaultUri'    => (new Http\Data\Uri())->withScheme($config->get('protocol', 'http'))
+                    ->withHost($config->get('host', 'localhost'))
+                    ->withPort($config->get('port', 9200))
+            ]));
         };
     }
 }

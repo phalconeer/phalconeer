@@ -61,7 +61,7 @@ AMMZZYYXXX, where
 * 37 - ?Admin
 * 38 - LiveSession
 * 39 - AuthAdmin
-* 40 - ?
+* 40 - Impression
 * 41 - ?Task
 * 42 - ?
 * 43 - ?SoapClient

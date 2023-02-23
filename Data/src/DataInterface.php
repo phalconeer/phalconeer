@@ -1,6 +1,8 @@
 <?php
 namespace Phalconeer\Data;
 
+use Phalconeer\Data as This;
+
 interface DataInterface extends CommonInterface
 {
     public function dirty() : array;
@@ -16,4 +18,6 @@ interface DataInterface extends CommonInterface
         $value,
         $isSilent = false
     ) : self;
+
+    public function merge(This\DataInterface $changes) : This\DataInterface;
 }

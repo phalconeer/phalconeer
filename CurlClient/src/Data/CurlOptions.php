@@ -156,7 +156,7 @@ class CurlOptions extends Data\ImmutableData
     {
         switch ($httpAuth) {
             case CURLAUTH_BASIC:
-                return $this->setKeyValue('httpAuth', $httpAuth);
+                return $this->setValueByKey('httpAuth', $httpAuth);
         }
 
         return $this;
@@ -164,6 +164,6 @@ class CurlOptions extends Data\ImmutableData
 
     public function setUserPwd(string $userPwd) : self
     {
-        return $this->setKeyValue('userPwd', $userPwd);
+        return $this->setValueByKey('userPwd', $userPwd);
     }
 }

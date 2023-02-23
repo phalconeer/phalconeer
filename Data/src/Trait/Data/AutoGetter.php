@@ -22,7 +22,7 @@ trait AutoGetter
             && array_key_exists(0, $arguments)) {
             $proprety = lcfirst(substr($functionName, 3));
             if (property_exists($this, $proprety)) {
-                return $this->setKeyValue($proprety, $arguments[0]);
+                return $this->setValueByKey($proprety, $arguments[0]);
             }
         }
     }
