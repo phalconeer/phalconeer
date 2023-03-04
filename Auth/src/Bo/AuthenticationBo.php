@@ -26,7 +26,7 @@ class AuthenticationBo
 
     public function addAuthenticator (This\AuthenticatorInterface $authenticator)
     {
-        $this->authenticators->offsetSet(null, $authenticator);
+        $this->authenticators->offsetSet($authenticator->getMethodName(), $authenticator);
     }
 
     public function addLoginHandler (callable $handler)

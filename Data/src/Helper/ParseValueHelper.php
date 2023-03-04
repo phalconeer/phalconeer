@@ -103,6 +103,17 @@ class ParseValueHelper
         return $value;
     }
 
+    public static function parseArrayObject($value) : \ArrayObject
+    {
+        if ($value instanceof \ArrayObject) {
+            return $value;
+        }
+        if (is_array($value)) {
+            return new \ArrayObject($value);
+        }
+        return $value;
+    }
+
     public static function parseCallable($value) : callable
     {
         if (!is_callable($value)) {
@@ -178,6 +189,8 @@ class ParseValueHelper
                 return self::parseArray($value);
             case self::TYPE_CALLABLE:
                 return self::parseCallable($value);
+            case \ArrayObject::class:
+                return self::parseArrayObject($value);
             case This\TypedProperty::class:
                 if((!is_object($value) 
                         || is_a($value, This\TypedProperty::class))

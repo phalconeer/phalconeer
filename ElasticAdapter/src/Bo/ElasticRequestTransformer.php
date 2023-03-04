@@ -31,8 +31,8 @@ class ElasticRequestTransformer extends Middleware\Bo\DefaultMiddleware implemen
                     Http\Helper\MessageHelper::FULL_TEXT_BODY   => $body
                 ]
             );
-// echo \Phalconeer\Helper\TVarDumper::dump($body) . PHP_EOL;
-// echo \Phalconeer\Helper\TVarDumper::dump($request);
+// echo \Phalconeer\Dev\TVarDumper::dump($body) . PHP_EOL;
+// echo \Phalconeer\Dev\TVarDumper::dump($request);
 // die();
         $next($request);
         return null;

@@ -41,8 +41,14 @@ trait ParseTypes
                 if (is_null($type)) {
                     $type = This\Property\Any::class;
                 }
-                if (substr($type, 0, 1) === '?') {
-                    $type = substr($type, 1);
+                if ($type instanceof \ReflectionNamedType) {
+                    $type = $type->getName();
+                }
+                if ($type instanceof \ReflectionUnionType
+                    || $type instanceof \ReflectionIntersectionType) {
+                    $type = array_map(function (\ReflectionNamedType $reflectionType) {
+                        return $reflectionType->getName();
+                    }, $type->getTypes());
                 }
                 $aggregator[$property->name] = $type;
             }

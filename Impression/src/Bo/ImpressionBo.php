@@ -20,26 +20,26 @@ class ImpressionBo
             $this->impression = new This\Data\Impression();
         }
         $this->impressionClass = get_class($this->impression);
-        $this->initImpression();
+        $this->mergeData([
+            'accept'        => $this->request->getServer('HTTP_ACCEPT') . $this->request->getServer('HTTP_ACCEPT_CHARSET'),
+            'header'        => $this->request->getHeaders(),
+            'host'          => $this->request->getHttpHost(),
+            'ip'            => $this->request->getClientAddress(false),
+            'language'      => $this->request->getServer('HTTP_ACCEPT_LANGUAGE'),
+            'method'        => $this->request->getMethod(),
+            'query'         => $this->request->getServer('REQUEST_URI'),
+            'referer'       => $this->request->getHTTPReferer(),
+            'requestTime'   => new \DateTime(),
+            'server'        => $this->request->getServer('SERVER_ADDR'),
+            'useragent'     => $this->request->getUserAgent(),
+            'xForwrded'     => $this->request->getServer('HTTP_X_FORWARDED_FOR'),
+        ]);
     }
 
-    public function initImpression()
+    public function mergeData(array $data = [])
     {
         $this->impression = $this->impression->merge(
-            new $this->impressionClass(new \ArrayObject([
-                'accept'        => $this->request->getServer('HTTP_ACCEPT') . $this->request->getServer('HTTP_ACCEPT_CHARSET'),
-                'header'        => $this->request->getHeaders(),
-                'host'          => $this->request->getHttpHost(),
-                'ip'            => $this->request->getClientAddress(false),
-                'language'      => $this->request->getServer('HTTP_ACCEPT_LANGUAGE'),
-                'method'        => $this->request->getMethod(),
-                'query'         => $this->request->getServer('REQUEST_URI'),
-                'referer'       => $this->request->getHTTPReferer(),
-                'requestTime'   => new \DateTime(),
-                'server'        => $this->request->getServer('SERVER_ADDR'),
-                'useragent'     => $this->request->getUserAgent(),
-                'xForwrded'     => $this->request->getServer('HTTP_X_FORWARDED_FOR'),
-            ]))
+            new $this->impressionClass(new \ArrayObject())
         );
     }
 

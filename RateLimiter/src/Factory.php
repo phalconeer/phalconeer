@@ -20,9 +20,12 @@ class Factory extends Bootstrap\Factory
     protected function configure() {
         $di = $this->di;
         $moduleName = static::MODULE_NAME;
-        return function () use ($di, $moduleName){
+        return function (Impression\Bo\ImpressionBo $impressionBo = null) use ($di, $moduleName){
+            if (is_null($impressionBo)) {
+                $impressionBo = $di->get(Impression\Factory::MODULE_NAME);
+            }
             return new This\Bo\RateLimiterBo(
-                $di->get(Impression\Factory::MODULE_NAME),
+                $impressionBo,
                 $di->get(Config\Factory::MODULE_NAME)->get($moduleName, Config\Helper\ConfigHelper::$dummyConfig),
             );
         };

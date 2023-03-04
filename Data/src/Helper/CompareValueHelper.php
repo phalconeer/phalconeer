@@ -19,6 +19,20 @@ class CompareValueHelper
                 );
                 $iterator->next();
             }
+            if (!$return) {
+                return $return;
+            }
+            $newIterator = $newValue->getIterator();
+            while ($newIterator->valid()) {
+                $return = $return
+                    && $base->offsetExists($newIterator->key())
+                    && static::hasSameData(
+                        $newIterator->current(),
+                        $base->offsetGet($newIterator->key())
+                );
+                $newIterator->next();
+            }
+
             return $return;
         }
         if ($base instanceof This\ImmutableData) {

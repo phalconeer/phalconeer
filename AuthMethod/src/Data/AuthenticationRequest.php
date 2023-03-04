@@ -2,11 +2,13 @@
 namespace Phalconeer\AuthMethod\Data;
 
 use Phalconeer\Data;
+use Phalconeer\Dto;
 
-class AuthenticationRequest extends Data\ImmutableData
+class AuthenticationRequest extends Dto\ImmutableDto
 {
     use Data\Trait\Data\ParseTypes,
-        Data\Trait\Data\AutoGetter;
+        Data\Trait\Data\AutoGetter,
+        Dto\Trait\ArrayLoader;
 
     protected string $method;
 

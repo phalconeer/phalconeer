@@ -46,11 +46,11 @@ abstract class ImmutableData implements This\DataInterface
      */
     public function __construct(\ArrayObject $inputObject = null)
     {
+        $this->_propertiesCache = $this->parseTypes(static::getProperties());
         if (is_null($inputObject)) {
             $inputObject = new \ArrayObject();
         }
         $inputObject = $this->initializeData($inputObject);
-        $this->_propertiesCache = $this->parseTypes(static::getProperties());
         foreach ($this->_propertiesCache as $propertyName => $propertyType) {
             if (!$inputObject->offsetExists($propertyName)) {
                 continue;

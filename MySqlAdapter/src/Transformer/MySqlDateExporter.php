@@ -1,10 +1,10 @@
 <?php
-namespace Phalconeer\Dto\Transformer;
+namespace Phalconeer\MySqlAdapter\Transformer;
 
 use Phalconeer\Data;
-use Phalconeer\Dto as This;
+use Phalconeer\Dto;
 
-class MySqlDateExporter implements This\TransformerInterface
+class MySqlDateExporter implements Dto\TransformerInterface
 {
     const TRAIT_METHOD = 'exportAllMySqlDate';
 
@@ -20,16 +20,29 @@ class MySqlDateExporter implements This\TransformerInterface
         if (!$source instanceof \ArrayObject) {
             return $source;
         }
-        return self::exportAllMySqlDate($source);
+        if (is_null($parameters)) {
+            $parameters = new \ArrayObject();
+        }
+        if (!is_null($baseObject)) {
+            $parameters->offsetSet('dateProperties', MySqlDateLoader::getDateProperties($baseObject));
+        }
+        return self::exportAllMySqlDate($source, $parameters);
     }
 
     public static function exportAllMySqlDate(
-        \ArrayObject $source
+        \ArrayObject $source,
+        \ArrayObject $parameters = null
     ) : \ArrayObject 
     {
         $iterator = $source->getIterator();
+        $dateProperties = (is_null($parameters)
+            || !$parameters->offsetExists('dateProperties'))
+            ? null
+            : $parameters->offsetGet('dateProperties');
         while ($iterator->valid()) {
-            if ($iterator->current() instanceof \DateTime) {
+            if ((is_null($dateProperties)
+                    || array_key_exists($iterator->key(), $dateProperties))
+                && $iterator->current() instanceof \DateTime) {
                 $source->offsetSet(
                     $iterator->key(),
                     self::exportMySqlDate($iterator->current())

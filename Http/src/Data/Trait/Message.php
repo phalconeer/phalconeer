@@ -27,7 +27,7 @@ trait Message
 
     protected string $protocolVersion = Http\Helper\HttpHelper::HTTP_PROTOCOL_VERSION_1_1;
 
-    protected function initializeDataTrait(\ArrayObject $inputObject) : \ArrayObject 
+    public function initializeDataTrait(\ArrayObject $inputObject) : \ArrayObject 
     {
         // if (!$inputObject->offsetExists('allowedInHeader')) {
         //     $inputObject->offsetSet('allowedInHeader', new \ArrayObject());
@@ -120,7 +120,6 @@ trait Message
                 $this->headerVariables->getArrayCopy()
             );
         }
-
         return $this->setValueByKey(
             'headerVariables',
             new \ArrayObject($variables)
@@ -139,7 +138,6 @@ trait Message
                 $this->bodyVariables->getArrayCopy()
             );
         }
-
         return $this->setValueByKey(
             'bodyVariables',
             new \ArrayObject($variables)

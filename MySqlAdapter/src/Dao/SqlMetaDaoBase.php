@@ -206,7 +206,6 @@ class SqlMetaDaoBase extends SqlDaoBase
     public function getRecord(array $whereConditions = []) : ?\ArrayObject
     {
         [$headerConditions, $metaConditions] = $this->splitConditions($whereConditions);
-
         if (count($headerConditions) > 0) {
             $headerResults = $this->getHeaderResults($headerConditions);
         }

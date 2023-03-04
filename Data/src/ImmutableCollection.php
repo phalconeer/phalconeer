@@ -16,6 +16,7 @@ abstract class ImmutableCollection implements This\CollectionInterface
             $dataObject = new \ArrayObject();
         }
         $this->collection = new \ArrayObject();
+        $dataObject = $this->initializeData($dataObject);
 
         $iterator = $dataObject->getIterator();
         while ($iterator->valid()) {
@@ -30,6 +31,11 @@ abstract class ImmutableCollection implements This\CollectionInterface
             }
             $iterator->next();
         }
+    }
+
+    public function initializeData(\ArrayObject $inputObject) : \ArrayObject
+    {
+        return $inputObject;
     }
 
     private function parseComplexType($value)
@@ -63,6 +69,17 @@ abstract class ImmutableCollection implements This\CollectionInterface
 
         $dummyObject = new $this->collectionType();
         return $dummyObject->properties();
+    }
+
+    public function propertyTypes() : array
+    {
+        if (!is_null($this->collection)) {
+            $iterator = $this->collection->getIterator();
+            return $iterator->current()->propertyTypes();
+        }
+
+        $dummyObject = new $this->collectionType();
+        return $dummyObject->propertyTypes();
     }
 
     public function offsetGet($offset) : ?This\CommonInterface

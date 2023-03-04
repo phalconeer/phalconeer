@@ -1,11 +1,11 @@
 <?php
 namespace Phalconeer\AuthAdmin;
 
-use Phalconeer\Auth;
+use Phalconeer\AuthMethod;
 
 interface AuthenticationCreatorInterface
 {
-    public function create (Auth\Data\AuthenticationRequest $authenticationRequest) : bool;
+    public function create (AuthMethod\Data\AuthenticationRequest $authenticationRequest) : bool;
 
     public function getMethodName() : string;
 }

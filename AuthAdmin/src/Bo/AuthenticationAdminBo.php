@@ -1,7 +1,6 @@
 <?php
-namespace Phalconeer\AuthenticationAdmin\Bo;
+namespace Phalconeer\AuthAdmin\Bo;
 
-use Phalconeer\Auth;
 use Phalconeer\AuthAdmin as This;
 use Phalconeer\AuthMethod;
 use Phalconeer\Id;
@@ -35,7 +34,7 @@ class AuthenticationAdminBo
         }
         
 
-        $authenticationRequest = new Auth\Data\AuthenticationRequest(new \ArrayObject([
+        $authenticationRequest = new AuthMethod\Data\AuthenticationRequest(new \ArrayObject([
             'requestId'     => Id\Helper\IdHelper::getUuidv4(),
             'requestTime'   => new \DateTime(),
             'userId'        => $userData['id'] ?? null,

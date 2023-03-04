@@ -43,12 +43,13 @@ class Request extends Data\ImmutableData implements Psr\Http\Message\RequestInte
 
     public function requestId() : ?string
     {
-        return $this->requestId;
+        return $this->getValue('requestId');
     }
 
     public function requestTarget() : string
     {
-        if (is_null($this->requestTarget)) {
+        if (!isset($this->requestTarget)
+            || is_null($this->requestTarget)) {
             return implode('?', array_filter([
                 $this->url->getPath(),
                 $this->url->getQuery()
@@ -60,7 +61,7 @@ class Request extends Data\ImmutableData implements Psr\Http\Message\RequestInte
 
     public function method() : string
     {
-        return $this->method;
+        return $this->getValue('method');
     }
 
     /**
@@ -79,7 +80,7 @@ class Request extends Data\ImmutableData implements Psr\Http\Message\RequestInte
      */
     public function getRequestTarget() : string
     {
-        return $this->requestTarget();
+        return $this->getValue('requestTarget');
     }
 
     /**
@@ -107,7 +108,7 @@ class Request extends Data\ImmutableData implements Psr\Http\Message\RequestInte
      */
     public function getMethod() : string
     {
-        return $this->method();
+        return $this->getValue('method');
     }
 
     /**
