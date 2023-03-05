@@ -21,7 +21,7 @@ class Factory extends Bootstrap\Factory
     ];
 
     protected static array $configFiles = [
-        __DIR__ . '/_config/session_config.php'
+        __DIR__ . '/_config/session_memcache_config.php'
     ];
 
     protected function configure() {

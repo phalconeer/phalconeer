@@ -54,4 +54,22 @@ class UserBo implements MySqlAdapter\TransactionBoInterface
             ? null
             : new $this->collectionClass(null, $userData);
     }
+
+    public function setCollectionClass(string $collectionClass) : self
+    {
+        $this->collectionClass = $collectionClass;
+        return $this;
+    }
+
+    public function setDao(Dao\DaoReadInterface $dao) : self
+    {
+        $this->dao = $dao;
+        return $this;
+    }
+
+    public function setUserClass(string $userClass) : self
+    {
+        $this->userClass = $userClass;
+        return $this;
+    }
 }

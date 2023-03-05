@@ -33,9 +33,9 @@ class User extends Dto\ImmutableDto implements This\UserInterface
             static::$_sensitiveProperties;
     }
 
-    public function __construct(array $input = null, \ArrayObject $inputObject = null)
+    public function __construct(\ArrayObject $inputObject = null)
     {
-        parent::__construct($input, $inputObject);
+        parent::__construct($inputObject);
 
         $this->_sensitivePropertiesCache = $this->getSensitiveProperties();
     }

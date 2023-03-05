@@ -27,7 +27,7 @@ abstract class DaoBase
     {
         if (!array_key_exists($type, $this->connections)) {
             throw new This\Exception\UndefinedConnectionException(
-                $type,
+                get_class($this) . ' - ' . $type,
                 This\Helper\ExceptionHelper::DAO__CONNECTION_NOT_CONFIGURED
             );
         }

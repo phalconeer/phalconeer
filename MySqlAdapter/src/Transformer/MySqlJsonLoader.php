@@ -50,7 +50,8 @@ class MySqlJsonLoader implements Dto\TransformerInterface
             ? []
             : $parameters->offsetGet('jsonProperties');
         while ($iterator->valid()) {
-            if (array_key_exists($iterator->key(), $jsonProperties)) {
+            if (array_key_exists($iterator->key(), $jsonProperties)
+                && !is_null($iterator->current())) {
                 $source->offsetSet(
                     $iterator->key(),
                     new \ArrayObject(self::loadMySqlJson($iterator->current()))
@@ -63,8 +64,11 @@ class MySqlJsonLoader implements Dto\TransformerInterface
 
     public static function loadMySqlJson(
         $json
-    ) : array 
+    ) : ?array 
     {
+        if (is_null($json)) {
+            return null;
+        }
         return json_decode($json, 1);
     }
 }

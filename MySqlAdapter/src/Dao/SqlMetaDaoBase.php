@@ -112,11 +112,10 @@ class SqlMetaDaoBase extends SqlDaoBase
 
     protected function splitConditions(array $whereConditions = []) : array
     {
-        $headerKeys = array_keys($this->headerProperties);
         $metaConditions = array_reduce(
             array_keys($whereConditions),
-            function ($aggregator, $currentKey) use (&$whereConditions, $headerKeys) {
-                if (!in_array($currentKey, $headerKeys)) {
+            function ($aggregator, $currentKey) use (&$whereConditions) {
+                if (!in_array($currentKey, $this->headerProperties)) {
                     $aggregator[] = [
                         'key'       => $currentKey,
                         'value'     => $whereConditions[$currentKey]
