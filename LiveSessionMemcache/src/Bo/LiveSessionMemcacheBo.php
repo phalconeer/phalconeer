@@ -15,7 +15,7 @@ class LiveSessionMemcacheBo implements LiveSession\LiveSessionAdapterInterface
 
     public function createSession(LiveSession\Data\LiveSession $liveSession) : bool
     {
-        return $this->adapter->set($liveSession->id(), $liveSession->toJsonCopy());
+        return $this->adapter->set($liveSession->id(), $liveSession->toJson());
     }
 
     public function isValid(string $sessionId) : bool
@@ -33,7 +33,7 @@ class LiveSessionMemcacheBo implements LiveSession\LiveSessionAdapterInterface
             return null;
         }
 
-        $liveSession = new LiveSession\Data\LiveSession(json_decode($sessionData, true));
+        $liveSession = LiveSession\Data\LiveSession::fromArray(json_decode($sessionData, true));
         return $liveSession;
     }
 

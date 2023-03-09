@@ -32,14 +32,14 @@ AMMZZYYXXX, where
 
 ## Module codes for Phalconeer
 * 10 - Application
-* 11 - ?MySqlAdapter
+* 11 - MySqlAdapter
 * 12 - Dao
 * 13 - Memcache
-* 14 - ?ElasticAdapter
+* 14 - ElasticAdapter
 * 15 - Auth
-* 16 - ?User
+* 16 - User
 * 17 - ?LoginApplication
-* 18 - ?LoginBearer
+* 18 - ?AuthenticateBearer
 * 19 - ?LoginCredentials
 * 20 - ?LoginSession
 * 21 - ?FormValidator
@@ -63,13 +63,13 @@ AMMZZYYXXX, where
 * 39 - AuthAdmin
 * 40 - Impression
 * 41 - ?Task
-* 42 - ?
+* 42 - UserAdmin
 * 43 - ?SoapClient
 * 44 - ?
 * 45 - ?
 * 46 - ?
 * 47 - ?GoogleApiAuth
-* 48 - ?LoginDeviceIdExceptionHelper
+* 48 - ?AuthenticateDeviceId
 * 49 - ?
 * 50 - ?
 * 51 - ?

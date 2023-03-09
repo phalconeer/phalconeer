@@ -2,10 +2,12 @@
 namespace Phalconeer\AuthMethod\Data;
 
 use Phalconeer\Data;
+use Phalconeer\Dto;
 
 class AuthenticationResponse extends Data\ImmutableData
 {
-    use Data\Trait\Data\ParseTypes,
+    use Dto\Trait\ArrayLoader,
+        Data\Trait\Data\ParseTypes,
         Data\Trait\Data\AutoGetter;
 
     protected \ArrayObject $deniedPermissions;

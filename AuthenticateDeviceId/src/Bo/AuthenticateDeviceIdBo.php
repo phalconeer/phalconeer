@@ -17,8 +17,6 @@ class AuthenticateDeviceIdBo
 {
     use MySqlAdapter\Bo\TransactionBoTrait;
 
-    const METHOD_NAME = 'authenticateDeviceId';
-
     public function __construct(
         protected Dao\DaoReadAndWriteInterface $authDao,
         protected User\Bo\UserBo $userBo,
@@ -38,10 +36,10 @@ class AuthenticateDeviceIdBo
             'deviceId'       => $authenticationRequest->username(),
         ]);
         if (is_null($credentialData)) {
-            return new AuthMethod\Data\AuthenticationResponse(new \ArrayObject([
-                'method'            => self::METHOD_NAME,
+            return AuthMethod\Data\AuthenticationResponse::fromArray([
+                'method'            => $this->getMethodName(),
                 'error'             => This\Helper\ExceptionHelper::CREATE_MEMBER_TOKEN__CREDENTIALS_NOT_FOUND
-            ]));
+            ]);
         }
 
         $credential = new This\Data\UserCredentialDevice($credentialData);
@@ -51,17 +49,17 @@ class AuthenticateDeviceIdBo
             'applicationId' => $this->application->getId()
         ]);
         if (is_null($userData)) {
-            return new AuthMethod\Data\AuthenticationResponse(new \ArrayObject([
-                'method'            => self::METHOD_NAME,
+            return AuthMethod\Data\AuthenticationResponse::fromArray([
+                'method'            => $this->getMethodName(),
                 'error'             => This\Helper\ExceptionHelper::CREATE_MEMBER_TOKEN__APPLICATION_NOT_LINKED
-            ]));
+            ]);
         }
 
-        return new AuthMethod\Data\AuthenticationResponse(new \ArrayObject([
+        return AuthMethod\Data\AuthenticationResponse::fromArray([
             'userId'            => $credential->userId(),
             'sessionValid'      => $credential->isValid(),
-            'method'            => self::METHOD_NAME
-        ]));
+            'method'            => $this->getMethodName()
+        ]);
     }
 
     public function create(AuthMethod\Data\AuthenticationRequest $authenticationRequest) : bool
@@ -104,6 +102,6 @@ class AuthenticateDeviceIdBo
 
     public function getMethodName() : string
     {
-        return static::METHOD_NAME;
+        return This\Factory::MODULE_NAME;
     }
 }

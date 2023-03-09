@@ -15,7 +15,7 @@ class MemcacheAdapter implements This\LiveSessionAdapterInterface
 
     public function createSession(This\Data\LiveSession $liveSession) : bool
     {
-        return $this->adapter->set($liveSession->id(), $liveSession->toJsonCopy());
+        return $this->adapter->set($liveSession->id(), $liveSession->toJson());
     }
 
     public function isValid(string $sessionId) : bool

@@ -10,6 +10,7 @@ class LiveSession extends Dto\ImmutableDto
     use MySqlAdapter\Trait\MySqlDateExporter,
         Dto\Trait\ArrayLoader,
         Dto\Trait\ArrayObjectExporter,
+        Dto\Trait\JsonExporter,
         Data\Trait\Data\ParseTypes,
         Data\Trait\Data\AutoGetter;
 

@@ -78,6 +78,7 @@ class Factory extends Bootstrap\Factory
                     ]))
                 ]
             );
+
             return $adapterFactory->newInstance(
                 This\Helper\MemcacheHelper::ADAPTER_TYPE_MEMCACHE_WITH_IGNORE,
                 $options

@@ -6,9 +6,9 @@ use Phalconeer\Dto;
 
 class AuthenticationRequest extends Dto\ImmutableDto
 {
-    use Data\Trait\Data\ParseTypes,
-        Data\Trait\Data\AutoGetter,
-        Dto\Trait\ArrayLoader;
+    use Dto\Trait\ArrayLoader,
+        Data\Trait\Data\ParseTypes,
+        Data\Trait\Data\AutoGetter;
 
     protected string $method;
 
