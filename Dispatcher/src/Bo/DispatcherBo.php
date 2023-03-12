@@ -9,8 +9,8 @@ class DispatcherBo
 {
     public function __construct(
         protected Mvc\DispatcherInterface $dispatcher,
-        protected PhalconConfig\Config $config,
         protected PhalconConfig\Config $applicationConfig,
+        protected \ArrayObject $eventListeners = new \ArrayObject(),
     )
     {
         $this->configureDispatcher();
@@ -19,10 +19,16 @@ class DispatcherBo
     protected function configureDispatcher()
     {
         $this->dispatcher->setDefaultNamespace($this->applicationConfig->defaultNamespace);
-        if ($this->config->has('eventListeners')) {
+        if ($this->eventListeners->count() > 0) {
             $eventsManager = new Events\Manager();
-            foreach ($this->config->eventListeners as $event => $listener) {
-                $eventsManager->attach($event, new $listener);
+            $iterator = $this->eventListeners->getIterator();
+            while ($iterator->valid()) {
+                $eventIterator = $iterator->current()->getIterator();
+                while ($eventIterator->valid()) {
+                    $eventsManager->attach($iterator->key(), $eventIterator->current());
+                    $eventIterator->next();
+                }
+                $iterator->next();
             }
             $this->dispatcher->setEventsManager($eventsManager);
         }

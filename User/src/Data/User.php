@@ -44,4 +44,9 @@ class User extends Dto\ImmutableDto implements This\UserInterface
     {
         return $this->setValueByKey('lastLogin', $lastLogin);
     }
+
+    public function getPrimaryKey() : array
+    {
+        return ['id'];
+    }
 }

@@ -3,9 +3,7 @@ namespace Phalconeer\UserMySqlAdapter\Dao;
 
 use Phalconeer\MySqlAdapter;
 
-class UsersDao extends MySqlAdapter\Dao\SqlDaoBase implements MySqlAdapter\TransactionDaoInterface
+class UsersDao extends MySqlAdapter\Dao\SqlDaoBase
 {
-    use MySqlAdapter\Dao\TransactionDaoTrait;
-
     protected string $tableName = 'users';
 }

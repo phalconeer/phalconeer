@@ -304,10 +304,7 @@ class SqlQueryHelper
         $fields = new \ArrayObject();
         $parameters = new \ArrayObject();
         $uncamelize = new Str\Uncamelize();
-
-        $exporetedData = $data->exportWithTransformers([
-            Dto\Helper\TraitsHelper::EXPORT_METHOD_TO_ARRAY_OBJECT
-        ]);
+        $exporetedData = $data->export();
         $dirtyFields = $data->dirty(); 
 
         $iterator = $exporetedData->getIterator();
@@ -348,13 +345,23 @@ class SqlQueryHelper
      */
     public static function bindValuesToStatement(
         \PDOStatement $stmt,
-        Dto\ArrayObjectExporterInterface $data,
+        \ArrayObject $data,
         \ArrayObject $parameters
     )
     {
         foreach ($parameters as $parameterName) {
-            $value = $data->{substr($parameterName, 1)}();
-            self::bindValue($stmt, $parameterName, $value);
+            $key = substr($parameterName, 1);
+            if (!$data->offsetExists($key)) {
+                throw new This\Exception\RequiredParameterNotSetException(
+                    $key,
+                    This\Helper\ExceptionHelper::MYSQL_ADAPTER__PARAMETER_VALUE_NOT_SET
+                );
+            }
+            self::bindValue(
+                $stmt,
+                $parameterName,
+                $data->offsetGet($key)
+            );
         }
     }
 

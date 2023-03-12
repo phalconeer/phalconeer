@@ -75,9 +75,10 @@ class SqlDaoBase extends Dao\DaoBase implements Dao\DaoReadAndWriteInterface
                         }
                     )
                 );
+    // echo \Phalconeer\Dev\TVarDumper::dump([$query, $fields, $parameters, $data]);
         $stmt = $connection->prepare($query);
     // echo \Phalconeer\Helper\TVarDumper::dump([$stmt, $fields, $parameters, $data]);
-        This\Helper\SqlQueryHelper::bindValuesToStatement($stmt, $data, $parameters);
+        This\Helper\SqlQueryHelper::bindValuesToStatement($stmt, $data->export(), $parameters);
         if (!$newRecord) {
             foreach ($primaryKey as $primaryField) {
                 // 0 is needed as index, as the standard whereCondition generator thinks in arrays
@@ -172,48 +173,6 @@ class SqlDaoBase extends Dao\DaoBase implements Dao\DaoReadAndWriteInterface
     //             ' . This\Helper\SqlQueryHelper::createUpdateAssignments($fieldsToUpdate, $paramteresToUpdate) . '
     //         ' . This\Helper\SqlQueryHelper::getWhereConditions($conditions);
     // }
-
-    /**
-     * Creates an Object from the result
-     */
-    protected function getResultObject(bool | array $result, bool $camelize = true) : ?\ArrayObject
-    {
-        if ($result === false
-            || !is_array($result)) {
-            return null;
-        }
-        if (!$camelize) {
-            return new \ArrayObject($result);
-        }
-        $camelizer = new Str\Camelize();
-        $camelizedResult = array_reduce(
-            array_keys($result),
-            function (array $aggregate, string $key) use ($camelizer, $result) {
-                $aggregate[lcfirst($camelizer($key))] = $result[$key];
-                return $aggregate;
-            },
-            []
-        );
-
-        return new \ArrayObject($camelizedResult);
-    }
-
-    protected function getResultObjectSet(bool | array $result, bool $camelize = true) : ?\ArrayObject
-    {
-        if ($result === false
-            || !is_array($result)) {
-            return null;
-        }
-
-        return new \ArrayObject(
-            array_map(
-                function ($resultItem) use ($camelize) {
-                    return $this->getResultObject($resultItem, $camelize);
-                },
-                $result
-            )
-        );
-    }
 
     /**
      * Returns a record from the table.

@@ -29,18 +29,20 @@ class Factory extends Bootstrap\Factory
         $authDao = new This\Dao\UserCredentialsDevicesDao($this->di->get(MySqlAdapter\Factory::MODULE_NAME, ['auth']));
         $auth = $this->di->get(Auth\Factory::MODULE_NAME);
         $authAdmin = $this->di->get(AuthAdmin\Factory::MODULE_NAME);
+        $user = $this->di->get(User\Factory::MODULE_NAME);
+        $application = $this->di->get(Application\Factory::MODULE_NAME);
 
         $bo = new This\Bo\AuthenticateDeviceIdBo(
             $authDao,
-            $this->di->get(User\Factory::MODULE_NAME),
-            $this->di->get(Application\Factory::MODULE_NAME)
+            $user,
+            $application
         );
         $auth->addAuthenticator($bo);
         
         $authAdmin->addAuthenticationCreator(new This\Bo\AuthenticateDeviceIdBo(
             new This\Dao\UserCredentialsDevicesDao($this->di->get(MySqlAdapter\Factory::MODULE_NAME, ['auth', false])),
-            $this->di->get(User\Factory::MODULE_NAME),
-            $this->di->get(Application\Factory::MODULE_NAME)
+            $user,
+            $application
         ));
 
         return $bo;
