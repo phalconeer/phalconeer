@@ -305,7 +305,14 @@ class SqlQueryHelper
         $parameters = new \ArrayObject();
         $uncamelize = new Str\Uncamelize();
         $exporetedData = $data->export();
-        $dirtyFields = $data->dirty(); 
+        $dirtyFields = $data->dirty();
+
+        if (!$exporetedData instanceof \IteratorAggregate) {
+            throw new This\Exception\InvalidDataFormatException(
+                get_class($exporetedData) . ' is not parsable for SQL query, try converting it to ArrayObject in export method',
+                This\Helper\ExceptionHelper::MYSQL_ADAPTER__DATA_OBJECT_CAN_NOT_BE_PARSED
+            );
+        }
 
         $iterator = $exporetedData->getIterator();
         while ($iterator->valid()) {

@@ -332,7 +332,9 @@ abstract class ImmutableData implements This\DataInterface
         return array_reduce(
             $primaryKey,
             function ($aggergator, $attribute) {
-                return $aggergator && !is_null($this->{$attribute});
+                return $aggergator
+                    && isset($this->{$attribute})
+                    && !is_null($this->{$attribute});
             },
             true
         );

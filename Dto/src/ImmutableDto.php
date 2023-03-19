@@ -51,7 +51,6 @@ class ImmutableDto extends Data\ImmutableData implements This\DtoExporterInterfa
     public function initializeData(\ArrayObject $inputObject) : \ArrayObject
     {
         $transformers = static::getLoadTransformers();
-// echo \Phalconeer\Dev\TVarDumper::dump([get_class($this), $inputObject, $transformers]);
         foreach ($transformers as $transformer) {
             if (is_string($transformer)
                 && is_callable([$this, $transformer])) {
@@ -69,7 +68,6 @@ class ImmutableDto extends Data\ImmutableData implements This\DtoExporterInterfa
                 $inputObject = call_user_func_array([$transformer, 'transform'], [$inputObject, $this]);
             }
         }
-// echo \Phalconeer\Dev\TVarDumper::dump(['rtnasdorm', $inputObject]);
         return $inputObject;
     }
 

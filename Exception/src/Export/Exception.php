@@ -22,7 +22,7 @@ class Exception extends Dto\ImmutableDto
 
     protected $message;
 
-    protected self $previous;
+    protected ?This\Export\Exception $previous;
 
     protected int $statusCode;
 
@@ -32,7 +32,7 @@ class Exception extends Dto\ImmutableDto
 
     public function setPrevious(self $previous) : self
     {
-        return $this->setKeyValue('previous', $previous);
+        return $this->setValueByKey('previous', $previous);
     }
 
     public function getPrimaryKey(): array
@@ -42,7 +42,7 @@ class Exception extends Dto\ImmutableDto
 
     public static function fromException(\Exception $exception) : self
     {
-        return self::fromArray([
+        $exportException = self::fromArray([
             'id'                => This\Helper\ReadableIdHelper::getId(),
             'code'              => $exception->getCode(),
             'message'           => $exception->getMessage(),
@@ -58,5 +58,9 @@ class Exception extends Dto\ImmutableDto
                 return This\Export\ExceptionTrace::fromArray($traceItem);
             }, $exception->getTrace()))
         ]);
+        if (!$exception->getPrevious()) {
+            return $exportException;
+        }
+        return $exportException->setPrevious(self::fromException($exception->getPrevious()));
     }
 }

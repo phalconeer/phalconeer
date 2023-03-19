@@ -27,7 +27,8 @@ class ExceptionDebugPrintBo
             $exceptiontoExport = Exception\Export\Exception::fromException($exception);
 
             if ($this->exceptionDescriptors->has($exceptiontoExport->code())) {
-                echo \Phalconeer\Dev\TVarDumper::dump(['visible error message', $this->exceptionDescriptors->get($exceptiontoExport->code())]);
+                echo 'VISIBLE ERROR MESSAGE'. PHP_EOL;
+                echo \Phalconeer\Dev\TVarDumper::dump($this->exceptionDescriptors->get($exceptiontoExport->code())) . PHP_EOL . PHP_EOL;
             } else {
                 echo 'NO ERROR MESSAGE SET!' . PHP_EOL . PHP_EOL;
             }

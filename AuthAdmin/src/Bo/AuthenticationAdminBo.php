@@ -21,7 +21,10 @@ class AuthenticationAdminBo
 
     public function addAuthenticationCreator (This\AuthenticationCreatorInterface $authenticationCreator)
     {
-        $this->authenticationCreators->offsetSet(null, $authenticationCreator);
+        $this->authenticationCreators->offsetSet(
+            $authenticationCreator->getMethodName(),
+            $authenticationCreator
+        );
     }
 
     public function createCredentials(array $userData, string $method)

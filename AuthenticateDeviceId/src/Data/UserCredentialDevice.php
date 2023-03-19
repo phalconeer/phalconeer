@@ -11,6 +11,10 @@ class UserCredentialDevice extends Dto\ImmutableDto implements Dto\ArrayObjectEx
         Data\Trait\Data\ParseTypes,
         Data\Trait\Data\AutoGetter;
 
+    protected static array $_exportTransformers = [
+        Dto\Helper\TraitsHelper::EXPORT_METHOD_TO_ARRAY_OBJECT
+    ];
+
     protected int $id;
 
     protected string $deviceId;
@@ -21,7 +25,7 @@ class UserCredentialDevice extends Dto\ImmutableDto implements Dto\ArrayObjectEx
 
     public function changeDeviceId(string $deviceId = null) : self
     {
-        return $this->setKeyValue('deviceId', $deviceId);
+        return $this->setValueByKey('deviceId', $deviceId);
     }
 
     public function isValid() : bool

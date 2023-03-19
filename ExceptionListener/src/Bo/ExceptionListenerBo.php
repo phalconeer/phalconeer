@@ -27,7 +27,6 @@ class ExceptionListener
             );
         }
 
-
         /**
          * @var Mvc\Dispatcher  $dispatcher
          */
