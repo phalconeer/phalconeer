@@ -2,7 +2,6 @@
 namespace Phalconeer\AuthenticateDeviceId\Bo;
 
 use Phalconeer\Auth;
-use Phalconeer\AuthAdmin;
 use Phalconeer\AuthMethod;
 use Phalconeer\Dao;
 use Phalconeer\Application;
@@ -12,13 +11,12 @@ use Phalconeer\User;
 
 class AuthenticateDeviceIdBo
     implements Auth\AuthenticatorInterface,
-        AuthAdmin\AuthenticationCreatorInterface,
         MySqlAdapter\TransactionBoInterface
 {
     use MySqlAdapter\Bo\TransactionBoTrait;
 
     public function __construct(
-        protected Dao\DaoReadAndWriteInterface $authDao,
+        protected Dao\DaoReadInterface $authDao,
         protected User\Bo\UserBo $userBo,
         protected Application\ApplicationInterface $application
     )
@@ -60,35 +58,6 @@ class AuthenticateDeviceIdBo
             'sessionValid'      => $credential->isValid(),
             'method'            => $this->getMethodName()
         ]);
-    }
-
-    public function create(AuthMethod\Data\AuthenticationRequest $authenticationRequest) : bool
-    {
-        $existingDeviceId = $this->authDao->getRecord([
-            'deviceId'      => $authenticationRequest->username(),
-        ]);
-        $existingUserId = $this->authDao->getRecord([
-            'userId'        => $authenticationRequest->userId(),
-        ]);
-
-        if (!is_null($existingDeviceId)) {
-            throw new This\Exception\DeviceIdExist($authenticationRequest->username(), This\Helper\ExceptionHelper::CREATE_MEMBER_TOKEN__DEVICE_ID_EXISTS);
-        }
-
-        if (!is_null($existingUserId)) {
-            $credential = new This\Data\UserCredentialDevice(null, $existingUserId);
-        } else {
-            $credential = new This\Data\UserCredentialDevice(new \ArrayObject([
-                'userId'            => $authenticationRequest->userId()
-            ]));
-        }
-
-        $credential = $credential
-                        ->changeDeviceId(
-                            $authenticationRequest->username()
-                        );
-
-        return !is_null($this->authDao->save($credential));
     }
 
     public function assertDeviceIdAlreadyTaken($deviceId) : bool

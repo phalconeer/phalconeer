@@ -48,13 +48,13 @@ class Factory extends Bootstrap\Factory
         $config = $this->di->get(Config\Factory::MODULE_NAME)->get(static::MODULE_NAME);
         $applicationConfig = $this->di->get(Config\Factory::MODULE_NAME)->get('application');
         $cacheControl = $this->di->get(CacheControl\Factory::MODULE_NAME);
-
         return function (
             $connectionType,
             $prefix = null,
             Cache\Data\CacheSettings $cacheControlInstance = null
         ) use ($applicationConfig, $cacheControl, $config) {
-            if (!$config->offsetExists('connections')
+            if (is_null($config)
+                || !$config->offsetExists('connections')
                 || !$config->connections->offsetExists($connectionType)) {
                 throw new This\Exception\InvalidMemcacheTypeException(
                     'Connection configuration for memcache type `' . $connectionType . '` not found.',

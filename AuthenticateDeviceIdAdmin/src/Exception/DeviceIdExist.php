@@ -1,5 +1,5 @@
 <?php
-namespace Phalconeer\AuthenticateDeviceId\Exception;
+namespace Phalconeer\AuthenticateDeviceIdAdmin\Exception;
 
 use Phalconeer\Exception;
 

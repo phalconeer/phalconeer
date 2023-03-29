@@ -23,7 +23,10 @@ class ScopeBo implements This\ScopeAdapterInterface
      */
     public function getAllowedScopes(AuthMethod\Data\AuthenticationResponse $authenticationResponse) : \ArrayObject
     {
-        return $this->config->get('allowedScopes', Config\Helper\ConfigHelper::$dummyConfig)->toArray();
+        return new \ArrayObject($this->config->get(
+            'allowedScopes',
+            Config\Helper\ConfigHelper::$dummyConfig
+        )->toArray());
     }
 
     /**
@@ -31,6 +34,9 @@ class ScopeBo implements This\ScopeAdapterInterface
      */
     public function getDeniedScopes(AuthMethod\Data\AuthenticationResponse $authenticationResponse) : \ArrayObject
     {
-        return $this->config->get('deniedScopes', Config\Helper\ConfigHelper::$dummyConfig)->toArray();
+        return new \ArrayObject($this->config->get(
+            'deniedScopes',
+            Config\Helper\ConfigHelper::$dummyConfig
+        )->toArray());
     }
 }

@@ -1,41 +1,41 @@
 <?php
-namespace Phalconeer\AuthenticateDeviceId;
+namespace Phalconeer\AuthenticateDeviceIdAdmin;
 
 use Phalconeer\Application;
 use Phalconeer\Bootstrap;
-use Phalconeer\Auth;
-use Phalconeer\AuthenticateDeviceId as This;
+use Phalconeer\AuthAdmin;
+use Phalconeer\AuthenticateDeviceId;
+use Phalconeer\AuthenticateDeviceIdAdmin as This;
 use Phalconeer\MySqlAdapter;
 use Phalconeer\User;
 
 class Factory extends Bootstrap\Factory
 {
-    const MODULE_NAME = 'authenticateDeviceId';
+    const MODULE_NAME = 'authenticateDeviceIdAdmin';
     
     protected static array $requiredModules = [
         Application\Factory::MODULE_NAME,
-        Auth\Factory::MODULE_NAME,
+        AuthAdmin\Factory::MODULE_NAME,
         MySqlAdapter\Factory::MODULE_NAME,
         User\Factory::MODULE_NAME,
     ];
 
-    protected static array $configFiles = [
-        __DIR__ . '/_config/exception_descriptors_config.php'
-    ];
-
     protected function configure() {
-        $authDao = new This\Dao\UserCredentialsDevicesDao($this->di->get(MySqlAdapter\Factory::MODULE_NAME, ['auth']));
-        $auth = $this->di->get(Auth\Factory::MODULE_NAME);
+        $authDao = new AuthenticateDeviceId\Dao\UserCredentialsDevicesDao(
+            $this->di->get(MySqlAdapter\Factory::MODULE_NAME, ['auth', false])
+        );
+        $authAdmin = $this->di->get(AuthAdmin\Factory::MODULE_NAME);
         $user = $this->di->get(User\Factory::MODULE_NAME);
         $application = $this->di->get(Application\Factory::MODULE_NAME);
 
-        $bo = new This\Bo\AuthenticateDeviceIdBo(
+        $bo = new This\Bo\AuthenticateDeviceIdAdminBo(
             $authDao,
             $user,
             $application
         );
-        $auth->addAuthenticator($bo);
         
+        $authAdmin->addAuthenticationCreator($bo);
+
         return $bo;
     }
 }

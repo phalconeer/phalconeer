@@ -1,7 +1,6 @@
 <?php
 namespace Phalconeer\AuthAdmin;
 
-use Phalconeer\Auth;
 use Phalconeer\AuthAdmin as This;
 use Phalconeer\Bootstrap;
 use Phalconeer\LiveSession;

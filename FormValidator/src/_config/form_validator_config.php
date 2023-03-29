@@ -1,6 +1,8 @@
 <?php
+use Phalconeer\FormValidator as This;
+
 return [
-    'formValidator'           => [
+    This\Factory::MODULE_NAME   => [
         'dateFormats'     => [
             'Y-m-d',
             'Y.m.d.',

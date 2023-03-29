@@ -29,7 +29,7 @@ class Factory extends Bootstrap\Factory
             bool $strictMode = false
         ) use ($di) {
             if (is_null($config)) {
-                $config = $di->get(Config\Factory::MODULE_NAME)->get(static::class);
+                $config = $di->get(Config\Factory::MODULE_NAME)->get(self::MODULE_NAME); //static points to Phalcon\Di\FactoryDefault
             }
             return new This\Bo\FormValidatorBo(
                 $form,

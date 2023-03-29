@@ -40,7 +40,7 @@ AMMZZYYXXX, where
 * 16 - User
 * 17 - ?LoginApplication
 * 18 - ?AuthenticateBearer
-* 19 - ?LoginCredentials
+* 19 - AuthenticateCredentials
 * 20 - ?LoginSession
 * 21 - ?FormValidator
 * 22 - ?RestRequest
@@ -69,8 +69,8 @@ AMMZZYYXXX, where
 * 45 - ?
 * 46 - ?
 * 47 - ?GoogleApiAuth
-* 48 - ?AuthenticateDeviceId
-* 49 - ?
-* 50 - ?
+* 48 - AuthenticateDeviceId
+* 49 - AuthenticateDeviceIdAdmin
+* 50 - AuthenticateCredentialsAdmin
 * 51 - ?
 * 52 - ?
