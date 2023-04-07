@@ -1,5 +1,5 @@
 <?php
-namespace Phalconeer\RestResponse\Data\Trait;
+namespace Phalconeer\RestResponse\Trait;
 
 use Phalconeer\Exception;
 use Phalconeer\Data;

@@ -238,7 +238,7 @@ class RestResponse extends Http\Response
         }
     }
 
-    public function setContent(string $content) : Http\ResponseInterface
+    public function setContent(string $content = null) : Http\ResponseInterface
     {
         if ($this->format === This\Helper\RestResponseHelper::FORMAT_JSON) {
             return $this;

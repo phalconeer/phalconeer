@@ -6,7 +6,7 @@ use Phalconeer\Data;
 /**
  * Interface for the entities used by our REST API system.
  */
-interface ResourceInterface extends Data\DataInterface
+interface ResourceInterface extends Data\CommonInterface
 {
 
     /**
