@@ -6,7 +6,7 @@ use Phalconeer\FormValidator as This;
 
 class PossibleValues extends This\Data\FieldCheck
 {
-    protected static array $_properties = [
+    protected static array $properties = [
         'value'         => PVH::TYPE_ARRAY
     ];
 }

@@ -8,11 +8,11 @@ class TestArrayObjectExporterWithoutParseTypes extends This\Mock\Test
 {
     use Dto\Trait\ArrayObjectExporter;
 
-    protected static array $_properties = [
+    protected static array $properties = [
         'nestedObject'          => TestArrayObjectExporterWithoutParseTypes::class,
     ];
 
-    protected static array $_exportTransformers = [
+    protected static array $exportTransformers = [
         Dto\Helper\TraitsHelper::EXPORT_METHOD_TO_ARRAY_OBJECT,
     ];
 }

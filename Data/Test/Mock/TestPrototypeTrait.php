@@ -8,7 +8,7 @@ class TestPrototypeTrait extends Data\ImmutableData
 {
     use Data\Trait\Data\AutoGetter;
 
-    protected static array $_properties = [
+    protected static array $properties = [
         'stringProperty'        => Data\Helper\ParseValueHelper::TYPE_STRING,
         'intProperty'           => Data\Helper\ParseValueHelper::TYPE_INTEGER,
         'floatProperty'         => Data\Helper\ParseValueHelper::TYPE_DOUBLE,

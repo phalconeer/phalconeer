@@ -5,7 +5,7 @@ use Phalconeer\Data;
 
 class Test extends Data\ImmutableData
 {
-    protected static array $_properties = [
+    protected static array $properties = [
         'stringProperty'        => Data\Helper\ParseValueHelper::TYPE_STRING,
         'intProperty'           => Data\Helper\ParseValueHelper::TYPE_INTEGER,
         'floatProperty'         => Data\Helper\ParseValueHelper::TYPE_DOUBLE,

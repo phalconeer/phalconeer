@@ -10,15 +10,15 @@ class TestArrayExporterConvertFalse extends This\Mock\Test
     use Dto\Trait\ArrayExporter,
         Data\Trait\Data\ParseTypes;
 
-    protected static array $_properties = [
+    protected static array $properties = [
         'nestedObject'          => TestArrayExporterConvertFalse::class,
     ];
 
-    protected static bool $_convertChildren = false;
+    protected static bool $convertChildren = false;
 
-    protected static bool $_preserveKeys = false;
+    protected static bool $preserveKeys = false;
 
-    protected static array $_exportTransformers = [
+    protected static array $exportTransformers = [
         Dto\Helper\TraitsHelper::EXPORT_METHOD_TO_ARRAY,
     ];
 }

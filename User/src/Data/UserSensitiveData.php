@@ -8,7 +8,7 @@ class UserSensitiveData extends This\Data\User
 {
     use This\Trait\SensitiveData;
 
-    protected static array $_exportTransformers = [
+    protected static array $exportTransformers = [
         Dto\Helper\TraitsHelper::EXPORT_METHOD_TO_ARRAY_OBJECT,
         This\Transformer\SensitiveData::TRAIT_METHOD
     ];

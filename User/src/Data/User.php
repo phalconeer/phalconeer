@@ -11,13 +11,7 @@ class User extends Dto\ImmutableDto implements This\UserInterface
         Data\Trait\Data\ParseTypes,
         Data\Trait\Data\AutoGetter;
 
-    protected static array $_sensitiveProperties = [];
-
-    protected array $_sensitivePropertiesCache = [];
-
-    protected static array $_internalProperties = [
-        '_sensitivePropertiesCache',
-    ];
+    protected static array $sensitiveProperties = [];
 
     protected ?int $id = null;
 
@@ -29,15 +23,8 @@ class User extends Dto\ImmutableDto implements This\UserInterface
     {
         $parentClassName = get_parent_class(static::class);
         return method_exists($parentClassName, __FUNCTION__) ? 
-            array_merge($parentClassName::getSensitiveProperties(), static::$_sensitiveProperties) : 
-            static::$_sensitiveProperties;
-    }
-
-    public function __construct(\ArrayObject $inputObject = null)
-    {
-        parent::__construct($inputObject);
-
-        $this->_sensitivePropertiesCache = $this->getSensitiveProperties();
+            array_merge($parentClassName::getSensitiveProperties(), static::$sensitiveProperties) : 
+            static::$sensitiveProperties;
     }
 
     public function setLastLogin(\DateTime $lastLogin) : self

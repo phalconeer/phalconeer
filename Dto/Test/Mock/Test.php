@@ -6,7 +6,7 @@ use Phalconeer\Dto;
 
 class Test extends Dto\ImmutableDto
 {
-    protected static array $_properties = [
+    protected static array $properties = [
         'stringProperty'        => Data\Helper\ParseValueHelper::TYPE_STRING,
         'intProperty'           => Data\Helper\ParseValueHelper::TYPE_INTEGER,
         'floatProperty'         => Data\Helper\ParseValueHelper::TYPE_DOUBLE,

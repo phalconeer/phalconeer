@@ -8,7 +8,7 @@ class TestArrayLoader extends This\Mock\Test
 {
     use Dto\Trait\ArrayLoader;
 
-    protected static array $_properties = [
+    protected static array $properties = [
         'nestedObject'          => TestArrayLoader::class,
     ];
 }

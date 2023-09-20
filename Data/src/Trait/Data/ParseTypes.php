@@ -28,7 +28,9 @@ trait ParseTypes
         $reflection = new \ReflectionClass(static::class);
 
         $protectedProperties = $reflection->getProperties(\ReflectionProperty::IS_PROTECTED);
-        $internalProperties = static::getInternalProperties();
+        $internalProperties = [
+            'meta',
+        ];
         $properties = array_reduce($protectedProperties, function ($aggregator, $property) use ($predefinedProperties, $internalProperties) {
             if ($property->isStatic()
                 || in_array($property->name, $internalProperties)) {

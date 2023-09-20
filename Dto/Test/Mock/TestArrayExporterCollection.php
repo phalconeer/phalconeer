@@ -10,7 +10,7 @@ class TestArrayExporterCollection extends Dto\ImmutableCollectionDto
 
     protected string $collectionType = This\Mock\TestArrayExporter::class;
 
-    protected static array $_exportTransformers = [
+    protected static array $exportTransformers = [
         Dto\Helper\TraitsHelper::EXPORT_METHOD_TO_ARRAY,
     ];
 }

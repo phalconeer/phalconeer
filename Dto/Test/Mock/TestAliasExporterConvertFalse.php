@@ -8,17 +8,17 @@ class TestAliasExporterConvertFalse extends This\Mock\Test
 {
     use Dto\Trait\AliasExporter;
 
-    protected static bool $_convertChildren = false;
+    protected static bool $convertChildren = false;
 
-    protected static array $_properties = [
+    protected static array $properties = [
         'nestedObject'          => TestAliasExporterConvertFalse::class,
     ];
 
-    protected static array $_exportAliases = [
+    protected static array $exportAliases = [
         'stringProperty'            => 'externalStringProperty'
     ];
 
-    protected static array $_exportTransformers = [
+    protected static array $exportTransformers = [
         Dto\Transformer\AliasExporter::TRAIT_METHOD,
     ];
 }

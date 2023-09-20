@@ -38,7 +38,7 @@ trait ConvertedValue
     {
         if (!isset($this->{$propertyName}) // Added as with typed properties, the object can be in uninitialzed state, which throws property "must not be accessed before initialization"
             || is_null($this->{$propertyName})
-            || !array_key_exists($propertyName, $this->_propertiesCache)) {
+            || !$this->meta->doesPropertyExist($propertyName)) {
             return null;
         }
 
@@ -47,8 +47,10 @@ trait ConvertedValue
             return call_user_func([$this, $exportFunction]);
         }
 
-        if (Data\Helper\ParseValueHelper::isSimpleValue($this->_propertiesCache[$propertyName])
-            || ($this->_propertiesCache[$propertyName] === Data\Property\Any::class
+       $propertyType = $this->meta->propertyType($propertyName);
+
+        if (Data\Helper\ParseValueHelper::isSimpleValue($propertyType)
+            || ($propertyType === Data\Property\Any::class
                 && !is_object($this->{$propertyName}))) {
             return $this->{$propertyName};
         } else {

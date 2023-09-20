@@ -8,15 +8,15 @@ class TestArrayObjectNotNullExporter extends This\Mock\TestArrayExporter
 {
     use Dto\Trait\ArrayObjectNotNullExporter;
 
-    protected static array $_properties = [
+    protected static array $properties = [
         'nestedObject'          => TestArrayObjectNotNullExporter::class,
     ];
 
-    protected static bool $_convertChildren = true;
+    protected static bool $convertChildren = true;
 
-    protected static bool $_preserveKeys = false;
+    protected static bool $preserveKeys = false;
 
-    protected static array $_exportTransformers = [
+    protected static array $exportTransformers = [
         Dto\Helper\TraitsHelper::EXPORT_METHOD_TO_ARRAY_OBJECT_WITHOUT_NULLS,
     ];
 }

@@ -9,35 +9,31 @@ class ElasticBase extends Dto\ImmutableDto
     use Dto\Trait\AliasLoader,
         Dto\Trait\AliasExporter;
 
-    protected static array $_internalProperties = [
-        '_indexDateField',
-    ];
+    const INDEX_DATE_FIELD = '';
 
-    protected static array $_properties = [
+    protected static array $properties = [
         'id'                    => PVH::TYPE_STRING,
         'index'                 => PVH::TYPE_STRING,
         'sequenceNumber'        => PVH::TYPE_INT,
         'primaryTerm'           => PVH::TYPE_INT,
     ];
 
-    protected static array $_loadAliases = [
+    protected static array $loadAliases = [
         '_id'                   => 'id',
         '_index'                => 'index',
         '_seq_no'               => 'sequenceNumber',
         '_primary_term'         => 'primaryTerm',
     ];
 
-    protected static array $_exportAliases = [
+    protected static array $exportAliases = [
         'index'                 => null,
         'sequenceNumber'        => null,
         'primaryTerm'           => null,
     ];
 
-    protected static array $_loadTransformers = [
+    protected static array $loadTransformers = [
         Dto\Transformer\AliasLoader::TRAIT_METHOD,
     ];
-
-    protected ?string $_indexDateField;
 
     protected string $id;
 
@@ -52,13 +48,13 @@ class ElasticBase extends Dto\ImmutableDto
 
     public function getIndexDateValue() : ?\DateTime
     {
-        if (is_null($this->_indexDateField)
-            || !array_key_exists($this->_indexDateField, $this->_propertiesCache)
-            || !$this->{$this->_indexDateField} instanceof \DateTime) {
+        if (is_null(static::INDEX_DATE_FIELD)
+            || !$this->meta->doesPropertyExist(static::INDEX_DATE_FIELD)
+            || !$this->{static::INDEX_DATE_FIELD} instanceof \DateTime) {
             return null;
         }
 
-        return clone $this->{$this->_indexDateField};
+        return clone $this->{static::INDEX_DATE_FIELD};
     }
 
     public function getPrimaryKey() : array

@@ -6,13 +6,13 @@ use Phalconeer\Dto as This;
 
 class ImmutableCollectionDto extends Data\ImmutableCollection
 {
-    protected static bool $_convertChildren = true;
+    protected static bool $convertChildren = true;
 
-    protected static array $_exportTransformers = [];
+    protected static array $exportTransformers = [];
 
-    protected static array $_loadTransformers = [];
+    protected static array $loadTransformers = [];
 
-    protected static bool $_preserveKeys = false;
+    protected static bool $preserveKeys = false;
 
     public function exportWithTransformers(
         array $transformers = [],
@@ -69,7 +69,7 @@ class ImmutableCollectionDto extends Data\ImmutableCollection
 
     public static function getConvertChildren() : bool
     {
-        return static::$_convertChildren;
+        return static::$convertChildren;
     }
 
     public static function getExportTransformers(array $baseTransformers = []) : array
@@ -79,10 +79,10 @@ class ImmutableCollectionDto extends Data\ImmutableCollection
             && method_exists($parentClassName, __FUNCTION__))
             ? array_merge(
                 $parentClassName::getExportTransformers(),
-                static::$_exportTransformers,
+                static::$exportTransformers,
                 $baseTransformers
             )
-            : array_merge(static::$_exportTransformers, $baseTransformers);
+            : array_merge(static::$exportTransformers, $baseTransformers);
     }
 
     public static function getLoadTransformers() : array
@@ -92,21 +92,21 @@ class ImmutableCollectionDto extends Data\ImmutableCollection
             && method_exists($parentClassName, __FUNCTION__))
             ? array_merge(
                 $parentClassName::getLoadTransformers(),
-                ((isset(static::$_loadTransformers)) ? static::$_loadTransformers : []),
+                ((isset(static::$loadTransformers)) ? static::$loadTransformers : []),
             )
-            : ((isset(static::$_loadTransformers))
-                ? static::$_loadTransformers
+            : ((isset(static::$loadTransformers))
+                ? static::$loadTransformers
                 : []);
     }
 
     public static function getPreserveKeys() : bool
     {
-        return static::$_preserveKeys;
+        return static::$preserveKeys;
     }
 
     public static function withLoadTransformers(\ArrayObject $inputObject, array $loadTransformers)
     {
-        static::$_loadTransformers = $loadTransformers;
+        static::$loadTransformers = $loadTransformers;
         return new static($inputObject);
     }
 }

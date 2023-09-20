@@ -5,7 +5,7 @@ use Phalconeer\Data;
 
 class MutableTest extends Data\MutableData
 {
-    protected static array $_properties = [
+    protected static array $properties = [
         'stringProperty'        => Data\Helper\ParseValueHelper::TYPE_STRING,
         'intProperty'           => Data\Helper\ParseValueHelper::TYPE_INTEGER,
         'floatProperty'         => Data\Helper\ParseValueHelper::TYPE_DOUBLE,

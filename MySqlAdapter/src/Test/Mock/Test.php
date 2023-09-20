@@ -8,11 +8,11 @@ class Test extends Dto\ImmutableDto implements Dto\ArrayObjectExporterInterface
 {
     use Dto\Trait\ArrayObjectExporter;
 
-    protected static array $_exportTransformers = [
+    protected static array $exportTransformers = [
         Dto\Helper\TraitsHelper::EXPORT_METHOD_TO_ARRAY_OBJECT,
     ];
 
-    protected static array $_properties = [
+    protected static array $properties = [
         'stringProperty'        => Data\Helper\ParseValueHelper::TYPE_STRING,
         'intProperty'           => Data\Helper\ParseValueHelper::TYPE_INTEGER,
         'floatProperty'         => Data\Helper\ParseValueHelper::TYPE_DOUBLE,

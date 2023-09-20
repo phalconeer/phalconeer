@@ -11,7 +11,7 @@ class UserCredentialDevice extends Dto\ImmutableDto implements Dto\ArrayObjectEx
         Data\Trait\Data\ParseTypes,
         Data\Trait\Data\AutoGetter;
 
-    protected static array $_exportTransformers = [
+    protected static array $exportTransformers = [
         Dto\Helper\TraitsHelper::EXPORT_METHOD_TO_ARRAY_OBJECT
     ];
 

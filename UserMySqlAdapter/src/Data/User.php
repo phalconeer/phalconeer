@@ -11,12 +11,12 @@ class User extends UserModule\Data\User
         MySqlAdapter\Trait\MySqlDateExporter,
         MySqlAdapter\Trait\MySqlDateLoader;
 
-    protected static array $_exportTransformers = [
+    protected static array $exportTransformers = [
         MySqlAdapter\Transformer\MySqlBooleanExporter::TRAIT_METHOD,
         MySqlAdapter\Transformer\MySqlDateExporter::TRAIT_METHOD,
     ];
 
-    protected static array $_loadTransformers = [
+    protected static array $loadTransformers = [
         MySqlAdapter\Transformer\MySqlBooleanLoader::TRAIT_METHOD,
         MySqlAdapter\Transformer\MySqlDateLoader::TRAIT_METHOD,
     ];

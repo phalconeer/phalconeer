@@ -8,16 +8,16 @@ class TestAliasExporterWithMask extends This\Mock\Test
 {
     use Dto\Trait\AliasExporter;
 
-    protected static array $_properties = [
+    protected static array $properties = [
         'nestedObject'          => TestAliasExporterWithMask::class,
     ];
 
-    protected static array $_exportAliases = [
+    protected static array $exportAliases = [
         'stringProperty'            => 'externalStringProperty',
         'boolProperty'              => null,
     ];
 
-    protected static array $_exportTransformers = [
+    protected static array $exportTransformers = [
         Dto\Transformer\AliasExporter::TRAIT_METHOD,
     ];
 }

@@ -8,7 +8,7 @@ class MinValue extends This\Data\FieldCheck implements This\StrictableInterface
 {
     use This\Trait\StrictableRule;
 
-    protected static array $_properties = [
+    protected static array $properties = [
         'value'         => PVH::TYPE_INT
     ];
 }

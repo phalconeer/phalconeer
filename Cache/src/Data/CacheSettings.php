@@ -5,7 +5,7 @@ use Phalconeer\Data;
 
 class CacheSettings extends Data\ImmutableData
 {
-    protected static array $_properties = [
+    protected static array $properties = [
         'ignoreCache'           => Data\Helper\ParseValueHelper::TYPE_BOOL,
         'readCache'             => Data\Helper\ParseValueHelper::TYPE_BOOL,
         'ttl'                   => Data\Helper\ParseValueHelper::TYPE_INT,

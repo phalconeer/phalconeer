@@ -5,7 +5,7 @@ use Phalconeer\Data as This;
 
 class TypedProperty extends This\ImmutableData
 {
-    protected static ?array $_properties = [
+    protected static array $properties = [
         'value'         => This\Property\Any::class,
         'type'          => This\Helper\ParseValueHelper::TYPE_STRING
     ];

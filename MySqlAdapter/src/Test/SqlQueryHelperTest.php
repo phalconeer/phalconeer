@@ -608,7 +608,7 @@ class SqlQueryHelperTest extends Test\UnitTestCase
             'boolProperty'          => false,
             'dateTimeObject'        => new \DateTime('200-01-01 00:00:00'),
         ]));
-        $data->setDirty([
+        $data->meta->setDirty([
             'stringProperty',
             'intProperty',
             'floatProperty',

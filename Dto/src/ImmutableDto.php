@@ -6,17 +6,17 @@ use Phalconeer\Dto as This;
 
 class ImmutableDto extends Data\ImmutableData implements This\DtoExporterInterface
 {
-    protected static bool $_convertChildren = true;
+    protected static bool $convertChildren = true;
 
-    protected static array $_exportAliases = [];
+    protected static array $exportAliases = [];
 
-    protected static array $_exportTransformers = [];
+    protected static array $exportTransformers = [];
 
-    protected static array $_loadAliases = [];
+    protected static array $loadAliases = [];
 
-    protected static array $_loadTransformers = [];
+    protected static array $loadTransformers = [];
 
-    protected static bool $_preserveKeys = false;
+    protected static bool $preserveKeys = false;
 
     public function exportWithTransformers(
         array $transformers = [],
@@ -73,7 +73,7 @@ class ImmutableDto extends Data\ImmutableData implements This\DtoExporterInterfa
 
     public static function getConvertChildren() : bool
     {
-        return static::$_convertChildren;
+        return static::$convertChildren;
     }
 
     public static function getExportAliases() : array
@@ -82,8 +82,8 @@ class ImmutableDto extends Data\ImmutableData implements This\DtoExporterInterfa
         return ($parentClassName
             && method_exists($parentClassName, __FUNCTION__)) ? 
             array_merge(
-                $parentClassName::getExportAliases(), static::$_exportAliases) : 
-            static::$_exportAliases;
+                $parentClassName::getExportAliases(), static::$exportAliases) : 
+            static::$exportAliases;
     }
 
     public static function getExportTransformers(array $baseTransformers = []) : array
@@ -93,10 +93,10 @@ class ImmutableDto extends Data\ImmutableData implements This\DtoExporterInterfa
             && method_exists($parentClassName, __FUNCTION__))
             ? array_merge(
                 $parentClassName::getExportTransformers(),
-                static::$_exportTransformers,
+                static::$exportTransformers,
                 $baseTransformers
             )
-            : array_merge(static::$_exportTransformers, $baseTransformers);
+            : array_merge(static::$exportTransformers, $baseTransformers);
     }
 
     public static function getLoadAliases() : array
@@ -105,8 +105,8 @@ class ImmutableDto extends Data\ImmutableData implements This\DtoExporterInterfa
         return ($parentClassName
             && method_exists($parentClassName, __FUNCTION__)) ? 
             array_merge(
-                $parentClassName::getLoadAliases(), static::$_loadAliases) : 
-            static::$_loadAliases;
+                $parentClassName::getLoadAliases(), static::$loadAliases) : 
+            static::$loadAliases;
     }
 
     public static function getLoadTransformers() : array
@@ -116,27 +116,27 @@ class ImmutableDto extends Data\ImmutableData implements This\DtoExporterInterfa
             && method_exists($parentClassName, __FUNCTION__))
             ? array_merge(
                 $parentClassName::getLoadTransformers(),
-                ((isset(static::$_loadTransformers)) ? static::$_loadTransformers : []),
+                ((isset(static::$loadTransformers)) ? static::$loadTransformers : []),
             )
-            : ((isset(static::$_loadTransformers))
-                ? static::$_loadTransformers
+            : ((isset(static::$loadTransformers))
+                ? static::$loadTransformers
                 : []);
     }
 
     public static function getPreserveKeys() : bool
     {
-        return static::$_preserveKeys;
+        return static::$preserveKeys;
     }
 
     public static function withExportTransformers(\ArrayObject $inputObject, array $exportTransformers)
     {
-        static::$_exportTransformers = $exportTransformers;
+        static::$exportTransformers = $exportTransformers;
         return new static($inputObject);
     }
 
     public static function withLoadTransformers(\ArrayObject $inputObject, array $loadTransformers)
     {
-        static::$_loadTransformers = $loadTransformers;
+        static::$loadTransformers = $loadTransformers;
         return new static($inputObject);
     }
 }

@@ -10,15 +10,15 @@ class TestAliasLoader extends This\Mock\Test
     use Dto\Trait\AliasLoader,
         Data\Trait\Data\ParseTypes;
 
-    protected static array $_properties = [
+    protected static array $properties = [
         'nestedObject'          => TestAliasLoader::class,
     ];
 
-    protected static array $_loadAliases = [
+    protected static array $loadAliases = [
         'externalStringProperty'        => 'stringProperty'
     ];
 
-    protected static array $_loadTransformers = [
+    protected static array $loadTransformers = [
         Dto\Transformer\AliasLoader::TRAIT_METHOD,
     ];
 }

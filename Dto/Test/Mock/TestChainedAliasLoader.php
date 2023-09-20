@@ -10,11 +10,11 @@ class TestChainedAliasLoader extends This\Mock\TestAliasLoader
     use Dto\Trait\AliasLoader,
         Data\Trait\Data\ParseTypes;
 
-    protected static array $_properties = [
+    protected static array $properties = [
         'nestedObject'          => TestChainedAliasLoader::class,
     ];
 
-    protected static array $_loadAliases = [
+    protected static array $loadAliases = [
         'externalIntProperty'        => 'intProperty'
     ];
 }
