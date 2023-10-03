@@ -1,10 +1,11 @@
 <?php
 namespace Phalconeer\Browser;
 
-use Phalconeer\Middleware\MiddlewareInterface;
 use Psr;
+use Phalconeer\Middleware;
+use Phalconeer\Http;
 
-interface ResponseMiddlewareInterface extends MiddlewareInterface
+interface ResponseMiddlewareInterface extends Middleware\MiddlewareInterface
 {
-    public function handleResponse(Psr\Http\Message\ResponseInterface $response, callable $next) : ?bool;
+    public function handleResponse(Psr\Http\Message\ResponseInterface | Http\MessageInterface $response, callable $next) : ?bool;
 }

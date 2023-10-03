@@ -1,10 +1,11 @@
 <?php
-namespace Phalconeer\Dto\Transformer;
+namespace Phalconeer\ElasticAdapter\Transformer;
 
 use Phalconeer\Data;
-use Phalconeer\Dto as This;
+use Phalconeer\Dto;
+use Phalconeer\ElasticAdapter as This;
 
-class ElasticDateExporter implements This\TransformerInterface
+class ElasticDateExporter implements Dto\TransformerInterface
 {
     const TRAIT_METHOD = 'exportAllElasticDate';
 
@@ -20,7 +21,13 @@ class ElasticDateExporter implements This\TransformerInterface
         if (!$source instanceof \ArrayObject) {
             return $source;
         }
-        return self::exportAllElasticDate($source);
+        if (is_null($parameters)) {
+            $parameters = new \ArrayObject();
+        }
+        if (!$parameters->offsetExists('dateProperties')) {
+            $parameters->offsetSet('dateProperties', This\Transformer\ElasticDateLoader::getDateProperties($baseObject));
+        }
+        return self::exportAllElasticDate($source, $parameters);
     }
 
     public static function exportAllElasticDate(

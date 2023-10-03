@@ -5,7 +5,7 @@ use Psr;
 use Phalconeer\CurlClient as This;
 use Phalconeer\Http;
 
-class CurlResponse implements Psr\Http\Message\ResponseInterface
+class CurlResponse implements Psr\Http\Message\ResponseInterface, Http\MessageInterface
 {
     protected Http\Data\Response $response;
 
@@ -122,5 +122,21 @@ class CurlResponse implements Psr\Http\Message\ResponseInterface
     public function getReasonPhrase()
     {
         $this->response->getReasonPhrase();
+    }
+
+    // Fropm the Message trait
+    public function bodyVariable(string $key)
+    {
+        return $this->response->bodyVariable($key);
+    }
+
+    public function bodyVariables() : array
+    {
+        return $this->response->bodyVariables();
+    }
+
+    public function withBodyVariables(array $variables, bool $merge = false) : self
+    {
+        return $this->response->withBodyVariables($variables, $merge);
     }
 }

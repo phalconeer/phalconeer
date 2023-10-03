@@ -74,9 +74,9 @@ abstract class ImmutableData implements This\DataInterface
 
     /**
      * Formats the value to the desired format and makes sure that nested objects are immutable.
-     * Use transformer trais for generic cases (export functions has to be created in the object)
+     * Use transformer traits for generic cases (export functions has to be created in the object)
      */
-    protected function getValue($propertyName)
+    public function getValue(string $propertyName)
     {
         if (!isset($this->{$propertyName}) // Added as with typed properties, the object can be in uninitialzed state, which throws property "must not be accessed before initialization"
             || is_null($this->{$propertyName})
@@ -93,6 +93,18 @@ abstract class ImmutableData implements This\DataInterface
         } else {
             return clone($this->{$propertyName});
         }
+    }
+
+    /**
+     * Returns all the values in an ArrayObject
+     */
+    public function getValues() : \ArrayObject
+    {
+        $data = new \ArrayObject();
+        foreach ($this->properties() as $property => $propertyType) {
+            $data->offsetSet($property, $this->getValue($property));
+        }
+        return $data;
     }
 
     /**

@@ -35,14 +35,15 @@ class AliasLoader implements This\TransformerInterface
         array $aliases
     ) : \ArrayObject 
     {
-        if (count($aliases) > 0) {
-            foreach ($aliases as $externalProperty => $internalProperty) {
-                if ($inputObject->offsetExists($externalProperty)) {
-                    $inputObject->offsetSet(
-                        $internalProperty,
-                        $inputObject->offsetGet($externalProperty)
-                    );
-                }
+        if (count($aliases) === 0) {
+            return $inputObject;
+        }
+        foreach ($aliases as $externalProperty => $internalProperty) {
+            if ($inputObject->offsetExists($externalProperty)) {
+                $inputObject->offsetSet(
+                    $internalProperty,
+                    $inputObject->offsetGet($externalProperty)
+                );
             }
         }
         return $inputObject;

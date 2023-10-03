@@ -35,21 +35,22 @@ class AliasExporter implements This\TransformerInterface
         array $aliases
     ) : \ArrayObject 
     {
-        if (count($aliases) > 0) {
-            foreach ($aliases as $internalProperty => $externalProperty) {
-                if ($source->offsetExists($internalProperty)) {
-                    if (!is_null($externalProperty)) {
-                        $value = $source->offsetGet($internalProperty);
-                        if (is_object($value)) {
-                            $value = clone($value);
-                        }
-                        $source->offsetSet(
-                            $externalProperty,
-                            $value
-                        );
+        if (count($aliases) === 0) {
+            return $source;
+        }
+        foreach ($aliases as $internalProperty => $externalProperty) {
+            if ($source->offsetExists($internalProperty)) {
+                if (!is_null($externalProperty)) {
+                    $value = $source->offsetGet($internalProperty);
+                    if (is_object($value)) {
+                        $value = clone($value);
                     }
-                    $source->offsetUnset($internalProperty);
+                    $source->offsetSet(
+                        $externalProperty,
+                        $value
+                    );
                 }
+                $source->offsetUnset($internalProperty);
             }
         }
         return $source;

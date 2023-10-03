@@ -3,6 +3,7 @@ namespace Phalconeer\Http\Data;
 
 use Psr;
 use Phalconeer\Data;
+use Phalconeer\Dto;
 use Phalconeer\Http as This;
 
 /**
@@ -14,9 +15,10 @@ use Phalconeer\Http as This;
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  * @author Martijn van der Ven <martijn@vanderven.se>
  */
-final class Uri extends Data\ImmutableData implements Psr\Http\Message\UriInterface
+final class Uri extends Dto\ImmutableDto implements Psr\Http\Message\UriInterface
 {
-    use Data\Trait\Data\ParseTypes;
+    use Data\Trait\Data\ParseTypes,
+        Dto\Trait\ArrayLoader;
 
     private const SCHEMES = ['http' => 80, 'https' => 443];
 

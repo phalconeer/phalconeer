@@ -66,12 +66,12 @@ trait Message
         return null;
     }
 
-    public function bodyVariableExists($key)
+    public function bodyVariableExists(string $key) : bool
     {
         return $this->bodyVariables->offsetExists($key);
     }
 
-    public function bodyVariable($key)
+    public function bodyVariable(string $key)
     {
         if (!$this->bodyVariableExists($key)) {
             return null;

@@ -1,14 +1,16 @@
 <?php
 namespace Phalconeer\Http\Data;
 
-use Phalconeer\Data;
-use Phalconeer\Http as This;
 use Psr;
+use Phalconeer\Data;
+use Phalconeer\Dto;
+use Phalconeer\Http as This;
 
-class Response extends Data\ImmutableData implements Psr\Http\Message\ResponseInterface
+class Response extends Dto\ImmutableDto implements Psr\Http\Message\ResponseInterface, This\MessageInterface
 {
     use This\Data\Trait\Message,
-        Data\Trait\Data\ParseTypes;
+        Data\Trait\Data\ParseTypes,
+        Dto\Trait\ArrayLoader;
 
     protected int $statusCode;
 

@@ -1,12 +1,12 @@
 <?php
-namespace Phalconeer\MySqlAdapter\Transformer;
+namespace Phalconeer\ElasticAdapter\Transformer;
 
 use Phalconeer\Data;
 use Phalconeer\Dto;
 
-class MySqlDateLoader implements Dto\TransformerInterface
+class ElasticDateLoader implements Dto\TransformerInterface
 {
-    const TRAIT_METHOD = 'loadAllMySqlDate';
+    const TRAIT_METHOD = 'loadAllElasticDate';
 
     public function transform(
         $source,
@@ -26,7 +26,7 @@ class MySqlDateLoader implements Dto\TransformerInterface
         if (!$parameters->offsetExists('dateProperties')) {
             $parameters->offsetSet('dateProperties', self::getDateProperties($baseObject));
         }
-        return self::loadAllMySqlDate($source, $parameters);
+        return self::loadAllElasticDate($source, $parameters);
     }
 
     public static function getDateProperties(Data\CommonInterface $baseObject)
@@ -39,7 +39,7 @@ class MySqlDateLoader implements Dto\TransformerInterface
         );
     }
 
-    public static function loadAllMySqlDate(
+    public static function loadAllElasticDate(
         \ArrayObject $source,
         \ArrayObject $parameters = null
     ) : \ArrayObject 
@@ -53,7 +53,7 @@ class MySqlDateLoader implements Dto\TransformerInterface
             if (in_array($iterator->key(), $dateProperties)) {
                 $source->offsetSet(
                     $iterator->key(),
-                    self::loadMySqlDate($iterator->current())
+                    self::loadElasticDate($iterator->current())
                 );
             }
             $iterator->next();
@@ -61,7 +61,7 @@ class MySqlDateLoader implements Dto\TransformerInterface
         return $source;
     }
 
-    public static function loadMySqlDate(
+    public static function loadElasticDate(
         $date
     ) : ?\DateTime 
     {

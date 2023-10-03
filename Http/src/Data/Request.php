@@ -7,7 +7,7 @@ use Phalconeer\Dto;
 use Phalconeer\Http as This;
 use Psr;
 
-class Request extends Data\ImmutableData implements Psr\Http\Message\RequestInterface
+class Request extends Dto\ImmutableDto implements Psr\Http\Message\RequestInterface, This\MessageInterface
 {
     use This\Data\Trait\Message,
         Data\Trait\Data\ParseTypes,

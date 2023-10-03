@@ -1,11 +1,9 @@
 <?php
 namespace Phalconeer\MySqlAdapter\Dao;
 
-use Phalcon\Support\Helper\Str;
 use Phalconeer\Dto;
 use Phalconeer\Dao;
 use Phalconeer\MySqlAdapter as This;
-
 
 class SqlDaoBase extends Dao\DaoBase implements Dao\DaoReadAndWriteInterface
 {

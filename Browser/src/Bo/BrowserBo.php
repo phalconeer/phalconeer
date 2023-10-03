@@ -57,11 +57,8 @@ class BrowserBo implements This\BrowserInterface
         return;
     }
 
-    public function call(Psr\Http\Message\RequestInterface $request) : Psr\Http\Message\ResponseInterface
+    public function call(Psr\Http\Message\RequestInterface | Http\Data\Request $request) : Http\MessageInterface
     {
-        /**
-         * @var \Phalconeer\Http\Data\Request $request
-         */
         $this->resetClientOptions();
         $this->setClientOptions();
         $response = new CurlClient\Data\CurlResponse(
