@@ -1,10 +1,10 @@
 <?php
 
-namespace Phalconeer\MySqlAdapter\Dao;
+namespace Phalconeer\MySqlAdapter\Trait;
 
 use Phalconeer\Dao;
 
-trait TransactionDaoTrait
+trait Transaction
 {
     protected bool $isTransactionInProgress = false;
 

@@ -6,5 +6,5 @@ use Phalconeer\MySqlAdapter;
 
 class UsersAdminDao extends This\Dao\UsersDao implements MySqlAdapter\TransactionDaoInterface
 {
-    use MySqlAdapter\Dao\TransactionDaoTrait;
+    use MySqlAdapter\Trait\Transaction;
 }
