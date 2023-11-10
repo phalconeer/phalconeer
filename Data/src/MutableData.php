@@ -10,7 +10,7 @@ abstract class MutableData extends This\ImmutableData
      * Formats the value to the desired format and makes sure that nested objects are immutable.
      * Use transformer trais for generic cases (export functions has to be created in the object)
      */
-    protected function getValue($propertyName)
+    public function getValue($propertyName)
     {
         if (!isset($this->{$propertyName}) // Added as with typed properties, the object can be in uninitialzed state, which throws property "must not be accessed before initialization"
             || is_null($this->{$propertyName})
