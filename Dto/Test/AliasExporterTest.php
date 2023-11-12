@@ -175,21 +175,23 @@ class AliasExporterTest extends Test\UnitTestCase
             'arrayObject'       => ['--', '!!'],
             'dateTimeObject'    => '1970-01-01T00:00:00+00:00',
             'nestedObject'      => new \ArrayObject([
-                'stringProperty'    => 'This is a nested string',
-                'intProperty'       => 99,
-                'floatProperty'     => 0.000003,
-                'arrayProperty'     => [3, 4],
-                'callableProperty'  => null,
-                'nestedObject'      => null, 
-                'arrayObject'       => null, 
-                'dateTimeObject'    => null, 
+                'externalStringProperty'    => 'This is a nested string', //This is coming from the default exporter
+                'intProperty'               => 99,
+                'floatProperty'             => 0.000003,
+                'boolProperty'              => false, //Default exporter does not have bool disabled 
+                'arrayProperty'             => [3, 4],
+                'callableProperty'          => null,
+                'nestedObject'              => null, 
+                'arrayObject'               => null, 
+                'dateTimeObject'            => null, 
             ]),
         ]);
         $aliasTransformer = new Dto\Transformer\AliasExporter([
             'externalStringProperty'    => 'stringProperty',
             'boolProperty'              => null, //hidden from output
         ]);
-        $dto = This\Mock\TestAliasExporter::withExportTransformers($testData, [
+        $dto = new This\Mock\TestAliasExporter($testData);
+        $dto = $dto->setExportTransformers([
             Dto\Helper\TraitsHelper::EXPORT_METHOD_TO_ARRAY_OBJECT, // Requires ArrayObjectExporter trait
             $aliasTransformer
         ]);

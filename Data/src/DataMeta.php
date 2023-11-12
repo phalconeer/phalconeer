@@ -1,7 +1,7 @@
 <?php
 namespace Phalconeer\Data;
 
-class DataMeta
+class DataMeta implements MetaInterface
 {
     /**
      * When an item is cleared form the object and default value has to be saved, include the property name here.

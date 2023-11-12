@@ -4,8 +4,13 @@ namespace Phalconeer\Dto;
 use Phalconeer\Data;
 use Phalconeer\Dto as This;
 
-class ImmutableDto extends Data\ImmutableData implements This\DtoExporterInterface
+abstract class ImmutableDto extends Data\ImmutableData implements This\DtoExporterInterface
 {
+    /**
+    * @var Data\MetaInterface & This\DtoMetaInterface
+    */
+    public Data\MetaInterface $meta;
+
     protected static bool $convertChildren = true;
 
     protected static array $exportAliases = [];
@@ -17,6 +22,23 @@ class ImmutableDto extends Data\ImmutableData implements This\DtoExporterInterfa
     protected static array $loadTransformers = [];
 
     protected static bool $preserveKeys = false;
+
+    public function __construct(
+        \ArrayObject $inputObject = null,
+        array $loadTransformers = null,
+        array $loadAliases = null
+    )
+    {
+        if (!isset($this->meta)
+            || is_null($this->meta)) {
+            $this->meta = new DtoMeta();
+        }
+        $this->meta->setExportAliases(self::getExportAliases());
+        $this->meta->setExportTransformers(self::getExportTransformers());
+        $this->meta->setLoadAliases($loadAliases ?? self::getLoadAliases());
+        $this->meta->setLoadTransformers($loadTransformers ?? self::getLoadTransformers());
+        parent::__construct($inputObject);
+    }
 
     public function exportWithTransformers(
         array $transformers = [],
@@ -43,15 +65,14 @@ class ImmutableDto extends Data\ImmutableData implements This\DtoExporterInterfa
     public function export(\ArrayObject $parameters = null)
     {
         return $this->exportWithTransformers(
-            static::getExportTransformers(),
+            $this->meta->exportTransformers(),
             $parameters
         );
     }
 
     public function initializeData(\ArrayObject $inputObject) : \ArrayObject
     {
-        $transformers = static::getLoadTransformers();
-        foreach ($transformers as $transformer) {
+        foreach ($this->meta->loadTransformers() as $transformer) {
             if (is_string($transformer)
                 && is_callable([$this, $transformer])) {
                 $inputObject = call_user_func_array([$this, $transformer], [$inputObject, $this]);
@@ -128,15 +149,34 @@ class ImmutableDto extends Data\ImmutableData implements This\DtoExporterInterfa
         return static::$preserveKeys;
     }
 
-    public static function withExportTransformers(\ArrayObject $inputObject, array $exportTransformers)
+    public function setExportTransformers(array $exportTransformers) : self
     {
-        static::$exportTransformers = $exportTransformers;
-        return new static($inputObject);
-    }
+        $this->meta->setExportTransformers($exportTransformers);
+        return $this;
+    } 
 
-    public static function withLoadTransformers(\ArrayObject $inputObject, array $loadTransformers)
+    public function appendExportTransformers(array $exportTransformers) : self
     {
-        static::$loadTransformers = $loadTransformers;
-        return new static($inputObject);
-    }
+        $this->meta->appendExportTransformers($exportTransformers);
+        return $this;
+    } 
+
+    public function prependExportTransformers(array $exportTransformers) : self
+    {
+        $this->meta->prependExportTransformers($exportTransformers);
+        return $this;
+    } 
+
+    public function setExportAliases(array $exportAliases) : self
+    {
+        $this->meta->setExportAliases($exportAliases);
+        return $this;
+    } 
+
+    public function addExportAliases(array $exportAliases) : self
+    {
+        $this->meta->addExportAliases($exportAliases);
+        return $this;
+    } 
+
 }

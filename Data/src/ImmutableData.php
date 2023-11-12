@@ -6,7 +6,7 @@ use Phalconeer\Exception;
 
 abstract class ImmutableData implements This\DataInterface
 {
-    public This\DataMeta $meta;
+    public This\MetaInterface $meta;
 
     /**
      * List of all fields in the object and their associated type.
@@ -21,7 +21,10 @@ abstract class ImmutableData implements This\DataInterface
      */
     public function __construct(\ArrayObject $inputObject = null)
     {
-        $this->meta = new This\DataMeta();
+        if (!isset($this->meta)
+            || is_null($this->meta)) {
+            $this->meta = new This\DataMeta();
+        }
         $this->meta->setPropertiesCache($this->parseTypes(static::getProperties()));
         if (is_null($inputObject)) {
             $inputObject = new \ArrayObject();

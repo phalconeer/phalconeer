@@ -93,9 +93,12 @@ class AliasLoaderTest extends Test\UnitTestCase
         $aliasTransformer = new Dto\Transformer\AliasLoader([
             'externalStringProperty'    => 'stringProperty',
         ]);
-        $dto = This\Mock\Test::withLoadTransformers($testData, [
-            $aliasTransformer
-        ]);
+        $dto = new This\Mock\Test(
+            $testData,
+            [
+                $aliasTransformer
+            ]
+        );
 
         $this->assertEquals(
             $testData['externalStringProperty'],
