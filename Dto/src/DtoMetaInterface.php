@@ -5,6 +5,8 @@ use Phalconeer\Data;
 
 interface DtoMetaInterface extends Data\MetaInterface
 {
+    public function convertChildren() : bool;
+
     public function exportAliases() : array;
 
     public function exportTransformers() : array;
@@ -12,6 +14,10 @@ interface DtoMetaInterface extends Data\MetaInterface
     public function loadAliases() : array;
 
     public function loadTransformers() : array;
+
+    public function preserveKeys() : bool;
+
+    public function setConvertChildren(bool $convertChildren) : self;
 
     public function setExportTransformers(array $exportTransformers) : self;
 
@@ -26,4 +32,6 @@ interface DtoMetaInterface extends Data\MetaInterface
     public function addExportAliases(array $exportAliases) : self;
 
     public function setLoadAliases(array $loadAliases) : self;
+
+    public function setPreserveKeys(bool $preserveKeys) : self;
 }

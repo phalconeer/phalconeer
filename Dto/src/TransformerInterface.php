@@ -6,7 +6,7 @@ use Phalconeer\Data;
 interface TransformerInterface
 {
     public function transform(
-        $source,
+        \ArrayObject | Data\CommonInterface $source,
         Data\CommonInterface $baseObject = null,
         \ArrayObject $parameters = null
     );

@@ -227,6 +227,39 @@ abstract class ImmutableData implements This\DataInterface
     }
 
     /**
+     * Updates values of multiple fields
+     */
+    public function setValues(
+        \ArrayObject $data,
+        $isSilent = false
+    ) : self
+    {
+        $new = $this;
+        foreach ($this->properties() as $property) {
+            if ($data->offsetExists($property)) {
+                $new = $new->setValueByKey(
+                    $property,
+                    $data->offsetGet($property),
+                    $isSilent
+                );
+            }
+        }
+
+        return $new;
+    }
+
+    /**
+     * Updates values of multiple fields using flat data structure
+     */
+    public function setValuesByArray(
+        array $data,
+        $isSilent = false
+    ) : self
+    {
+        return $this->setValues(new \ArrayObject($data), $isSilent);
+    }
+
+    /**
      * Read the types of class properties
      */
     public function properties() : array

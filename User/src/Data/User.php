@@ -8,8 +8,8 @@ use Phalconeer\User as This;
 class User extends Dto\ImmutableDto implements This\UserInterface
 {
     use Dto\Trait\ArrayObjectExporter,
-        Data\Trait\Data\ParseTypes,
-        Data\Trait\Data\AutoGetter;
+        Data\Trait\ParseTypes,
+        Data\Trait\AutoGetter;
 
     protected static array $sensitiveProperties = [];
 

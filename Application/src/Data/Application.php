@@ -5,8 +5,8 @@ use Phalconeer\Data;
 
 class Application extends Data\ImmutableData
 {
-    use Data\Trait\Data\ParseTypes,
-        Data\Trait\Data\AutoGetter;
+    use Data\Trait\ParseTypes,
+        Data\Trait\AutoGetter;
     
     protected int $id = 0;
 

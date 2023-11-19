@@ -8,7 +8,7 @@ use Phalconeer\Http;
 
 trait Message
 {
-    use Data\Trait\Data\TraitWithProperties;
+    use Data\Trait\TraitWithProperties;
 
     /**
     * TODO: add filtering logic

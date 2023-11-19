@@ -6,7 +6,7 @@ use Phalconeer\Data\Test as This;
 
 class TestPrototypeTrait extends Data\ImmutableData
 {
-    use Data\Trait\Data\AutoGetter;
+    use Data\Trait\AutoGetter;
 
     protected static array $properties = [
         'stringProperty'        => Data\Helper\ParseValueHelper::TYPE_STRING,

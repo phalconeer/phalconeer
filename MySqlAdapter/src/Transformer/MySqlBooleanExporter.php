@@ -9,7 +9,7 @@ class MySqlBooleanExporter implements Dto\TransformerInterface
     const TRAIT_METHOD = 'exportAllMySqlBoolean';
 
     public function transform(
-        $source,
+        \ArrayObject | Data\CommonInterface $source,
         Data\CommonInterface $baseObject = null,
         \ArrayObject $parameters = null
     )

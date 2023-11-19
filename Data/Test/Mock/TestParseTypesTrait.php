@@ -6,7 +6,7 @@ use Phalconeer\Data;
 
 class TestParseTypesTrait extends Data\ImmutableData
 {
-    use Data\Trait\Data\ParseTypes;
+    use Data\Trait\ParseTypes;
 
     protected ?string $stringProperty;
 

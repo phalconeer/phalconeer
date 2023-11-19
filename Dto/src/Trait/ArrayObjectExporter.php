@@ -16,10 +16,10 @@ trait ArrayObjectExporter
      */
     public function toArrayObject() : \ArrayObject
     {
-        if ($this instanceof Data\CollectionInterface) {
+        if ($this instanceof This\ImmutableDtoCollection) {
             return $this->convertCollection(
-                $this->getConvertChildren(),
-                $this->getPreserveKeys()
+                $this->collectionMeta->convertChildren(),
+                $this->collectionMeta->preserveKeys()
             );
         }
         $result = new \ArrayObject();

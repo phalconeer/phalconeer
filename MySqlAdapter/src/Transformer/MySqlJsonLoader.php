@@ -9,7 +9,7 @@ class MySqlJsonLoader implements Dto\TransformerInterface
     const TRAIT_METHOD = 'loadAllMySqlJson';
 
     public function transform(
-        $source,
+        \ArrayObject | Data\CommonInterface $source,
         Data\CommonInterface $baseObject = null,
         \ArrayObject $parameters = null
     )

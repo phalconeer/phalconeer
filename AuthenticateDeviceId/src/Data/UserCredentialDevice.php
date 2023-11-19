@@ -8,8 +8,8 @@ use Phalconeer\AuthenticateDeviceId as This;
 class UserCredentialDevice extends Dto\ImmutableDto implements Dto\ArrayObjectExporterInterface
 {
     use Dto\Trait\ArrayObjectExporter,
-        Data\Trait\Data\ParseTypes,
-        Data\Trait\Data\AutoGetter;
+        Data\Trait\ParseTypes,
+        Data\Trait\AutoGetter;
 
     protected static array $exportTransformers = [
         Dto\Helper\TraitsHelper::EXPORT_METHOD_TO_ARRAY_OBJECT

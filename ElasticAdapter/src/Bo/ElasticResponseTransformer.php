@@ -10,7 +10,7 @@ class ElasticResponseTransformer extends Middleware\Bo\DefaultMiddleware impleme
 {
     protected static $handlerName = 'handleResponse';
 
-    public function handleResponse(Psr\Http\Message\ResponseInterface $response, callable $next) : ?bool
+    public function handleResponse(Psr\Http\Message\ResponseInterface | Http\MessageInterface $response, callable $next) : ?bool
     {
 // echo \Phalconeer\Dev\TVarDumper::dump($response);
         // This transfromation is needed for all the deafult ElasticTransformers

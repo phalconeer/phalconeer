@@ -8,7 +8,7 @@ use Phalconeer\Dto\Test as This;
 class TestArrayExporter extends This\Mock\Test
 {
     use Dto\Trait\ArrayExporter,
-        Data\Trait\Data\ParseTypes;
+        Data\Trait\ParseTypes;
 
     protected static array $properties = [
         'nestedObject'          => TestArrayExporter::class,

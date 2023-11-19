@@ -4,7 +4,7 @@ namespace Phalconeer\Dto\Test\Mock;
 use Phalconeer\Dto;
 use Phalconeer\Dto\Test as This;
 
-class TestArrayExporterCollection extends Dto\ImmutableCollectionDto
+class TestArrayExporterCollection extends Dto\ImmutableDtoCollection
 {
     use Dto\Trait\ArrayExporter;
 

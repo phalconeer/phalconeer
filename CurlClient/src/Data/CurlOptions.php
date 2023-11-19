@@ -5,8 +5,8 @@ use Phalconeer\Data;
 
 class CurlOptions extends Data\ImmutableData
 {
-    use Data\Trait\Data\AutoGetter,
-        Data\Trait\Data\ParseTypes;
+    use Data\Trait\AutoGetter,
+        Data\Trait\ParseTypes;
 
     protected bool $allowRedirects = false;
 

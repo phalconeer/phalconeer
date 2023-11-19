@@ -8,8 +8,8 @@ use Phalconeer\Http;
 
 class ElasticDaoConfiguration extends Data\ImmutableData
 {
-    use Data\Trait\Data\ParseTypes,
-        Data\Trait\Data\AutoGetter;
+    use Data\Trait\ParseTypes,
+        Data\Trait\AutoGetter;
 
     protected Browser\BrowserInterface $browser;
 

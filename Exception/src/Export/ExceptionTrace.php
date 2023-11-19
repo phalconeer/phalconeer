@@ -7,8 +7,8 @@ use Phalconeer\Dto;
 class ExceptionTrace extends Dto\ImmutableDto
 {
     use Dto\Trait\ArrayLoader,
-        Data\Trait\Data\ParseTypes,
-        Data\Trait\Data\AutoGetter;
+        Data\Trait\ParseTypes,
+        Data\Trait\AutoGetter;
 
     protected array $arguments;
 

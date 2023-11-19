@@ -9,7 +9,7 @@ use Phalconeer\Http as This;
 class Response extends Dto\ImmutableDto implements Psr\Http\Message\ResponseInterface, This\MessageInterface
 {
     use This\Data\Trait\Message,
-        Data\Trait\Data\ParseTypes,
+        Data\Trait\ParseTypes,
         Dto\Trait\ArrayLoader;
 
     protected int $statusCode;

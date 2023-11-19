@@ -6,13 +6,22 @@ use Phalconeer\Dto as This;
 
 class DtoMeta extends Data\DataMeta implements Data\MetaInterface, This\DtoMetaInterface
 {
-    protected array $exportAliases = [];
+    protected ?bool $convertChildren = true;
 
-    protected array $exportTransformers = [];
+    protected ?array $exportAliases = [];
 
-    protected array $loadAliases = [];
+    protected ?array $exportTransformers = [];
 
-    protected array $loadTransformers = [];
+    protected ?array $loadAliases = [];
+
+    protected ?array $loadTransformers = [];
+
+    protected ?bool $preserveKeys = false;
+
+    public function convertChildren() : bool
+    {
+        return $this->convertChildren;
+    }
 
     public function exportAliases() : array
     {
@@ -32,6 +41,17 @@ class DtoMeta extends Data\DataMeta implements Data\MetaInterface, This\DtoMetaI
     public function loadTransformers() : array
     {
         return $this->loadTransformers;
+    }
+
+    public function preserveKeys() : bool
+    {
+        return $this->preserveKeys;
+    }
+
+    public function setConvertChildren(bool $convertChildren) : self
+    {
+        $this->convertChildren = $convertChildren;
+        return $this;
     }
 
     public function setExportTransformers(array $exportTransformers) : self
@@ -74,5 +94,11 @@ class DtoMeta extends Data\DataMeta implements Data\MetaInterface, This\DtoMetaI
     {
         $this->loadAliases = $loadAliases;
         return $this;
-    } 
+    }
+
+    public function setPreserveKeys(bool $preserveKeys) : self
+    {
+        $this->preserveKeys = $preserveKeys;
+        return $this;
+    }
 }

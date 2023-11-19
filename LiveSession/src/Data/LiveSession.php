@@ -11,8 +11,8 @@ class LiveSession extends Dto\ImmutableDto
         Dto\Trait\ArrayLoader,
         Dto\Trait\ArrayObjectExporter,
         Dto\Trait\JsonExporter,
-        Data\Trait\Data\ParseTypes,
-        Data\Trait\Data\AutoGetter;
+        Data\Trait\ParseTypes,
+        Data\Trait\AutoGetter;
 
     protected string $id;
     

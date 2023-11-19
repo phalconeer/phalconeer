@@ -6,12 +6,18 @@ use Phalconeer\Data as This;
 
 abstract class ImmutableCollection implements This\CollectionInterface
 {
-    protected string $collectionType;
-
     protected \ArrayObject $collection;
+
+    protected ?This\CollectionMetaInterface $collectionMeta;
+
+    protected string $collectionType;
 
     public function __construct(\ArrayObject $dataObject = null)
     {
+        if (!isset($this->collectionMeta)
+            || is_null($this->collectionMeta)) {
+            $this->collectionMeta = new This\CollectionMeta();
+        }
         if (is_null($dataObject)) {
             $dataObject = new \ArrayObject();
         }
@@ -38,7 +44,7 @@ abstract class ImmutableCollection implements This\CollectionInterface
         return $inputObject;
     }
 
-    private function parseComplexType($value)
+    protected function parseComplexType($value)
     {
         if (is_array($value)) {
             return new $this->collectionType(new \ArrayObject($value));
@@ -95,14 +101,24 @@ abstract class ImmutableCollection implements This\CollectionInterface
         return $this->collection->offsetExists($offset);
     }
 
-    public function offsetSet($offset, $value) : void
+    public function offsetSet(
+        $offset,
+        $value,
+        bool $isSilent = false
+    ) : void
     {
         $this->collection->offsetSet($offset, $this->parseComplexType($value));
+        if (!$isSilent) {
+            $this->collectionMeta->setDirty(true);
+        }
     }
 
-    public function offsetUnset($offset) : void
+    public function offsetUnset($offset, bool $isSilent = false) : void
     {
         $this->collection->offsetUnset($offset);
+        if (!$isSilent) {
+            $this->collectionMeta->setDirty(true);
+        }
     }
 
     public function count() : int
@@ -142,13 +158,15 @@ abstract class ImmutableCollection implements This\CollectionInterface
 
     public function merge(
         This\CollectionInterface $newObject = null,
-        bool $ignoreKeys = true
+        bool $ignoreKeys = true,
+        bool $isSilent = false
     ) : This\CollectionInterface
     {
         if (is_null($newObject)) {
             return $this;
         }
         $iterator = $newObject->getIterator();
+        $changed = false;
         while ($iterator->valid()) {
             $key = ($ignoreKeys)
                 ? null
@@ -157,7 +175,12 @@ abstract class ImmutableCollection implements This\CollectionInterface
                     $iterator->current()->getPrimaryKeyValue()
                 );
             $this->collection->offsetSet($key, $iterator->current());
+            $changed = true;
             $iterator->next();
+        }
+        if ($changed
+            && !$isSilent) {
+            $this->collectionMeta->setDirty(true);
         }
         return $this;
     }

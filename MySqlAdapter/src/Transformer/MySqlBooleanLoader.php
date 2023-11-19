@@ -9,7 +9,7 @@ class MySqlBooleanLoader implements Dto\TransformerInterface
     const TRAIT_METHOD = 'loadAllMySqlBoolean';
 
     public function transform(
-        $source,
+        \ArrayObject | Data\CommonInterface $source,
         Data\CommonInterface $baseObject = null,
         \ArrayObject $parameters = null
     )

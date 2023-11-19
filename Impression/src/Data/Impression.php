@@ -7,8 +7,8 @@ use Phalconeer\Impression as This;
 
 class Impression extends Dto\ImmutableDto implements This\ImpressionInterface
 {
-    use Data\Trait\Data\ParseTypes,
-        Data\Trait\Data\AutoGetter,
+    use Data\Trait\ParseTypes,
+        Data\Trait\AutoGetter,
         Data\Trait\Tag,
         Dto\Trait\AliasExporter,
         This\Trait\Accept,

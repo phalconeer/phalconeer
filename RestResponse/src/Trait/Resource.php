@@ -10,7 +10,7 @@ Trait Resource
 {
     use Dto\Trait\ArrayObjectExporter;
 
-    protected \ArrayObject $meta;
+    protected \ArrayObject $resourceMeta;
 
     protected \ArrayObject $links;
 
@@ -60,7 +60,7 @@ Trait Resource
         }
     }
 
-    public function meta() : \ArrayObject
+    public function resourceMeta() : \ArrayObject
     {
         if (is_null($this->meta)) {
             $this->meta = new \ArrayObject();

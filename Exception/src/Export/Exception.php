@@ -9,8 +9,8 @@ class Exception extends Dto\ImmutableDto
 {
     use Dto\Trait\ArrayLoader,
         Dto\Trait\ArrayObjectExporter,
-        Data\Trait\Data\ParseTypes,
-        Data\Trait\Data\AutoGetter;
+        Data\Trait\ParseTypes,
+        Data\Trait\AutoGetter;
     
     protected string $code;
 

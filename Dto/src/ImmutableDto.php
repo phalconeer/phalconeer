@@ -33,6 +33,8 @@ abstract class ImmutableDto extends Data\ImmutableData implements This\DtoExport
             || is_null($this->meta)) {
             $this->meta = new DtoMeta();
         }
+        $this->meta->setConvertChildren(static::$convertChildren);
+        $this->meta->setPreserveKeys(static::$preserveKeys);
         $this->meta->setExportAliases(self::getExportAliases());
         $this->meta->setExportTransformers(self::getExportTransformers());
         $this->meta->setLoadAliases($loadAliases ?? self::getLoadAliases());
@@ -92,9 +94,9 @@ abstract class ImmutableDto extends Data\ImmutableData implements This\DtoExport
         return $inputObject;
     }
 
-    public static function getConvertChildren() : bool
+    public function getConvertChildren() : bool
     {
-        return static::$convertChildren;
+        return $this->meta->convertChildren();
     }
 
     public static function getExportAliases() : array
@@ -144,9 +146,9 @@ abstract class ImmutableDto extends Data\ImmutableData implements This\DtoExport
                 : []);
     }
 
-    public static function getPreserveKeys() : bool
+    public function getPreserveKeys() : bool
     {
-        return static::$preserveKeys;
+        return $this->meta->preserveKeys();
     }
 
     public function setExportTransformers(array $exportTransformers) : self
@@ -177,6 +179,11 @@ abstract class ImmutableDto extends Data\ImmutableData implements This\DtoExport
     {
         $this->meta->addExportAliases($exportAliases);
         return $this;
-    } 
+    }
 
+    public function setMeta(This\DtoMetaInterface $meta) : self
+    {
+        $this->meta = $meta;
+        return $this;
+    }
 }

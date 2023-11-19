@@ -10,7 +10,7 @@ class ElasticRequestTransformer extends Middleware\Bo\DefaultMiddleware implemen
 {
     protected static $handlerName = 'handleRequest';
 
-    public function handleRequest(Psr\Http\Message\RequestInterface $request, callable $next) : ?bool
+    public function handleRequest(Psr\Http\Message\RequestInterface | Http\MessageInterface $request, callable $next) : ?bool
     {
         /**
          * @var \Phalconeer\Http\Data\Request $request

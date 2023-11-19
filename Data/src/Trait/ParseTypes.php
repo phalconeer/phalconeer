@@ -1,5 +1,5 @@
 <?php
-namespace Phalconeer\Data\Trait\Data;
+namespace Phalconeer\Data\Trait;
 
 use Phalconeer\Data as This;
 

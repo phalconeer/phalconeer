@@ -7,8 +7,8 @@ use Phalconeer\Dto;
 class TUserCredential extends Dto\ImmutableDto
 {
     use Dto\Trait\ArrayLoader,
-        Data\Trait\Data\ParseTypes,
-        Data\Trait\Data\AutoGetter;
+        Data\Trait\ParseTypes,
+        Data\Trait\AutoGetter;
 
     protected ?int $userId;
 

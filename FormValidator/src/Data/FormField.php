@@ -4,7 +4,7 @@ namespace Phalconeer\FormValidator\Data;
 use Phalconeer\Dto;
 use Phalconeer\FormValidator as This;
 
-class FormField extends Dto\ImmutableCollectionDto
+class FormField extends Dto\ImmutableDtoCollection
 {
     use Dto\Trait\ArrayLoader;
 

@@ -1,14 +1,13 @@
 <?php
 namespace Phalconeer\FormValidator\Data;
 
-use Phalconeer\Data;
 use Phalconeer\Dto;
 use Phalconeer\FormValidator as This;
 
-class Form extends Dto\ImmutableCollectionDto
+class Form extends Dto\ImmutableDtoCollection
 {
     use Dto\Trait\ArrayLoader,
-        Data\Trait\Collection\Keys;
+        Dto\Trait\KeysExporter;
 
     protected static array $fields = [];
 

@@ -10,7 +10,7 @@ use Psr;
 class Request extends Dto\ImmutableDto implements Psr\Http\Message\RequestInterface, This\MessageInterface
 {
     use This\Data\Trait\Message,
-        Data\Trait\Data\ParseTypes,
+        Data\Trait\ParseTypes,
         Dto\Trait\ArrayLoader;
 
     protected string $method = This\Helper\HttpHelper::HTTP_METHOD_GET;

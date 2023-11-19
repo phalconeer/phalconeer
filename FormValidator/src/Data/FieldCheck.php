@@ -7,7 +7,7 @@ use Phalconeer\Dto;
 abstract class FieldCheck extends Dto\ImmutableDto
 {
     use Dto\Trait\ArrayLoader,
-        Data\Trait\Data\ParseTypes;
+        Data\Trait\ParseTypes;
 
     protected array|bool|int|string $value;
 
