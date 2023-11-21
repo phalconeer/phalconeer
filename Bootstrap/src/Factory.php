@@ -57,9 +57,16 @@ abstract class Factory
             if (!isset($this->di[$requiredModule])) {
                 /**
                  * Try autoloading the default Phalconeer module
-                 * It only works of the module name is the same as the DI key with first letter being ujppercase
+                 * It only works of the module name is the same as the DI key with first letter being uppercase
                  */
-                $this->bootstrap->loadService('Phalconeer\\' . ucfirst($requiredModule) . '\\Factory');
+                try {
+                    $this->bootstrap->loadService('Phalconeer\\' . ucfirst($requiredModule) . '\\Factory');
+                } catch (\Exception $ex) {
+                    throw new Exception\NotFound\ModuleNotFoundException(
+                        '`' . $requiredModule . '` required for ' . get_called_class() . '. AUTOLOAD Failed.',
+                        Exception\Helper\ExceptionHelper::MODULE_NOT_LOADED,
+                    );
+                }
                 if (!isset($this->di[$requiredModule])) {
                     throw new Exception\NotFound\ModuleNotFoundException(
                         '`' . $requiredModule . '` required for ' . get_called_class(),
