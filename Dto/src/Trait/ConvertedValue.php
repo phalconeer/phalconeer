@@ -6,14 +6,15 @@ use Phalconeer\Dto as This;
 
 trait ConvertedValue
 {
-    public function convertCollection(bool $preserveKeys = false) : \ArrayObject
+    public function convertCollection(bool $convertChildren = true,bool $preserveKeys = false) : \ArrayObject
     {
         $iterator = $this->getIterator();
         $result = new \ArrayObject();
         while ($iterator->valid()) {
             $result->offsetSet(
                 ($preserveKeys) ? $iterator->key() : null,
-                $iterator->current()->export()
+                ($convertChildren) ? $iterator->current()->export() : $iterator->current()
+               
             );
             $iterator->next();
         }

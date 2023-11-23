@@ -123,9 +123,21 @@ class TVarDumper
                     } elseif ($var instanceof Data\ImmutableData) {
                         $reflect = new \ReflectionClass(get_class($var));
                         $members = [];
-                        foreach($reflect->getProperties() as $property){
-                            if (is_callable([$var, $property->name])) {
-                                $members[$property->name] = $var->{$property->name}();
+                        $staticProperties = array_keys($reflect->getStaticProperties());
+                        foreach($reflect->getProperties(\ReflectionProperty::IS_PROTECTED) as $property){
+                            if (in_array($property->name, $staticProperties)) {
+                                $members[$property->name] = $reflect->getStaticPropertyValue($property->name);
+                            } else {
+                                if (is_callable([$var, $property->name])) {
+                                    $members[$property->name] = $var->{$property->name}();
+                                }
+                            }
+                        }
+                        foreach($reflect->getProperties(\ReflectionProperty::IS_PUBLIC) as $property){
+                            if (in_array($property->name, $staticProperties)) {
+                                $members[$property->name] = $reflect->getStaticPropertyValue($property->name);
+                            } else {
+                                $members[$property->name] = $var->{$property->name};
                             }
                         }
                     } elseif ($var instanceof Data\ImmutableCollection) {

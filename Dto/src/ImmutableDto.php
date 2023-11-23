@@ -6,10 +6,9 @@ use Phalconeer\Dto as This;
 
 abstract class ImmutableDto extends Data\ImmutableData implements This\DtoExporterInterface
 {
-    /**
-    * @var Data\MetaInterface & This\DtoMetaInterface
-    */
     public Data\MetaInterface $meta;
+
+    public ?This\TransformerMetaInterface $transformer;
 
     protected static bool $convertChildren = true;
 
@@ -29,16 +28,16 @@ abstract class ImmutableDto extends Data\ImmutableData implements This\DtoExport
         array $loadAliases = null
     )
     {
-        if (!isset($this->meta)
-            || is_null($this->meta)) {
-            $this->meta = new DtoMeta();
+        if (!isset($this->transformer)
+            || is_null($this->transformer)) {
+            $this->transformer = new TransfromerMeta();
         }
-        $this->meta->setConvertChildren(static::$convertChildren);
-        $this->meta->setPreserveKeys(static::$preserveKeys);
-        $this->meta->setExportAliases(self::getExportAliases());
-        $this->meta->setExportTransformers(self::getExportTransformers());
-        $this->meta->setLoadAliases($loadAliases ?? self::getLoadAliases());
-        $this->meta->setLoadTransformers($loadTransformers ?? self::getLoadTransformers());
+        $this->transformer->setConvertChildren(static::$convertChildren);
+        $this->transformer->setPreserveKeys(static::$preserveKeys);
+        $this->transformer->setExportAliases(self::getExportAliases());
+        $this->transformer->setExportTransformers(self::getExportTransformers());
+        $this->transformer->setLoadAliases($loadAliases ?? self::getLoadAliases());
+        $this->transformer->setLoadTransformers($loadTransformers ?? self::getLoadTransformers());
         parent::__construct($inputObject);
     }
 
@@ -67,14 +66,14 @@ abstract class ImmutableDto extends Data\ImmutableData implements This\DtoExport
     public function export(\ArrayObject $parameters = null)
     {
         return $this->exportWithTransformers(
-            $this->meta->exportTransformers(),
+            $this->transformer->exportTransformers(),
             $parameters
         );
     }
 
     public function initializeData(\ArrayObject $inputObject) : \ArrayObject
     {
-        foreach ($this->meta->loadTransformers() as $transformer) {
+        foreach ($this->transformer->loadTransformers() as $transformer) {
             if (is_string($transformer)
                 && is_callable([$this, $transformer])) {
                 $inputObject = call_user_func_array([$this, $transformer], [$inputObject, $this]);
@@ -96,7 +95,7 @@ abstract class ImmutableDto extends Data\ImmutableData implements This\DtoExport
 
     public function getConvertChildren() : bool
     {
-        return $this->meta->convertChildren();
+        return $this->transformer->convertChildren();
     }
 
     public static function getExportAliases() : array
@@ -148,42 +147,42 @@ abstract class ImmutableDto extends Data\ImmutableData implements This\DtoExport
 
     public function getPreserveKeys() : bool
     {
-        return $this->meta->preserveKeys();
+        return $this->transformer->preserveKeys();
     }
 
     public function setExportTransformers(array $exportTransformers) : self
     {
-        $this->meta->setExportTransformers($exportTransformers);
+        $this->transformer->setExportTransformers($exportTransformers);
         return $this;
     } 
 
     public function appendExportTransformers(array $exportTransformers) : self
     {
-        $this->meta->appendExportTransformers($exportTransformers);
+        $this->transformer->appendExportTransformers($exportTransformers);
         return $this;
     } 
 
     public function prependExportTransformers(array $exportTransformers) : self
     {
-        $this->meta->prependExportTransformers($exportTransformers);
+        $this->transformer->prependExportTransformers($exportTransformers);
         return $this;
     } 
 
     public function setExportAliases(array $exportAliases) : self
     {
-        $this->meta->setExportAliases($exportAliases);
+        $this->transformer->setExportAliases($exportAliases);
         return $this;
     } 
 
     public function addExportAliases(array $exportAliases) : self
     {
-        $this->meta->addExportAliases($exportAliases);
+        $this->transformer->addExportAliases($exportAliases);
         return $this;
     }
 
-    public function setMeta(This\DtoMetaInterface $meta) : self
+    public function setTransformer(This\TransformerMetaInterface $transformer) : self
     {
-        $this->meta = $meta;
+        $this->transformer = $transformer;
         return $this;
     }
 }

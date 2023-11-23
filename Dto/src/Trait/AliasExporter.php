@@ -11,7 +11,7 @@ trait AliasExporter
     {
         return self::exportAliasesWithArray(
             $this->toArrayObject(),
-            $this->getExportAliases()
+            $this->transformer->exportAliases()
         );
     }
 
@@ -33,9 +33,7 @@ trait AliasExporter
     {
         return self::exportAliasesWithArray(
             $source,
-            (is_null($aliases))
-                ? self::getExportAliases()
-                : $aliases
+            $aliases
         );
     }
 
@@ -46,9 +44,7 @@ trait AliasExporter
     {
         return self::exportAliasesWithArray(
             new \ArrayObject($source),
-            (is_null($aliases))
-                ? self::getExportAliases()
-                : $aliases
+             $aliases
         )->getArrayCopy();
     }
 }

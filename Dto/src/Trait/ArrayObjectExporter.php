@@ -18,8 +18,8 @@ trait ArrayObjectExporter
     {
         if ($this instanceof This\ImmutableDtoCollection) {
             return $this->convertCollection(
-                $this->collectionMeta->convertChildren(),
-                $this->collectionMeta->preserveKeys()
+                $this->transformer->convertChildren(),
+                $this->transformer->preserveKeys()
             );
         }
         $result = new \ArrayObject();

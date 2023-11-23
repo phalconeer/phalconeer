@@ -14,7 +14,7 @@ class MapFieldExporter implements This\TransformerInterface
         \ArrayObject | Data\CommonInterface $source,
         Data\CommonInterface $baseObject = null,
         \ArrayObject $parameters = null
-    ) : \ArrayObject
+    ) : \ArrayObject | Data\CollectionInterface
     {
         if (!$baseObject instanceof This\ImmutableDtoCollection) {
             return $source;
@@ -36,8 +36,11 @@ class MapFieldExporter implements This\TransformerInterface
         $mappedData = new $className();
         $iterator = $source->getIterator();
         while ($iterator->valid()) {
+            $currentValue = ($iterator->current() instanceof \ArrayObject)
+                ? $iterator->current()->offsetGet($field)
+                : $iterator->current()->{$field}();
             $mappedData->offsetSet(
-                $iterator->current()->{$field}(),
+                $currentValue,
                 $iterator->current()
             );
             $iterator->next();

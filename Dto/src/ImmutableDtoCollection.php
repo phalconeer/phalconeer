@@ -8,10 +8,9 @@ use Phalconeer\Exception;
 
 class ImmutableDtoCollection extends Data\ImmutableCollection
 {
-    /**
-    * @var Data\CollectionMetaInterface & This\DtoCollectionMetaInterface
-    */
     public ?Data\CollectionMetaInterface $collectionMeta;
+
+    public ?This\TransformerMetaInterface $transformer;
 
     protected static bool $convertChildren = true;
 
@@ -21,17 +20,17 @@ class ImmutableDtoCollection extends Data\ImmutableCollection
 
     public function __construct(
         \ArrayObject $inputObject = null,
-        protected ?array $loadTransformers = null,
-        protected ?array $loadAliases = null
+        protected ?array $loadTransformers = null, // This is passed on to the individual objects
+        protected ?array $loadAliases = null // This is passed on to the individual objects
     )
     {
-        if (!isset($this->collectionMeta)
-            || is_null($this->collectionMeta)) {
-            $this->collectionMeta = new This\DtoCollectionMeta();
+        if (!isset($this->transformer)
+            || is_null($this->transformer)) {
+            $this->transformer = new This\TransfromerMeta();
         }
-        $this->collectionMeta->setConvertChildren(static::$convertChildren);
-        $this->collectionMeta->setPreserveKeys(static::$preserveKeys);
-        $this->collectionMeta->setExportTransformers(self::getExportTransformers());
+        $this->transformer->setConvertChildren(static::$convertChildren);
+        $this->transformer->setPreserveKeys(static::$preserveKeys);
+        $this->transformer->setExportTransformers(self::getExportTransformers());
         parent::__construct($inputObject);
     }
 
@@ -133,17 +132,23 @@ class ImmutableDtoCollection extends Data\ImmutableCollection
         return $this;
     }
 
-    public function setCollectionMeta(This\DtoCollectionMetaInterface $collectionMeta) : self
+    public function setCollectionTransformer(This\TransformerMetaInterface $collectionTransformer) : self
     {
-        $this->collectionMeta = $collectionMeta;
+        $this->transformer->setConvertChildren($collectionTransformer->convertChildren())
+            ->setExportTransformers($collectionTransformer->exportTransformers())
+            ->setPreserveKeys($collectionTransformer->preserveKeys());
         return $this;
     }
 
-    public function setMeta(This\DtoMetaInterface $meta) : self
+    public function setTransformer(This\TransformerMetaInterface $transformer) : self
     {
         $iterator = $this->collection->getIterator();
         while ($iterator->valid()) {
-            $iterator->current()->setMeta($meta);
+            // Only set DTO parameters
+            $iterator->current()->transformer->setConvertChildren($transformer->convertChildren())
+                ->setExportAliases($transformer->exportAliases())
+                ->setExportTransformers($transformer->exportTransformers())
+                ->setPreserveKeys($transformer->preserveKeys());
             $iterator->next();
         }
         return $this;
@@ -188,7 +193,7 @@ class ImmutableDtoCollection extends Data\ImmutableCollection
     public function export(\ArrayObject $parameters = null)
     {
         return $this->exportWithTransformers(
-            $this->collectionMeta->exportTransformers(),
+            $this->transformer->exportTransformers(),
             $parameters
         );
     }

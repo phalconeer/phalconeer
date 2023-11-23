@@ -1,10 +1,9 @@
 <?php
 namespace Phalconeer\Dto;
 
-use Phalconeer\Data;
 use Phalconeer\Dto as This;
 
-class DtoMeta extends Data\DataMeta implements Data\MetaInterface, This\DtoMetaInterface
+class TransfromerMeta implements This\TransformerMetaInterface
 {
     protected ?bool $convertChildren = true;
 
@@ -62,13 +61,13 @@ class DtoMeta extends Data\DataMeta implements Data\MetaInterface, This\DtoMetaI
 
     public function appendExportTransformers(array $exportTransformers) : self
     {
-        array_push($this->exportTransformers, $exportTransformers);
+        array_push($this->exportTransformers, ...$exportTransformers);
         return $this;
     } 
 
     public function prependExportTransformers(array $exportTransformers) : self
     {
-        array_unshift($this->exportTransformers, $exportTransformers);
+        array_unshift($this->exportTransformers, ...$exportTransformers);
         return $this;
     } 
 

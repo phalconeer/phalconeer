@@ -30,6 +30,7 @@ trait ParseTypes
         $protectedProperties = $reflection->getProperties(\ReflectionProperty::IS_PROTECTED);
         $internalProperties = [
             'meta',
+            'transformer',
         ];
         $properties = array_reduce($protectedProperties, function ($aggregator, $property) use ($predefinedProperties, $internalProperties) {
             if ($property->isStatic()
