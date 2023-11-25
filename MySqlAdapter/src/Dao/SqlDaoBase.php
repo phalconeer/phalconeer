@@ -1,6 +1,7 @@
 <?php
 namespace Phalconeer\MySqlAdapter\Dao;
 
+use Phalconeer\Data;
 use Phalconeer\Dto;
 use Phalconeer\Dao;
 use Phalconeer\MySqlAdapter as This;
@@ -43,7 +44,7 @@ class SqlDaoBase extends Dao\DaoBase implements Dao\DaoReadAndWriteInterface
      * Saves a row into the table. If the ID is present, it updates the row. If not, it inserts one.
      */
     public function save(
-        Dto\ArrayObjectExporterInterface $data,
+        Data\DataInterface & Dto\ArrayObjectExporterInterface $data,
         bool $forceInsert = false,
         string $insertMode = Dao\Helper\DaoHelper::INSERT_MODE_NORMAL
     ) : ?Dto\ImmutableDto

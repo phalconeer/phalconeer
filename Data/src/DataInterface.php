@@ -24,4 +24,6 @@ interface DataInterface extends CommonInterface
     ) : self;
 
     public function merge(This\DataInterface $changes) : This\DataInterface;
+
+    public function isStored() : bool;
 }

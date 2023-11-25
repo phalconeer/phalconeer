@@ -305,7 +305,7 @@ class SqlQueryHelper
         $parameters = new \ArrayObject();
         $uncamelize = new Str\Uncamelize();
         $exporetedData = $data->export();
-        $dirtyFields = $data->meta->dirty();
+        $dirtyFields = $data->dataMeta->dirty();
 
         if (!$exporetedData instanceof \IteratorAggregate) {
             throw new This\Exception\InvalidDataFormatException(

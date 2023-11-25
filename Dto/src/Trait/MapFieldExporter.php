@@ -5,7 +5,7 @@ use Phalconeer\Dto as This;
 
 trait MapFieldExporter
 {
-    public function mapFieldAsKey(string $field) : self
+    public function mapFieldAsKey(string | array $field) : self
     {
         return This\Transformer\MapFieldExporter::mapFieldAsKey(
             $this,

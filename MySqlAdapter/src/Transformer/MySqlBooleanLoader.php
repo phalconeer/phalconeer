@@ -51,7 +51,7 @@ class MySqlBooleanLoader implements Dto\TransformerInterface
             ? []
             : $parameters->offsetGet('boolProperties');
         while ($iterator->valid()) {
-            if (in_array($iterator->key(), $boolProperties)) {
+            if (array_key_exists($iterator->key(), $boolProperties)) {
                 $source->offsetSet(
                     $iterator->key(),
                     self::loadMySqlBoolean($iterator->current())

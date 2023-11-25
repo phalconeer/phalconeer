@@ -6,8 +6,6 @@ use Phalconeer\Dto as This;
 
 abstract class ImmutableDto extends Data\ImmutableData implements This\DtoExporterInterface
 {
-    public Data\MetaInterface $meta;
-
     public ?This\TransformerMetaInterface $transformer;
 
     protected static bool $convertChildren = true;
@@ -77,10 +75,6 @@ abstract class ImmutableDto extends Data\ImmutableData implements This\DtoExport
             if (is_string($transformer)
                 && is_callable([$this, $transformer])) {
                 $inputObject = call_user_func_array([$this, $transformer], [$inputObject, $this]);
-            }
-            if (is_object($transformer)
-                && $transformer instanceof This\TransformerInterface) {
-                $inputObject = $transformer->transform($inputObject, $this);
             }
             if (is_array($transformer)
                 && is_callable($transformer)) {

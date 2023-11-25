@@ -6,7 +6,7 @@ use Phalconeer\Exception;
 
 abstract class ImmutableData implements This\DataInterface
 {
-    public This\MetaInterface $meta;
+    public This\MetaInterface $dataMeta;
 
     /**
      * List of all fields in the object and their associated type.
@@ -21,16 +21,16 @@ abstract class ImmutableData implements This\DataInterface
      */
     public function __construct(\ArrayObject $inputObject = null)
     {
-        if (!isset($this->meta)
-            || is_null($this->meta)) {
-            $this->meta = new This\DataMeta();
+        if (!isset($this->dataMeta)
+            || is_null($this->dataMeta)) {
+            $this->dataMeta = new This\DataMeta();
         }
-        $this->meta->setPropertiesCache($this->parseTypes(static::getProperties()));
+        $this->dataMeta->setPropertiesCache($this->parseTypes(static::getProperties()));
         if (is_null($inputObject)) {
             $inputObject = new \ArrayObject();
         }
         $inputObject = $this->initializeData($inputObject);
-        foreach ($this->meta->propertiesCache() as $propertyName => $propertyType) {
+        foreach ($this->dataMeta->propertiesCache() as $propertyName => $propertyType) {
             if (!$inputObject->offsetExists($propertyName)) {
                 continue;
             }
@@ -83,11 +83,11 @@ abstract class ImmutableData implements This\DataInterface
     {
         if (!isset($this->{$propertyName}) // Added as with typed properties, the object can be in uninitialzed state, which throws property "must not be accessed before initialization"
             || is_null($this->{$propertyName})
-            || !$this->meta->doesPropertyExist($propertyName)) {
+            || !$this->dataMeta->doesPropertyExist($propertyName)) {
             return null;
         }
 
-        $propertyType = $this->meta->propertyType($propertyName);
+        $propertyType = $this->dataMeta->propertyType($propertyName);
 
         if (This\Helper\ParseValueHelper::isSimpleValue($propertyType)
             || ($propertyType === This\Property\Any::class
@@ -117,7 +117,7 @@ abstract class ImmutableData implements This\DataInterface
      */
     public function getPrimaryKey() : array
     {
-        $arrayKeys = $this->meta->getFields();
+        $arrayKeys = $this->dataMeta->getFields();
         return array_slice($arrayKeys, 0, 1);
     }
 
@@ -221,7 +221,7 @@ abstract class ImmutableData implements This\DataInterface
         $new = clone($this);
         $new->{$key} = $valueParsed;
         if (!$isSilent) {
-            $new->meta->addFieldToDirty($key);
+            $new->dataMeta->addFieldToDirty($key);
         }
         return $new;
     }
@@ -264,7 +264,7 @@ abstract class ImmutableData implements This\DataInterface
      */
     public function properties() : array
     {
-        return $this->meta->getFields();
+        return $this->dataMeta->getFields();
     }
 
     /**
@@ -272,7 +272,7 @@ abstract class ImmutableData implements This\DataInterface
      */
     public function propertyTypes() : array
     {
-        return $this->meta->propertiesCache();
+        return $this->dataMeta->propertiesCache();
     }
 
     /**
@@ -280,13 +280,13 @@ abstract class ImmutableData implements This\DataInterface
      */
     public function propertyType(string $key) : ?string
     {
-        return $this->meta->propertyType($key);
+        return $this->dataMeta->propertyType($key);
     }
 
     public function countNotNulls() : int
     {
         $notNulls = 0;
-        foreach ($this->meta->getFields() as $property) {
+        foreach ($this->dataMeta->getFields() as $property) {
             if (!is_null($this->{$property})) {
                 $notNulls++;
             }

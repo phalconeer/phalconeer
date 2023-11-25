@@ -50,7 +50,7 @@ class MySqlDateLoader implements Dto\TransformerInterface
             ? []
             : $parameters->offsetGet('dateProperties');
         while ($iterator->valid()) {
-            if (in_array($iterator->key(), $dateProperties)) {
+            if (array_key_exists($iterator->key(), $dateProperties)) {
                 $source->offsetSet(
                     $iterator->key(),
                     self::loadMySqlDate($iterator->current())

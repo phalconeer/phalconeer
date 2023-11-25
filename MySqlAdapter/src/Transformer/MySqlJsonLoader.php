@@ -34,7 +34,7 @@ class MySqlJsonLoader implements Dto\TransformerInterface
         return array_filter(
             $baseObject->propertyTypes(),
             function ($type) {
-                return is_subclass_of($type, Dto\ImmutableDto::class);
+                return is_subclass_of($type, Data\ImmutableData::class);
             }
         );
     }

@@ -4,7 +4,7 @@ namespace Phalconeer\ElasticAdapter\Data;
 use Phalconeer\Dto;
 use Phalconeer\Data\Helper\ParseValueHelper as PVH;
 
-class ElasticBase extends Dto\ImmutableDto
+class ElasticBase extends Dto\ImmutableDto implements Dto\ArrayObjectExporterInterface
 {
     use Dto\Trait\AliasLoader,
         Dto\Trait\AliasExporter;
@@ -49,7 +49,7 @@ class ElasticBase extends Dto\ImmutableDto
     public function getIndexDateValue() : ?\DateTime
     {
         if (is_null(static::INDEX_DATE_FIELD)
-            || !$this->meta->doesPropertyExist(static::INDEX_DATE_FIELD)
+            || !$this->dataMeta->doesPropertyExist(static::INDEX_DATE_FIELD)
             || !$this->{static::INDEX_DATE_FIELD} instanceof \DateTime) {
             return null;
         }

@@ -43,8 +43,7 @@ class MySqlJsonExporter implements Dto\TransformerInterface
             : $parameters->offsetGet('jsonProperties');
         while ($iterator->valid()) {
             if ((is_null($jsonProperties)
-                    || array_key_exists($iterator->key(), $jsonProperties))
-                && $iterator->current() instanceof Dto\ImmutableDto) {
+                    || array_key_exists($iterator->key(), $jsonProperties))) {
                 $source->offsetSet(
                     $iterator->key(),
                     self::exportMySqlJson($iterator->current())
@@ -56,9 +55,12 @@ class MySqlJsonExporter implements Dto\TransformerInterface
     }
 
     public static function exportMySqlJson(
-        Dto\ArrayExporterInterface $data
+        \ArrayObject | Dto\ArrayExporterInterface $data
     ) : string 
     {
+        if ($data instanceof \ArrayObject) {
+            return json_encode($data->getArrayCopy());
+        }
         return json_encode($data->toArray());
     }
 }

@@ -6,8 +6,11 @@ use Phalconeer\Dto as This;
 
 class MapFieldExporter implements This\TransformerInterface
 {
-    public function __construct(public string $mapField)
+    public function __construct(public string | array $mapField)
     {
+        if (!is_array($this->mapField)) {
+            $this->mapField = [$this->mapField];
+        }
     }
 
     public function transform(
@@ -28,19 +31,31 @@ class MapFieldExporter implements This\TransformerInterface
 
     public static function mapFieldAsKey(
         \ArrayObject | Data\CollectionInterface $source,
-        string $field
+        string | array $field
     ) : \ArrayObject | Data\CollectionInterface
     {
+        if (!is_array($field)) {
+            $field = [$field];
+        }
         $iterator = $source->getIterator();
         $className = get_class($source);
         $mappedData = new $className();
         $iterator = $source->getIterator();
         while ($iterator->valid()) {
-            $currentValue = ($iterator->current() instanceof \ArrayObject)
-                ? $iterator->current()->offsetGet($field)
-                : $iterator->current()->{$field}();
+            $current = $iterator->current();
+            $currentValuePieces = array_reduce(
+                $field,
+                function ($aggregator, $currentField) use ($current) {
+                    $aggregator[] = ($current instanceof \ArrayObject)
+                        ? $current->offsetGet($currentField)
+                        : $current->{$currentField}();
+                    return $aggregator;
+                },
+                []
+            );
+            
             $mappedData->offsetSet(
-                $currentValue,
+                implode('-', $currentValuePieces),
                 $iterator->current()
             );
             $iterator->next();

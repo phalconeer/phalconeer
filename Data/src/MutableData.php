@@ -14,7 +14,7 @@ abstract class MutableData extends This\ImmutableData
     {
         if (!isset($this->{$propertyName}) // Added as with typed properties, the object can be in uninitialzed state, which throws property "must not be accessed before initialization"
             || is_null($this->{$propertyName})
-            || !$this->meta->doesPropertyExist($propertyName)) {
+            || !$this->dataMeta->doesPropertyExist($propertyName)) {
             return null;
         }
 
@@ -76,7 +76,7 @@ abstract class MutableData extends This\ImmutableData
         }
         $this->{$key} = $valueParsed;
         if (!$isSilent) {
-            $this->meta->addFieldToDirty($key);
+            $this->dataMeta->addFieldToDirty($key);
         }
         return $this;
     }
