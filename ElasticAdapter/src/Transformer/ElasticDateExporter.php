@@ -25,7 +25,7 @@ class ElasticDateExporter implements Dto\TransformerInterface
             $parameters = new \ArrayObject();
         }
         if (!$parameters->offsetExists('dateProperties')) {
-            $parameters->offsetSet('dateProperties', This\Transformer\ElasticDateLoader::getDateProperties($baseObject));
+            $parameters->offsetSet('dateProperties', Data\Helper\ParseValueHelper::getDateProperties($baseObject));
         }
         return self::exportAllElasticDate($source, $parameters);
     }

@@ -4,7 +4,7 @@ namespace Phalconeer\Dto\Transformer;
 use Phalconeer\Data;
 use Phalconeer\Dto as This;
 
-class JsonFieldExporter implements This\TransformerInterface
+class ExpandJsonFieldExporter implements This\TransformerInterface
 {
     public function __construct(public string $field)
     {
@@ -22,22 +22,31 @@ class JsonFieldExporter implements This\TransformerInterface
         if (!$source instanceof \ArrayObject) {
             return $source;
         }
-        return self::exportJsonField(
+        return self::exportExpandedJsonField(
             $source,
             $this->field
         );
     }
 
-    public static function exportJsonField(
+    public static function exportExpandedJsonField(
         \ArrayObject | Data\CommonInterface $source,
         string $field
     ) : \ArrayObject 
     {
         if ($source->offsetExists($field)) {
-            $source->offsetSet(
-                $field,
-                json_encode($source->offsetGet($field))
-            );
+            $current = $source->offsetGet($field);
+            if ($current instanceof  Data\DataInterface) {
+                $properties = $current->properties();
+                foreach ($properties as $property) {
+                    if (!$source->offsetExists($property)) {
+                        $source->offsetSet(
+                            $property,
+                            $current->{$property}()
+                        );
+                    }
+                }
+            }
+            $source->offsetUnset($field);
         }
         return $source;
     }

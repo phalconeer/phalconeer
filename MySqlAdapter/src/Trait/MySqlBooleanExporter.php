@@ -1,6 +1,7 @@
 <?php
 namespace Phalconeer\MySqlAdapter\Trait;
 
+use Phalconeer\Data;
 use Phalconeer\Dto;
 use Phalconeer\MySqlAdapter as This;
 
@@ -13,7 +14,7 @@ trait MySqlBooleanExporter
         return This\Transformer\MySqlBooleanExporter::exportAllMySqlBoolean(
             $this->toArrayObject(),
             new \ArrayObject([
-                'boolProperties'    => This\Transformer\MySqlBooleanLoader::getBoolProperties($this)
+                'boolProperties'    => Data\Helper\ParseValueHelper::getBoolProperties($this)
             ])
         );
     }

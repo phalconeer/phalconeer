@@ -25,7 +25,7 @@ class MySqlJsonExporter implements Dto\TransformerInterface
         }
         if (!is_null($baseObject)) {
         if (!is_null($baseObject)) {
-            $parameters->offsetSet('jsonProperties', MySqlJsonLoader::getJsonProperties($baseObject));
+            $parameters->offsetSet('jsonProperties', Data\Helper\ParseValueHelper::getNestedProperties($baseObject));
         }
         }
         return self::exportAllMySqlJson($source);

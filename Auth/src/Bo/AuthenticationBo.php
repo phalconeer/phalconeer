@@ -119,7 +119,8 @@ class AuthenticationBo
             ? $this->createSession($authenticationResponse)
             : $this->loadSession($authenticationResponse);
 
-        if (!is_null($authenticationResponse->userId())) {
+        if (!is_null($session)
+            && !is_null($authenticationResponse->userId())) {
             $this->handleLogin($session);
         }
 

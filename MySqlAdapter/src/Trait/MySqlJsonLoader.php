@@ -1,6 +1,7 @@
 <?php
 namespace Phalconeer\MySqlAdapter\Trait;
 
+use Phalconeer\Data;
 use Phalconeer\MySqlAdapter as This;
 
 trait MySqlJsonLoader
@@ -12,7 +13,7 @@ trait MySqlJsonLoader
         return This\Transformer\MySqlJsonLoader::loadAllMySqlJson(
             $inputObject,
             new \ArrayObject([
-                'jsonProperties'    => This\Transformer\MySqlJsonLoader::getJsonProperties($this)
+                'jsonProperties'    => Data\Helper\ParseValueHelper::getNestedProperties($this)
             ])
         );
     }

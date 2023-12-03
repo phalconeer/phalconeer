@@ -1,16 +1,16 @@
 <?php
-namespace Phalconeer\MySqlAdapter\Trait;
+namespace Phalconeer\Dto\Trait;
 
 use Phalconeer\Data;
-use Phalconeer\MySqlAdapter as This;
+use Phalconeer\Dto as This;
 
-trait MySqlBooleanLoader
+trait BooleanByKeyLoader
 {
-    public function loadAllMySqlBoolean(
+    public function loadAllBooleanByKey(
         \ArrayObject $inputObject
     ) : \ArrayObject 
     {
-        return This\Transformer\MySqlBooleanLoader::loadAllMySqlBoolean(
+        return This\Transformer\BooleanByKeyLoader::loadAllBooleanByKey(
             $inputObject,
             new \ArrayObject([
                 'boolProperties'    => Data\Helper\ParseValueHelper::getBoolProperties($this)

@@ -1,6 +1,7 @@
 <?php
 namespace Phalconeer\MySqlAdapter\Trait;
 
+use Phalconeer\Data;
 use Phalconeer\Dto;
 use Phalconeer\MySqlAdapter as This;
 
@@ -13,7 +14,7 @@ trait MySqlDateExporter
         return This\Transformer\MySqlDateExporter::exportAllMySqlDate(
             $this->toArrayObject(),
             new \ArrayObject([
-                'dateProperties'    => This\Transformer\MySqlDateLoader::getDateProperties($this)
+                'dateProperties'    => Data\Helper\ParseValueHelper::getDateProperties($this)
             ])
         );
     }

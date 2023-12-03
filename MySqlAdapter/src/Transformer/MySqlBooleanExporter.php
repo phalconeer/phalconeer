@@ -25,7 +25,7 @@ class MySqlBooleanExporter implements Dto\TransformerInterface
         }
         if (!is_null($baseObject)) {
         if (!is_null($baseObject)) {
-            $parameters->offsetSet('boolProperties', MySqlBooleanLoader::getBoolProperties($baseObject));
+            $parameters->offsetSet('boolProperties', Data\Helper\ParseValueHelper::getBoolProperties($baseObject));
         }
         }
         return self::exportAllMySqlBoolean($source);

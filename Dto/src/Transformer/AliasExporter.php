@@ -44,6 +44,13 @@ class AliasExporter implements This\TransformerInterface
                     $value = $source->offsetGet($internalProperty);
                     if (is_object($value)) {
                         $value = clone($value);
+                        if (is_array($externalProperty)
+                            && $value instanceof This\ArrayObjectExporterInterface) {
+                            $value = self::exportAliasesWithArray(
+                                $value->toArrayObject(),
+                                $externalProperty
+                            );
+                        }
                     }
                     $source->offsetSet(
                         $externalProperty,

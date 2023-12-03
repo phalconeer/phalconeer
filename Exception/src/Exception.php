@@ -11,4 +11,21 @@ class Exception extends \Exception implements This\ExceptionInterface
     {
         return $this->component;
     }
+
+    public function setComponent(string $component) : self
+    {
+        $this->component = $component;
+        return $this;
+    }
+
+    public static function withComponent(
+        string $component,
+        string $message = "",
+        int $code = 0,
+        ?\Throwable $previous = null
+    ) : self
+    {
+        $exception = new static($message, $code, $previous);
+        return $exception->setComponent($component);
+    }
 }

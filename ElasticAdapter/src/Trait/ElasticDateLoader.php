@@ -1,6 +1,7 @@
 <?php
 namespace Phalconeer\ElasticAdapter\Trait;
 
+use Phalconeer\Data;
 use Phalconeer\ElasticAdapter as This;
 
 trait ElasticDateLoader
@@ -12,7 +13,7 @@ trait ElasticDateLoader
         return This\Transformer\ElasticDateLoader::loadAllElasticDate(
             $inputObject,
             new \ArrayObject([
-                'dateProperties'    => This\Transformer\ElasticDateLoader::getDateProperties($this)
+                'dateProperties'    => Data\Helper\ParseValueHelper::getDateProperties($this)
             ])
         );
     }

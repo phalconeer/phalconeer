@@ -1,6 +1,7 @@
 <?php
 namespace Phalconeer\MySqlAdapter\Trait;
 
+use Phalconeer\Data;
 use Phalconeer\MySqlAdapter as This;
 
 trait MySqlDateLoader
@@ -12,7 +13,7 @@ trait MySqlDateLoader
         return This\Transformer\MySqlDateLoader::loadAllMySqlDate(
             $inputObject,
             new \ArrayObject([
-                'dateProperties'    => This\Transformer\MySqlDateLoader::getDateProperties($this)
+                'dateProperties'    => Data\Helper\ParseValueHelper::getDateProperties($this)
             ])
         );
     }

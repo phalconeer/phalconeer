@@ -24,19 +24,9 @@ class ElasticDateLoader implements Dto\TransformerInterface
             $parameters = new \ArrayObject();
         }
         if (!$parameters->offsetExists('dateProperties')) {
-            $parameters->offsetSet('dateProperties', self::getDateProperties($baseObject));
+            $parameters->offsetSet('dateProperties', Data\Helper\ParseValueHelper::getDateProperties($baseObject));
         }
         return self::loadAllElasticDate($source, $parameters);
-    }
-
-    public static function getDateProperties(Data\CommonInterface $baseObject)
-    {
-        return array_filter(
-            $baseObject->propertyTypes(),
-            function ($type) {
-                return $type === \DateTime::class;
-            }
-        );
     }
 
     public static function loadAllElasticDate(

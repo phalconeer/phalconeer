@@ -24,7 +24,7 @@ class MySqlDateExporter implements Dto\TransformerInterface
             $parameters = new \ArrayObject();
         }
         if (!is_null($baseObject)) {
-            $parameters->offsetSet('dateProperties', MySqlDateLoader::getDateProperties($baseObject));
+            $parameters->offsetSet('dateProperties', Data\Helper\ParseValueHelper::getDateProperties($baseObject));
         }
         return self::exportAllMySqlDate($source, $parameters);
     }

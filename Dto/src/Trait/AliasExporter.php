@@ -26,25 +26,49 @@ trait AliasExporter
         );
     }
 
-    public static function maskArrayObject(
-        \ArrayObject $source,
-        array $aliases = null
-    ) : \ArrayObject
+    public static function maskToAlias($mask) : array
     {
-        return self::exportAliasesWithArray(
-            $source,
-            $aliases
+        $aliases = array_reduce(
+            $mask,
+            function($aggregator, $currentMask) {
+                $property = explode('.', $currentMask, 2);
+                if (array_key_exists(1, $property)) {
+                    if (!array_key_exists($property[0], $aggregator)) {
+                        $aggregator[$property[0]] = [];
+                    }
+                    $aggregator[$property[0]][] = $property[1];
+                } else {
+                    $aggregator[$currentMask] = $currentMask;
+                }
+                return $aggregator;
+            },
+            []
         );
+
+        foreach ($aliases as $property => $alias) {
+            if (is_array($alias)) {
+                $aliases[$property] = self::maskToAlias($alias);
+            }
+        }
+
+        return $aliases;
     }
 
-    public function maskArray(
-        array $source,
-        array $aliases = null
-    ) : array
+    public function exportAliasesWithMask(
+        array $mask
+    ) : \ArrayObject
     {
+        $toShow = self::maskToAlias($mask);
+
+        foreach ($this->properties() as $property => $type) {
+            if (!in_array($property, $toShow)) {
+                $aliases[$property] = null;
+            }
+        }
+
         return self::exportAliasesWithArray(
-            new \ArrayObject($source),
-             $aliases
-        )->getArrayCopy();
+            $this->toArrayObject(),
+            $aliases
+        );
     }
 }

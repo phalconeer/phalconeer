@@ -1,12 +1,12 @@
 <?php
-namespace Phalconeer\MySqlAdapter\Transformer;
+namespace Phalconeer\Dto\Transformer;
 
 use Phalconeer\Data;
 use Phalconeer\Dto;
 
-class MySqlBooleanLoader implements Dto\TransformerInterface
+class BooleanByKeyLoader implements Dto\TransformerInterface
 {
-    const TRAIT_METHOD = 'loadAllMySqlBoolean';
+    const TRAIT_METHOD = 'loadAllBooleanByKey';
 
     public function transform(
         \ArrayObject | Data\CommonInterface $source,
@@ -26,35 +26,25 @@ class MySqlBooleanLoader implements Dto\TransformerInterface
         if (!is_null($baseObject)) {
             $parameters->offsetSet('boolProperties', Data\Helper\ParseValueHelper::getBoolProperties($baseObject));
         }
-        return self::loadAllMySqlBoolean($source, $parameters);
+        return self::loadAllBooleanByKey($source, $parameters);
     }
 
-    public static function loadAllMySqlBoolean(
+    public static function loadAllBooleanByKey(
         \ArrayObject $source,
         \ArrayObject $parameters = null
     ) : \ArrayObject 
     {
-        $iterator = $source->getIterator();
         $boolProperties = (is_null($parameters)
             || !$parameters->offsetExists('boolProperties'))
             ? []
             : $parameters->offsetGet('boolProperties');
-        while ($iterator->valid()) {
-            if (array_key_exists($iterator->key(), $boolProperties)) {
-                $source->offsetSet(
-                    $iterator->key(),
-                    self::loadMySqlBoolean($iterator->current())
-                );
-            }
-            $iterator->next();
+        $sourceData = $source->getArrayCopy();
+        foreach ($boolProperties as $boolProperty => $type) {
+            $source->offsetSet(
+                $boolProperty,
+                in_array($boolProperty, $sourceData)
+            );
         }
         return $source;
-    }
-
-    public static function loadMySqlBoolean(
-        $boolean
-    ) : bool 
-    {
-        return ((int) $boolean === 1);
     }
 }

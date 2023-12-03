@@ -24,19 +24,9 @@ class MySqlJsonLoader implements Dto\TransformerInterface
             $parameters = new \ArrayObject();
         }
         if (!is_null($baseObject)) {
-            $parameters->offsetSet('jsonProperties', self::getJsonProperties($baseObject));
+            $parameters->offsetSet('jsonProperties', Data\Helper\ParseValueHelper::getNestedProperties($baseObject));
         }
         return self::loadAllMySqlJson($source, $parameters);
-    }
-
-    public static function getJsonProperties(Data\CommonInterface $baseObject)
-    {
-        return array_filter(
-            $baseObject->propertyTypes(),
-            function ($type) {
-                return is_subclass_of($type, Data\ImmutableData::class);
-            }
-        );
     }
 
     public static function loadAllMySqlJson(

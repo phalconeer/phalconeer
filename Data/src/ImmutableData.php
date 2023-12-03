@@ -111,12 +111,15 @@ abstract class ImmutableData implements This\DataInterface
     }
 
     /**
-     * Calculates which is the primary key for the object. By default it will the first defined property in the object.
+     * Calculates which is the primary key for the object. By default it will the field called id, if exists
+     * all other cases it is the first defined property in the object.
      * Mostly used in updating MySQL tables or figuring out uniqueness.
-     *
      */
     public function getPrimaryKey() : array
     {
+        if ($this->dataMeta->doesPropertyExist('id')) {
+            return ['id'];
+        }
         $arrayKeys = $this->dataMeta->getFields();
         return array_slice($arrayKeys, 0, 1);
     }

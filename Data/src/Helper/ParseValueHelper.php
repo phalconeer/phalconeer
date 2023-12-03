@@ -242,4 +242,35 @@ class ParseValueHelper
 
         return self::TYPE_STRING;
     }
+
+    public static function getBoolProperties(This\CommonInterface $baseObject)
+    {
+        return array_filter(
+            $baseObject->propertyTypes(),
+            function ($type) {
+                return $type === This\Helper\ParseValueHelper::TYPE_BOOL
+                    || $type === This\Helper\ParseValueHelper::TYPE_BOOLEAN;
+            }
+        );
+    }
+
+    public static function getDateProperties(This\CommonInterface $baseObject)
+    {
+        return array_filter(
+            $baseObject->propertyTypes(),
+            function ($type) {
+                return $type === \DateTime::class;
+            }
+        );
+    }
+
+    public static function getNestedProperties(This\CommonInterface $baseObject)
+    {
+        return array_filter(
+            $baseObject->propertyTypes(),
+            function ($type) {
+                return is_subclass_of($type, This\ImmutableData::class);
+            }
+        );
+    }
 }

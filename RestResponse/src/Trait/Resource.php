@@ -17,8 +17,8 @@ Trait Resource
     public function initializeData(\ArrayObject $inputObject) : \ArrayObject 
     {
         $inputObject = parent::initializeData($inputObject);
-        if (!$inputObject->offsetExists('meta')) {
-            $inputObject->offsetSet('meta', new \ArrayObject());
+        if (!$inputObject->offsetExists('resourceMeta')) {
+            $inputObject->offsetSet('resourceMeta', new \ArrayObject());
         }
         if (!$inputObject->offsetExists('links')) {
             $inputObject->offsetSet('links', new \ArrayObject());
@@ -39,7 +39,7 @@ Trait Resource
             $export = $this->export();
         }
         if (!$export instanceof \ArrayObject) {
-            // Fallback in case exportger is misconfigured
+            // Fallback in case exporter is misconfigured
             $export = $this->toArrayObject();
         }
         return $export;
@@ -62,11 +62,12 @@ Trait Resource
 
     public function resourceMeta() : \ArrayObject
     {
-        if (is_null($this->meta)) {
-            $this->meta = new \ArrayObject();
+        if (!isset($this->resourceMeta)
+            || is_null($this->resourceMeta)) {
+            $this->resourceMeta = new \ArrayObject();
         }
 
-        return $this->meta;
+        return $this->resourceMeta;
     }
 
     /**
@@ -74,7 +75,8 @@ Trait Resource
      */
     public function links() : \ArrayObject
     {
-        if (is_null($this->links)) {
+        if (!isset($this->links)
+            || is_null($this->links)) {
             $this->links = new \ArrayObject();
         }
 
@@ -83,9 +85,9 @@ Trait Resource
 
     public function addMeta($key, $value) : This\ResourceInterface
     {
-        $meta = $this->meta()->getArrayCopy(false);
-        $meta[$key] = $value;
-        $this->meta = new \ArrayObject($meta);
+        $resourceMeta = $this->resourceMeta()->getArrayCopy(false);
+        $resourceMeta[$key] = $value;
+        $this->resourceMeta = new \ArrayObject($resourceMeta);
         return $this;
     }
 
@@ -122,10 +124,14 @@ Trait Resource
             ];
             $iterator->next();
         }
-        if ($this->meta && $this->meta->count() > 0) {
-            $response['meta'] = $this->meta->getArrayCopy();
+        if (isset($this->resourceMeta)
+            && $this->resourceMeta
+            && $this->resourceMeta->count() > 0) {
+            $response['resourceMeta'] = $this->resourceMeta->getArrayCopy();
         }
-        if ($this->links && $this->links->count() > 0) {
+        if (isset($this->links)
+            && $this->links
+            && $this->links->count() > 0) {
             $response['links'] = $this->links->getArrayCopy();
         }
         return $response;
@@ -137,8 +143,8 @@ Trait Resource
         if ($data->offsetExists('links')) {
             $data->offsetUnset('links');
         }
-        if ($data->offsetExists('meta')) {
-            $data->offsetUnset('meta');
+        if ($data->offsetExists('resourceMeta')) {
+            $data->offsetUnset('resourceMeta');
         }
 
         return [
@@ -216,8 +222,8 @@ Trait Resource
             if ($current->offsetExists('links')) {
                 $current->offsetUnset('links');
             }
-            if ($current->offsetExists('meta')) {
-                $current->offsetUnset('meta');
+            if ($current->offsetExists('resourceMeta')) {
+                $current->offsetUnset('resourceMeta');
             }
             $response .= $this->convertCsvLine($current, $separator, $lineEnd);
             $iterator->next();
