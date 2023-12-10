@@ -48,7 +48,7 @@ class Factory extends Bootstrap\Factory
         $defaultResponseMiddlewares = $this->getDefaultResponseMiddlewares();
 
         return function (
-            $connectionType = This\HElper\ElasticAdapterHelper::DEFAULT_CONFIG,
+            $connectionType = This\Helper\ElasticAdapterHelper::DEFAULT_CONFIG,
             array $requestMiddlewares = [],
             array $responseMiddlewares = []
         ) use ($connectionParameters, $di, $defaultRequestMiddlewares, $defaultResponseMiddlewares) {

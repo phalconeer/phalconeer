@@ -6,43 +6,18 @@ use Phalconeer\Data;
 use Phalconeer\Dto;
 use Phalconeer\RestResponse as This;
 
-Trait Resource
+trait Resource
 {
-    use Dto\Trait\ArrayObjectExporter;
+    use Dto\Trait\AliasExporter;
 
-    protected \ArrayObject $resourceMeta;
+    protected \ArrayObject $meta;
 
     protected \ArrayObject $links;
-
-    public function initializeData(\ArrayObject $inputObject) : \ArrayObject 
-    {
-        $inputObject = parent::initializeData($inputObject);
-        if (!$inputObject->offsetExists('resourceMeta')) {
-            $inputObject->offsetSet('resourceMeta', new \ArrayObject());
-        }
-        if (!$inputObject->offsetExists('links')) {
-            $inputObject->offsetSet('links', new \ArrayObject());
-        }
-        return $inputObject;
-    }
 
     public function getResourceType() : string
     {
         $className = str_replace('Resource', '', get_called_class());
         return strtolower(preg_replace('/([A-Z])/', '-\\1', lcfirst(substr($className, strrpos($className, '\\') + 1))));
-    }
-
-    protected function getResourceContents() : \ArrayObject
-    {
-        $export = null;
-        if ($this instanceof Dto\DtoExporterInterface) {
-            $export = $this->export();
-        }
-        if (!$export instanceof \ArrayObject) {
-            // Fallback in case exporter is misconfigured
-            $export = $this->toArrayObject();
-        }
-        return $export;
     }
 
     public function convertTo(string $format) : string
@@ -60,14 +35,14 @@ Trait Resource
         }
     }
 
-    public function resourceMeta() : \ArrayObject
+    public function meta() : \ArrayObject
     {
-        if (!isset($this->resourceMeta)
-            || is_null($this->resourceMeta)) {
-            $this->resourceMeta = new \ArrayObject();
+        if (!isset($this->meta)
+            || is_null($this->meta)) {
+            $this->meta = new \ArrayObject();
         }
 
-        return $this->resourceMeta;
+        return $this->meta;
     }
 
     /**
@@ -85,15 +60,15 @@ Trait Resource
 
     public function addMeta($key, $value) : This\ResourceInterface
     {
-        $resourceMeta = $this->resourceMeta()->getArrayCopy(false);
-        $resourceMeta[$key] = $value;
-        $this->resourceMeta = new \ArrayObject($resourceMeta);
+        $meta = $this->meta()->getArrayCopy();
+        $meta[$key] = $value;
+        $this->meta = new \ArrayObject($meta);
         return $this;
     }
 
     public function addLink($key, $value) : This\ResourceInterface
     {
-        $links = $this->links()->getArrayCopy(false);
+        $links = $this->links()->getArrayCopy();
         $links[$key] = $value;
         $this->links = new \ArrayObject($links);
         return $this;
@@ -103,7 +78,7 @@ Trait Resource
     {
         return json_encode([
             'errors'    => [
-                $this->getResourceContents()->getArrayCopy()
+                $this->export()
             ]
         ]);
     }
@@ -115,19 +90,24 @@ Trait Resource
             'data'      => []
         ];
         $iterator = $this->getIterator();
+        $this->setExportAliases([
+            'meta'              => null,
+            'links'             => null
+        ]);
+
         while ($iterator->valid()) {
             $current = $iterator->current();
-            $reponse['data'][] = [
+            $response['data'][] = [
                 'type'          => $resourceType,
                 'id'            => implode('-', $current->getPrimaryKeyValue()),
-                'attributes'    => $this->getResourceContents()->getArrayCopy()
+                'attributes'    => $current->export()
             ];
             $iterator->next();
         }
-        if (isset($this->resourceMeta)
-            && $this->resourceMeta
-            && $this->resourceMeta->count() > 0) {
-            $response['resourceMeta'] = $this->resourceMeta->getArrayCopy();
+        if (isset($this->meta)
+            && $this->meta
+            && $this->meta->count() > 0) {
+            $response['meta'] = $this->meta->getArrayCopy();
         }
         if (isset($this->links)
             && $this->links
@@ -139,12 +119,12 @@ Trait Resource
 
     protected function dataToJSONApi() : array
     {
-        $data = $this->getResourceContents();
+        $data = $this->export();
         if ($data->offsetExists('links')) {
             $data->offsetUnset('links');
         }
-        if ($data->offsetExists('resourceMeta')) {
-            $data->offsetUnset('resourceMeta');
+        if ($data->offsetExists('meta')) {
+            $data->offsetUnset('meta');
         }
 
         return [
@@ -209,7 +189,7 @@ Trait Resource
         if ($this instanceof Exception\ExceptionInterface) {
             return $this->exportJSONApiError();
         }
-        $data = $this->getResourceContents();
+        $data = $this->export();
         $response = '';
         $data = ($this instanceof Data\CollectionInterface)
             ? $data
@@ -222,8 +202,8 @@ Trait Resource
             if ($current->offsetExists('links')) {
                 $current->offsetUnset('links');
             }
-            if ($current->offsetExists('resourceMeta')) {
-                $current->offsetUnset('resourceMeta');
+            if ($current->offsetExists('meta')) {
+                $current->offsetUnset('meta');
             }
             $response .= $this->convertCsvLine($current, $separator, $lineEnd);
             $iterator->next();

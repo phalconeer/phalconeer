@@ -3,7 +3,7 @@ namespace Phalconeer\Dto;
 
 use Phalconeer\Data;
 
-interface DtoExporterInterface extends Data\DataInterface
+interface DtoExporterInterface
 {
     public function exportWithTransformers(
         array $transformers = [],

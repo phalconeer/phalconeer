@@ -144,39 +144,59 @@ abstract class ImmutableDto extends Data\ImmutableData implements This\DtoExport
         return $this->transformer->preserveKeys();
     }
 
+    public function setConvertChildren(bool $convertChildren) : self
+    {
+        $target = clone($this);
+        $target->transformer->setConvertChildren($convertChildren);
+        return $target;
+    }
+
     public function setExportTransformers(array $exportTransformers) : self
     {
-        $this->transformer->setExportTransformers($exportTransformers);
-        return $this;
+        $target = clone($this);
+        $target->transformer->setExportTransformers($exportTransformers);
+        return $target;
     } 
 
     public function appendExportTransformers(array $exportTransformers) : self
     {
-        $this->transformer->appendExportTransformers($exportTransformers);
-        return $this;
+        $target = clone($this);
+        $target->transformer->appendExportTransformers($exportTransformers);
+        return $target;
     } 
 
     public function prependExportTransformers(array $exportTransformers) : self
     {
-        $this->transformer->prependExportTransformers($exportTransformers);
-        return $this;
+        $target = clone($this);
+        $target->transformer->prependExportTransformers($exportTransformers);
+        return $target;
     } 
 
     public function setExportAliases(array $exportAliases) : self
     {
-        $this->transformer->setExportAliases($exportAliases);
-        return $this;
+        $target = clone($this);
+        $target->transformer->setExportAliases($exportAliases);
+        return $target;
     } 
 
     public function addExportAliases(array $exportAliases) : self
     {
-        $this->transformer->addExportAliases($exportAliases);
-        return $this;
+        $target = clone($this);
+        $target->transformer->addExportAliases($exportAliases);
+        return $target;
+    }
+
+    public function setPreserveKeys(bool $preserveKeys) : self
+    {
+        $target = clone($this);
+        $target->transformer->setPreserveKeys($preserveKeys);
+        return $target;
     }
 
     public function setTransformer(This\TransformerMetaInterface $transformer) : self
     {
-        $this->transformer = $transformer;
-        return $this;
+        $target = clone($this);
+        $target->transformer = $transformer;
+        return $target;
     }
 }

@@ -1,7 +1,6 @@
 <?php
 namespace Phalconeer\Dto\Trait;
 
-use Phalconeer\Data;
 use Phalconeer\Dto as This;
 
 trait ArrayObjectExporter

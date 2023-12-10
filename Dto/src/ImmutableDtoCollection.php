@@ -1,12 +1,11 @@
 <?php
 namespace Phalconeer\Dto;
 
-use ArrayObject;
 use Phalconeer\Data;
 use Phalconeer\Dto as This;
 use Phalconeer\Exception;
 
-class ImmutableDtoCollection extends Data\ImmutableCollection
+class ImmutableDtoCollection extends Data\ImmutableCollection implements This\DtoExporterInterface
 {
     public ?Data\CollectionMetaInterface $collectionMeta;
 
@@ -86,7 +85,7 @@ class ImmutableDtoCollection extends Data\ImmutableCollection
     {
         $iterator = $this->collection->getIterator();
         while ($iterator->valid()) {
-            $iterator->current()->meta->setExportTransformers($exportTransformers);
+            $iterator->current()->transformer->setExportTransformers($exportTransformers);
             $iterator->next();
         }
         return $this;
@@ -96,7 +95,7 @@ class ImmutableDtoCollection extends Data\ImmutableCollection
     {
         $iterator = $this->collection->getIterator();
         while ($iterator->valid()) {
-            $iterator->current()->meta->appendExportTransformers($exportTransformers);
+            $iterator->current()->transformer->appendExportTransformers($exportTransformers);
             $iterator->next();
         }
         return $this;
@@ -106,7 +105,7 @@ class ImmutableDtoCollection extends Data\ImmutableCollection
     {
         $iterator = $this->collection->getIterator();
         while ($iterator->valid()) {
-            $iterator->current()->meta->prependExportTransformers($exportTransformers);
+            $iterator->current()->transformer->prependExportTransformers($exportTransformers);
             $iterator->next();
         }
         return $this;
@@ -116,7 +115,7 @@ class ImmutableDtoCollection extends Data\ImmutableCollection
     {
         $iterator = $this->collection->getIterator();
         while ($iterator->valid()) {
-            $iterator->current()->meta->setExportAliases($exportAliases);
+            $iterator->current()->transformer->setExportAliases($exportAliases);
             $iterator->next();
         }
         return $this;
@@ -126,7 +125,7 @@ class ImmutableDtoCollection extends Data\ImmutableCollection
     {
         $iterator = $this->collection->getIterator();
         while ($iterator->valid()) {
-            $iterator->current()->meta->addExportAliases($exportAliases);
+            $iterator->current()->transformer->addExportAliases($exportAliases);
             $iterator->next();
         }
         return $this;

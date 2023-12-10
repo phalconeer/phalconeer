@@ -6,7 +6,7 @@ use Phalconeer\Dto as This;
 
 trait ConvertedValue
 {
-    public function convertCollection(bool $convertChildren = true,bool $preserveKeys = false) : \ArrayObject
+    public function convertCollection(bool $convertChildren = true, bool $preserveKeys = false) : \ArrayObject
     {
         $iterator = $this->getIterator();
         $result = new \ArrayObject();
@@ -48,7 +48,7 @@ trait ConvertedValue
             return call_user_func([$this, $exportFunction]);
         }
 
-       $propertyType = $this->dataMeta->propertyType($propertyName);
+        $propertyType = $this->dataMeta->propertyType($propertyName);
 
         if (Data\Helper\ParseValueHelper::isSimpleValue($propertyType)
             || ($propertyType === Data\Property\Any::class
@@ -56,7 +56,7 @@ trait ConvertedValue
             return $this->{$propertyName};
         } else {
             switch (true) {
-                case $this->{$propertyName} instanceof Data\DataInterface:
+                case $this->{$propertyName} instanceof This\DtoExporterInterface:
                     return $this->convertDataInterface($propertyName, $preserveKeys);
                 case is_callable([$this->{$propertyName}, 'getArrayCopy']):
                     return $this->{$propertyName}->getArrayCopy();

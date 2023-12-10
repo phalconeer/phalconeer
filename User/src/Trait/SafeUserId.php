@@ -7,6 +7,6 @@ trait SafeUserId
 
     public function setSafeUserId(string $safeUserId) : self
     {
-        return $this->setKeyValue('safeUserId', $safeUserId);
+        return $this->setValueByKey('safeUserId', $safeUserId);
     }
 }
