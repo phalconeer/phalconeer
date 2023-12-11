@@ -9,14 +9,14 @@ class UserSensitiveData extends This\Data\User
     use This\Trait\SensitiveData;
 
     protected static array $exportTransformers = [
-        Dto\Helper\TraitsHelper::EXPORT_METHOD_TO_ARRAY_OBJECT,
+        Dto\Transformer\ArrayObjectExporter::TRAIT_METHOD,
         This\Transformer\SensitiveData::TRAIT_METHOD
     ];
 
     public static function fromUser(This\Data\User $user) : self
     {
         $data = $user->exportWithTransformers([
-            Dto\Helper\TraitsHelper::EXPORT_METHOD_TO_ARRAY_OBJECT
+            Dto\Transformer\ArrayObjectExporter::TRAIT_METHOD
         ]);
 
         return new self($data);

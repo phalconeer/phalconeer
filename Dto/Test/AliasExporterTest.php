@@ -192,7 +192,7 @@ class AliasExporterTest extends Test\UnitTestCase
         ]);
         $dto = new This\Mock\TestAliasExporter($testData);
         $dto = $dto->setExportTransformers([
-            Dto\Helper\TraitsHelper::EXPORT_METHOD_TO_ARRAY_OBJECT, // Requires ArrayObjectExporter trait
+            Dto\Transformer\ArrayObjectExporter::TRAIT_METHOD, // Requires ArrayObjectExporter trait
             $aliasTransformer
         ]);
 

@@ -19,6 +19,6 @@ class TestArrayObjectExporter extends This\Mock\Test
     protected static bool $preserveKeys = false;
 
     protected static array $exportTransformers = [
-        Dto\Helper\TraitsHelper::EXPORT_METHOD_TO_ARRAY_OBJECT,
+        Dto\Transformer\ArrayObjectExporter::TRAIT_METHOD,
     ];
 }

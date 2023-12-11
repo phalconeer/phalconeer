@@ -12,7 +12,7 @@ class UserCredentialDevice extends Dto\ImmutableDto implements Dto\ArrayObjectEx
         Data\Trait\AutoGetter;
 
     protected static array $exportTransformers = [
-        Dto\Helper\TraitsHelper::EXPORT_METHOD_TO_ARRAY_OBJECT
+        Dto\Transformer\ArrayObjectExporter::TRAIT_METHOD
     ];
 
     protected int $id;

@@ -9,7 +9,7 @@ class Test extends Dto\ImmutableDto implements Dto\ArrayObjectExporterInterface
     use Dto\Trait\ArrayObjectExporter;
 
     protected static array $exportTransformers = [
-        Dto\Helper\TraitsHelper::EXPORT_METHOD_TO_ARRAY_OBJECT,
+        Dto\Transformer\ArrayObjectExporter::TRAIT_METHOD,
     ];
 
     protected static array $properties = [
