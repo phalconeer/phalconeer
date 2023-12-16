@@ -49,9 +49,10 @@ trait ConvertedValue
         }
 
         $propertyType = $this->dataMeta->propertyType($propertyName);
+        $validatedType = Data\Helper\ParseValueHelper::getValidatedType($this->{$propertyName}, $propertyType);
 
-        if (Data\Helper\ParseValueHelper::isSimpleValue($propertyType)
-            || ($propertyType === Data\Property\Any::class
+        if (Data\Helper\ParseValueHelper::isSimpleValue($validatedType)
+            || ($validatedType === Data\Property\Any::class
                 && !is_object($this->{$propertyName}))) {
             return $this->{$propertyName};
         } else {

@@ -34,18 +34,18 @@ abstract class ImmutableData implements This\DataInterface
             if (!$inputObject->offsetExists($propertyName)) {
                 continue;
             }
-            try {
+            // try {
                 $this->{$propertyName} = This\Helper\ParseValueHelper::parseValue(
                     $inputObject->offsetGet($propertyName),
                     $propertyType
                 );
-            } catch (Exception\TypeMismatchException $exception) {
-                throw new Exception\TypeMismatchException(
-                    'Invalid type, expected: `' . $propertyType . '` or ArrayObject for [' . $propertyName . '] @' . static::class,
-                    $exception->getCode() ?? This\Helper\ExceptionHelper::TYPE_MISMATCH,
-                    $exception
-                );
-            }
+            // } catch (Exception\TypeMismatchException $exception) {
+            //     throw new Exception\TypeMismatchException(
+            //         'Invalid type, expected: `' . $propertyType . '` or ArrayObject for [' . $propertyName . '] @' . static::class,
+            //         $exception->getCode() ?? This\Helper\ExceptionHelper::TYPE_MISMATCH,
+            //         $exception
+            //     );
+            // }
         }
     }
 
@@ -88,8 +88,12 @@ abstract class ImmutableData implements This\DataInterface
         }
 
         $propertyType = $this->dataMeta->propertyType($propertyName);
+        $value = (isset($this->{$propertyName}))
+            ? $this->{$propertyName}
+            : null;
+        $validatedType = This\Helper\ParseValueHelper::getValidatedType($value, $propertyType);
 
-        if (This\Helper\ParseValueHelper::isSimpleValue($propertyType)
+        if (This\Helper\ParseValueHelper::isSimpleValue($validatedType)
             || ($propertyType === This\Property\Any::class
                 && !is_object($this->{$propertyName}))) {
             return $this->{$propertyName};
@@ -158,35 +162,6 @@ abstract class ImmutableData implements This\DataInterface
         return $new;
     }
 
-    public function doesValueNeedUpdate($key, $value)
-    {
-        $propertyType = $this->propertyType($key);
-        if (is_null($propertyType)) {
-            throw new Exception\InvalidArgumentException(
-                'Object property does not exist: ' . $key . ' @ ' . static::class,
-                This\Helper\ExceptionHelper::PROPERTY_NOT_FOUND
-            );
-        }
-        try {
-            $valueParsed = This\Helper\ParseValueHelper::parseValue($value, $propertyType);
-        } catch (Exception\TypeMismatchException $exception) {
-            throw new Exception\TypeMismatchException(
-                'Invalid type, expected: `' . $propertyType . '` or array for [' . $key . '] @' . static::class,
-                $exception->getCode() ?? This\Helper\ExceptionHelper::TYPE_MISMATCH,
-                $exception
-            );
-        }
-        if (!is_callable($valueParsed, false, $callableName)
-            || $callableName !== 'Closure::__invoke' ) {
-            // This case happens when a closure - anonymus function - is inserted
-            // There is no way to tell if two closures are different functions, so it will always overwrite the key
-            if (isset($this->{$key})
-                && This\Helper\CompareValueHelper::hasSameData($this->{$key}, $valueParsed)) {
-                return $this;
-            }
-        }
-    }
-
     /**
      * Updates a field and return a new instance of the object
      */
@@ -203,15 +178,11 @@ abstract class ImmutableData implements This\DataInterface
                 This\Helper\ExceptionHelper::PROPERTY_NOT_FOUND
             );
         }
-        try {
-            $valueParsed = This\Helper\ParseValueHelper::parseValue($value, $propertyType);
-        } catch (Exception\TypeMismatchException $exception) {
-            throw new Exception\TypeMismatchException(
-                'Invalid type, expected: `' . $propertyType . '` or array for [' . $key . '] @' . static::class,
-                $exception->getCode() ?? This\Helper\ExceptionHelper::TYPE_MISMATCH,
-                $exception
-            );
-        }
+        $oldValue = (isset($this->{$key}))
+            ? $this->{$key}
+            : null;
+        $validatedType = This\Helper\ParseValueHelper::getValidatedType($oldValue, $propertyType);
+        $valueParsed = This\Helper\ParseValueHelper::parseValue($value, $validatedType);
         if (!is_callable($valueParsed, false, $callableName)
             || $callableName !== 'Closure::__invoke' ) {
             // This case happens when a closure - anonymus function - is inserted
@@ -281,7 +252,7 @@ abstract class ImmutableData implements This\DataInterface
     /**
      * Read the types of class properties
      */
-    public function propertyType(string $key) : ?string
+    public function propertyType(string $key) :  null | string | array
     {
         return $this->dataMeta->propertyType($key);
     }

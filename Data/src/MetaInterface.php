@@ -15,7 +15,7 @@ interface MetaInterface
 
     public function propertiesCache() : array;
 
-    public function propertyType(string $field) : ?string;
+    public function propertyType(string $field) : null | string | array;
 
     public function setDirty(array $dirtyFields) : self;
 

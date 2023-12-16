@@ -3,7 +3,7 @@ namespace Phalconeer\Data\Property;
 
 use Phalconeer\Data as This;
 
-class TypedProperty extends This\ImmutableData
+class Typed extends This\ImmutableData
 {
     protected static array $properties = [
         'value'         => This\Property\Any::class,

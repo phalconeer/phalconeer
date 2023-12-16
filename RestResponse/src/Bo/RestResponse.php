@@ -175,7 +175,7 @@ class RestResponse extends Http\Response
         if ($offset + $limit < $size) {
             $correction = ($size % $limit === 0) ? 1 : 0;
             $resource->addLink(
-                This\Helper\RestResponseHelper::LINK_FIRST,
+                This\Helper\RestResponseHelper::LINK_LAST,
                 $this->url->get(
                     [
                         'for'       => $routeName,

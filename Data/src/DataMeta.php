@@ -12,7 +12,7 @@ class DataMeta implements MetaInterface
      * Use this array to save computing time and cache the properties
      */
     protected array $propertiesCache = [
-        // property => type
+        // property => type | type[]
     ];
 
     /**
@@ -55,11 +55,13 @@ class DataMeta implements MetaInterface
         return $this->propertiesCache;
     }
 
-    public function propertyType(string $field) : ?string
+    public function propertyType(string $field) : null | string | array
     {
-        return ($this->doesPropertyExist($field))
-            ? $this->propertiesCache[$field]
-            : null;
+        if (!$this->doesPropertyExist($field)) {
+            return null;
+        }
+
+        return $this->propertiesCache[$field];
     }
 
     public function setDirty(array $dirtyFields) : self

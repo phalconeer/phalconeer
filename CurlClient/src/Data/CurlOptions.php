@@ -18,7 +18,7 @@ class CurlOptions extends Data\ImmutableData
 
     protected bool $header = false;
 
-    protected string $httpAuth;
+    protected ?string $httpAuth = null;
 
     protected int $httpVersion = CURL_HTTP_VERSION_1_1;
 

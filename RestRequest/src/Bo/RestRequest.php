@@ -73,29 +73,30 @@ class RestRequest extends Http\Request
         );
     }
 
-    public function getOffset() : int
+    public function getOffset(int $default = null) : int
     {
         return (int) $this->getQuery(
             This\Helper\RestRequestHelper::PARAMETER_OFFSET,
             'int',
-            $this->config->get('defaultPageSize', 20)
+            $default ?? $this->config->get('defaultOffset', 0)
         );
     }
 
-    public function getLimit() : int
+    public function getLimit(int $default = null) : int
     {
         return (int) $this->getQuery(
             This\Helper\RestRequestHelper::PARAMETER_LIMIT,
             'int',
-            $this->config->get('defaultOffset', 0));
+            $default ?? $this->config->get('defaultPageSize', 20)
+        );
     }
 
-    public function getSort() : string
+    public function getSort(string $default = '') : string
     {
         return $this->getQuery(
             This\Helper\RestRequestHelper::PARAMETER_SORT,
             'string',
-            ''
+            $default
         );
     }
 

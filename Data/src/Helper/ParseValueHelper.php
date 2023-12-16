@@ -44,20 +44,64 @@ class ParseValueHelper
         ]);
     }
 
-    public static function rejectComplexValues($value, $expectedType = '')
+    public static function validateSimpleValue($value) : ?int
     {
-        if (is_array($value)
-                || is_object($value)) {
-            throw new Exception\TypeMismatchException(
-                $expectedType,
-                This\Helper\ExceptionHelper::COMPLEX_VALUE_NOT_ALLOWED
-            );
+        if (!is_array($value)
+                && !is_object($value)) {
+            return null;
         }
+        return This\Helper\ExceptionHelper::COMPLEX_VALUE_NOT_ALLOWED;
+    }
+
+    public static function validateCallable($value) : ?int
+    {
+        if (is_callable($value)) {
+            return null;
+        }
+        return This\Helper\ExceptionHelper::VALUE_IS_NOT_CALLABLE;
+    }
+
+    public static function validateTyped($value) : ?int
+    {
+        if((is_object($value) 
+                && is_a($value, This\Property\Typed::class))
+            || (is_array($value)
+                && array_key_exists('value', $value))
+            || ($value instanceof \ArrayObject)
+                && $value->offsetExists('value')) {
+            return null;
+        }
+        return self::validateSimpleValue($value);
+    }
+
+    public static function validateComplexType($value, $type) : ?int
+    {
+        if (is_object($value)
+                && is_a($value, $type)) {
+            return null;
+        }
+        if ($value instanceof \ArrayObject) {
+            return null;
+        }
+
+        if ($type === \DateTime::class) {
+            try {
+                new \DateTime($value);
+            } catch (\Exception $e) {
+                return This\Helper\ExceptionHelper::INVALID_DATE;
+            }
+            return null;
+        }
+
+        if (interface_exists($type)) {
+            return This\Helper\ExceptionHelper::TYPE_MISMATCH_INTERFACE;
+        }
+    
+        return This\Helper\ExceptionHelper::TYPE_MISMATCH;
     }
 
     public static function parseString($value) : ?string
     {
-        self::rejectComplexValues($value, self::TYPE_STRING);
         return isset($value)
                 ? (string) $value
                 : null;
@@ -65,7 +109,6 @@ class ParseValueHelper
 
     public static function parseInt($value) : ?int
     {
-        self::rejectComplexValues($value, self::TYPE_INT);
         return isset($value)
                 ? (int) $value
                 : null;
@@ -73,7 +116,6 @@ class ParseValueHelper
 
     public static function parseFloat($value) : ?float
     {
-        self::rejectComplexValues($value, self::TYPE_FLOAT);
         return isset($value)
                 ? (float) $value
                 : null;
@@ -81,7 +123,6 @@ class ParseValueHelper
 
     public static function parseBool($value) : ?bool
     {
-        self::rejectComplexValues($value, self::TYPE_BOOL);
         if (is_bool($value)) {
             return $value;
         }
@@ -111,15 +152,28 @@ class ParseValueHelper
         if (is_array($value)) {
             return new \ArrayObject($value);
         }
-        return $value;
+        return new \ArrayObject(explode(',', $value));
     }
 
     public static function parseCallable($value) : callable
     {
-        if (!is_callable($value)) {
-            throw new Exception\TypeMismatchException(
-                'Expected callable',
-                This\Helper\ExceptionHelper::VALUE_IS_NOT_CALLABLE
+        return $value;
+    }
+
+    public static function parseTyped($value)
+    {
+        if(is_object($value) 
+                && is_a($value, This\Property\Typed::class)) {
+            return $value;
+        }
+        if (is_array($value)
+                && array_key_exists('value', $value)) {
+            $value = new \ArrayObject($value);
+        }
+        if (!$value->offsetExists('type')) {
+            $value->offsetSet(
+                'type',
+                self::detectType($value->offsetGet($value))
             );
         }
         return $value;
@@ -127,9 +181,6 @@ class ParseValueHelper
 
     public static function parseComplexType($value, $type)
     {
-        if (is_null($value)) {
-            return null;
-        }
         if (is_object($value)
                 && is_a($value, $type)) {
             return $value;
@@ -138,72 +189,11 @@ class ParseValueHelper
             return new $type($value);
         }
 
-        if (interface_exists($type)) {
-            throw new Exception\TypeMismatchException(
-                'Expected class implementing interface `' . $type . '`, received: ' . ((is_object($value)) ? get_class($value) : gettype($value)),
-                This\Helper\ExceptionHelper::TYPE_MISMATCH
-            );
-        }
-
         if ($type === \DateTime::class) {
-            try {
-                return new \DateTime($value);
-            } catch (\Exception $e) {
-                return true;
-            }
+            return new \DateTime($value);
         }
-    
-        throw new Exception\TypeMismatchException(
-            'Expected class `' . $type . '`or ArrayObject, received: ' . (
-                (is_object($value))
-                ? get_class($value)
-                : ((is_array($value))
-                    ? 'array with keys: ' . implode(', ', array_keys($value))
-                    : $value)
-                ),
-            This\Helper\ExceptionHelper::TYPE_MISMATCH
-        );
-    }
 
-    public static function parseValue($value, string $type)
-    {
-        if (is_null($value)) {
-            return null;
-        }
-        switch ($type) {
-            case This\Property\Any::class:
-                return $value;
-            case self::TYPE_STRING:
-                return self::parseString($value);
-            case self::TYPE_INTEGER: //return value for gettype()
-            case self::TYPE_INT:
-                return self::parseInt($value);
-            case self::TYPE_DOUBLE: //return value for gettype()
-            case self::TYPE_FLOAT:
-            case self::TYPE_REAL:
-                return self::parseFloat($value);
-            case self::TYPE_BOOLEAN: //return value for gettype()
-            case self::TYPE_BOOL:
-                return self::parseBool($value);
-            case self::TYPE_ARRAY:
-                return self::parseArray($value);
-            case self::TYPE_CALLABLE:
-                return self::parseCallable($value);
-            case \ArrayObject::class:
-                return self::parseArrayObject($value);
-            case This\TypedProperty::class:
-                if((!is_object($value) 
-                        || is_a($value, This\TypedProperty::class))
-                    && (!is_array($value)
-                        || !array_key_exists('value', $value))) {
-                    $value = [
-                        'value'     => $value,
-                        'type'      => self::detectType($value)
-                    ];
-                }
-            default:
-                return self::parseComplexType($value, $type);
-        }
+        return null;
     }
 
     public static function detectType($value, $convertNumeric = true) : string
@@ -241,6 +231,144 @@ class ParseValueHelper
         }
 
         return self::TYPE_STRING;
+    }
+
+    public static function validateValue(
+        $value,
+        string $type,
+    ) : ?int
+    {
+        if (is_null($value)) {
+            return null;
+        }
+        switch ($type) {
+            case This\Property\Any::class:
+                return null;
+            case self::TYPE_STRING:
+            case self::TYPE_INTEGER: //return value for gettype()
+            case self::TYPE_INT:
+            case self::TYPE_DOUBLE: //return value for gettype()
+            case self::TYPE_FLOAT:
+            case self::TYPE_REAL:
+            case self::TYPE_BOOLEAN: //return value for gettype()
+            case self::TYPE_BOOL:
+                return self::validateSimpleValue($value);
+            case self::TYPE_ARRAY:
+            case \ArrayObject::class:
+                return null;
+            case self::TYPE_CALLABLE:
+                return self::validateCallable($value);
+            case This\Property\Typed::class:
+                return self::validateTyped($value);
+            default:
+                return self::validateComplexType($value, $type);
+        }
+    }
+
+    public static function getValidatedType(
+        $value,
+        string | array $type,
+    ) : string
+    {
+        $validationError = null;
+        if (!is_array($type)) {
+            $validationError = self::validateValue($value, $type);
+            $validatedType = $type;
+        } else {
+            $validationError = array_reduce(
+                $type,
+                function ($aggregate, $currentType) use ($value, &$validatedType) {
+                    if (is_null($aggregate)) {
+                        return $aggregate; //If one type matches, it is valid
+                    }
+                    if (is_null(self::validateValue($value, $currentType))) {
+                        $validatedType = $currentType;
+                        return null;
+                    }
+                    return $aggregate;
+                },
+                This\Helper\ExceptionHelper::ALL_TYPE_VALIDATIONS_FAILED
+            );
+        }
+
+
+        if (!is_null($validationError)) {
+            self::handleValidationError(
+                $validationError,
+                $value,
+                $type
+            );
+        }
+
+        return $validatedType;
+    }
+
+    public static function parseValue(
+        $value,
+        string | array $type,
+    )
+    {
+        if (is_null($value)) {
+            return null;
+        }
+
+        $validatedType = self::getValidatedType($value, $type);
+        switch ($validatedType) {
+            case This\Property\Any::class:
+                return $value;
+            case self::TYPE_STRING:
+                return self::parseString($value);
+            case self::TYPE_INTEGER: //return value for gettype()
+            case self::TYPE_INT:
+                return self::parseInt($value);
+            case self::TYPE_DOUBLE: //return value for gettype()
+            case self::TYPE_FLOAT:
+            case self::TYPE_REAL:
+                return self::parseFloat($value);
+            case self::TYPE_BOOLEAN: //return value for gettype()
+            case self::TYPE_BOOL:
+                return self::parseBool($value);
+            case self::TYPE_ARRAY:
+                return self::parseArray($value);
+            case self::TYPE_CALLABLE:
+                return self::parseCallable($value);
+            case \ArrayObject::class:
+                return self::parseArrayObject($value);
+            case This\Property\Typed::class:
+                return self::parseTyped($value);
+            default:
+                return self::parseComplexType($value, $validatedType);
+        }
+    }
+
+    public static function handleValidationError(
+        int $error,
+        $value,
+        string | array $type
+    )
+    {
+        switch ($error) {
+            case (This\Helper\ExceptionHelper::ALL_TYPE_VALIDATIONS_FAILED):
+                $message = 'All valiadtions failed, types allowed: `' . implode(', ', $type) . '`. Value received: ' . var_export($value, 1);
+                break;
+            case (This\Helper\ExceptionHelper::COMPLEX_VALUE_NOT_ALLOWED):
+                $message = 'Complex value not allowed for `' . $type . '`';
+                break;
+            case (This\Helper\ExceptionHelper::INVALID_DATE):
+                $message = 'Unable to convert to date `' . var_export($value, 1) . '`';
+                break;
+            case (This\Helper\ExceptionHelper::TYPE_MISMATCH):
+                $message = 'Expected class `' . $type . '` or ArrayObject, received: ' . var_export($value, 1);
+                break;
+            case (This\Helper\ExceptionHelper::TYPE_MISMATCH_INTERFACE):
+                $message = 'Expected class to implement interfaec `' . $type . '`, received: ' . var_export($value, 1);
+                break;
+            case (This\Helper\ExceptionHelper::VALUE_IS_NOT_CALLABLE):
+                $message = 'Not callable';
+                break;
+        }
+
+        throw new Exception\TypeMismatchException($message, $error);
     }
 
     public static function getBoolProperties(This\CommonInterface $baseObject)

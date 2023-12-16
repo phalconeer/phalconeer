@@ -47,7 +47,7 @@ class CurlResponse implements Psr\Http\Message\ResponseInterface, Http\MessageIn
         };
     }
 
-    public function getProtocolVersion()
+    public function getProtocolVersion() : string
     {
         $this->response->getProtocolVersion();
     }
@@ -58,68 +58,68 @@ class CurlResponse implements Psr\Http\Message\ResponseInterface, Http\MessageIn
         return $this->response;
     }
 
-    public function getHeaders()
+    public function getHeaders() : array
     {
         return $this->response->getHeaders();
     }
 
-    public function hasHeader($name)
+    public function hasHeader(string $name) : bool
     {
         $this->response = $this->response->hasHeader($name);
         return $this->response;
     }
 
-    public function getHeader($name)
+    public function getHeader(string $name) : array
     {
         return $this->response->getHeader($name);
     }
 
-    public function getHeaderLine($name)
+    public function getHeaderLine(string $name) : string
     {
         return $this->getHeaderLine($name);
     }
 
-    public function withHeader($name, $value)
+    public function withHeader(string $name, $value) : Psr\Http\Message\MessageInterface
     {
         $this->response = $this->response->withHeader($name, $value);
         return $this->response;
     }
 
-    public function withAddedHeader($name, $value)
+    public function withAddedHeader(string $name, $value) : Psr\Http\Message\MessageInterface
     {
         $this->response = $this->response->withAddedHeader($name, $value);
         return $this->response;
     }
 
-    public function withoutHeader($name)
+    public function withoutHeader(string $name) : Psr\Http\Message\MessageInterface
     {
         $this->response = $this->response->withoutHeader($name);
         return $this->response;
     }
 
-    public function getBody()
+    public function getBody() : Psr\Http\Message\StreamInterface
     {
         return $this->response->getBody();
     }
 
-    public function withBody(Psr\Http\Message\StreamInterface $body)
+    public function withBody(Psr\Http\Message\StreamInterface $body) : Psr\Http\Message\MessageInterface
     {
         $this->response = $this->response->withBody($body);
         return $this->response;
     }
 
-    public function getStatusCode()
+    public function getStatusCode() : int
     {
         return $this->response->getStatusCode();
     }
 
-    public function withStatus($code, $reasonPhrase = '')
+    public function withStatus(int $code, string $reasonPhrase = '') : Psr\Http\Message\ResponseInterface
     {
         $this->response = $this->response->withStatus($code, $reasonPhrase);
         return $this->response;
     }
 
-    public function getReasonPhrase()
+    public function getReasonPhrase() : string
     {
         $this->response->getReasonPhrase();
     }

@@ -56,15 +56,8 @@ abstract class MutableData extends This\ImmutableData
                 This\Helper\ExceptionHelper::PROPERTY_NOT_FOUND
             );
         }
-        try {
-            $valueParsed = This\Helper\ParseValueHelper::parseValue($value, $propertyType);
-        } catch (Exception\TypeMismatchException $exception) {
-            throw new Exception\TypeMismatchException(
-                'Invalid type, expected: `' . $propertyType . '` or ArrayObject for [' . $key . '] @' . static::class,
-                $exception->getCode() ?? This\Helper\ExceptionHelper::TYPE_MISMATCH,
-                $exception
-            );
-        }
+        $validatedType = This\Helper\ParseValueHelper::getValidatedType($this->{$key}, $propertyType);
+        $valueParsed = This\Helper\ParseValueHelper::parseValue($value, $validatedType);
         if (!is_callable($valueParsed, false, $callableName)
             || $callableName !== 'Closure::__invoke' ) {
             // This case happens when a closure - anonymus function - is inserted

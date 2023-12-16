@@ -125,7 +125,7 @@ class Request extends Dto\ImmutableDto implements Psr\Http\Message\RequestInterf
      * @param string $method Case-sensitive method.
      * @return static
      */
-    public function withMethod($method)
+    public function withMethod(string $method) : Psr\Http\Message\RequestInterface
     {
         return $this->setValueByKey('method', $method);
     }
@@ -171,7 +171,7 @@ class Request extends Dto\ImmutableDto implements Psr\Http\Message\RequestInterf
      * @param bool $preserveHost Preserve the original state of the Host header.
      * @return static
      */
-    public function withUri(Psr\Http\Message\UriInterface $uri, $preserveHost = false)
+    public function withUri(Psr\Http\Message\UriInterface $uri, $preserveHost = false) : Psr\Http\Message\RequestInterface
     {
         //TODO: preserveHost
         $this->setValueByKey('url', $uri);
