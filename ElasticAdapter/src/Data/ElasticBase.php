@@ -35,6 +35,10 @@ class ElasticBase extends Dto\ImmutableDto implements Dto\ArrayObjectExporterInt
         Dto\Transformer\AliasLoader::TRAIT_METHOD,
     ];
 
+    protected static array $exportTransformers = [
+        Dto\Transformer\AliasExporter::TRAIT_METHOD,
+    ];
+
     protected string $id;
 
     protected string $index;

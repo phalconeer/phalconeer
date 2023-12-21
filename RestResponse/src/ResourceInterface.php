@@ -22,4 +22,6 @@ interface ResourceInterface extends Data\CommonInterface
     public function addMeta($key, $value) : self;
 
     public function addLink($key, $value) : self;
+
+    public function exportArray() : array;
 }

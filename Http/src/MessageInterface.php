@@ -8,4 +8,6 @@ interface MessageInterface
     public function bodyVariables() : array;
 
     public function withBodyVariables(array $variables, bool $merge = false) : self;
+
+    public function bodyVariableExists(string $key) : bool;
 }

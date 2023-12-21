@@ -57,6 +57,10 @@ abstract class ImmutableDto extends Data\ImmutableData implements This\DtoExport
             if (is_callable([$transformer, 'transform'])) {
                 $result = call_user_func_array([$transformer, 'transform'], [$result, $this, $parameters]);
             }
+            if (is_array($transformer)
+                && is_callable($transformer)) {
+                $result = call_user_func_array($transformer, [$result, $this, $parameters]);
+            }
         }
         return $result;
     }

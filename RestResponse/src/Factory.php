@@ -21,10 +21,34 @@ class Factory extends Bootstrap\Factory
         __DIR__ . '/_config/rest_response_config.php'
     ];
 
+    protected function setApplicationName(This\Bo\RestResponse $response) : This\Bo\RestResponse
+    {
+        if ($this->di->get(Config\Factory::MODULE_NAME)->application->has('name')) {
+            $response = $response->setApplicationName($this->di->get(Config\Factory::MODULE_NAME)->application->get('name'));
+        }
+        return $response;
+    }
+
+    protected function attachEventListeners(This\Bo\RestResponse $response) : This\Bo\RestResponse
+    {
+        $responseConfig = $this->di->get(Config\Factory::MODULE_NAME)->get(static::MODULE_NAME, Config\Helper\ConfigHelper::$dummyConfig);
+
+        if ($responseConfig 
+            && $responseConfig->offsetExists('eventListeners')) {
+            $eventsManager = new Events\Manager();
+            foreach ($responseConfig->eventListeners as $event => $listener) {
+                foreach ($listener->toArray() as $currentListener) {
+                    $eventsManager->attach($event, new $currentListener);
+                }
+            }
+            $response->setEventsManager($eventsManager);
+        }
+
+        return $response;
+    }
+
     protected function configure()
     {
-        $responseConfig = $this->di->get(Config\Factory::MODULE_NAME)->response;
-
         $config = $this->di->get(Config\Factory::MODULE_NAME)->restResponse;
         if ($this->di->get(Config\Factory::MODULE_NAME)->application->has('request')) {
             $config = $config->merge($this->di->get(Config\Factory::MODULE_NAME)->application->request);
@@ -37,20 +61,9 @@ class Factory extends Bootstrap\Factory
             $this->di->get('url'),
             $config
         );
-        if ($this->di->get(Config\Factory::MODULE_NAME)->application->has('name')) {
-            $response = $response->setApplicationName($this->di->get(Config\Factory::MODULE_NAME)->application->get('name'));
-        }
 
-        if ($responseConfig 
-            && $responseConfig->offsetExists('eventListeners')) {
-            $eventsManager = new Events\Manager();
-            foreach ($responseConfig->eventListeners as $event => $listener) {
-                foreach ($listener->toArray() as $currentListener) {
-                    $eventsManager->attach($event, new $currentListener);
-                }
-            }
-            $response->setEventsManager($eventsManager);
-        }
+        $response = $this->setApplicationName($response);
+        $response = $this->attachEventListeners($response);
 
         return $response;
     }

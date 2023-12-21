@@ -124,7 +124,7 @@ class CurlResponse implements Psr\Http\Message\ResponseInterface, Http\MessageIn
         $this->response->getReasonPhrase();
     }
 
-    // Fropm the Message trait
+    // From the Message trait
     public function bodyVariable(string $key)
     {
         return $this->response->bodyVariable($key);
@@ -133,6 +133,11 @@ class CurlResponse implements Psr\Http\Message\ResponseInterface, Http\MessageIn
     public function bodyVariables() : array
     {
         return $this->response->bodyVariables();
+    }
+
+    public function bodyVariableExists(string $key) : bool
+    {
+        return $this->response->bodyVariableExists($key);
     }
 
     public function withBodyVariables(array $variables, bool $merge = false) : self
