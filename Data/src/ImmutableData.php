@@ -181,7 +181,7 @@ abstract class ImmutableData implements This\DataInterface
         $oldValue = (isset($this->{$key}))
             ? $this->{$key}
             : null;
-        $validatedType = This\Helper\ParseValueHelper::getValidatedType($oldValue, $propertyType);
+        $validatedType = This\Helper\ParseValueHelper::getValidatedType($oldValue ?? $value, $propertyType);
         $valueParsed = This\Helper\ParseValueHelper::parseValue($value, $validatedType);
         if (!is_callable($valueParsed, false, $callableName)
             || $callableName !== 'Closure::__invoke' ) {
