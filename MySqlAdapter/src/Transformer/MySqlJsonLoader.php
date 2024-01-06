@@ -59,6 +59,14 @@ class MySqlJsonLoader implements Dto\TransformerInterface
         if (is_null($json)) {
             return null;
         }
+        // This is to help creating the objects from the application
+        if (is_array($json)) {
+            return $json;
+        }
+        if ($json instanceof \ArrayObject) {
+            return $json->getArrayCopy();
+        }
+        
         return json_decode($json, 1);
     }
 }

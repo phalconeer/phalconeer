@@ -149,7 +149,7 @@ trait Resource
             return $this->exportJSONApiError();
         }
 
-        return json_encode($this->exportArray());
+        return json_encode($this->exportArray(), JSON_NUMERIC_CHECK);
     }
 
     protected function convertCsvLine(
