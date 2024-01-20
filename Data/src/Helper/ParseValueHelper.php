@@ -376,8 +376,11 @@ class ParseValueHelper
         return array_filter(
             $baseObject->propertyTypes(),
             function ($type) {
-                return $type === This\Helper\ParseValueHelper::TYPE_BOOL
-                    || $type === This\Helper\ParseValueHelper::TYPE_BOOLEAN;
+                if (!is_array($type)) {
+                    $type = [$type];
+                }
+                return in_array(This\Helper\ParseValueHelper::TYPE_BOOL, $type)
+                    || in_array(This\Helper\ParseValueHelper::TYPE_BOOLEAN, $type);
             }
         );
     }
@@ -387,7 +390,10 @@ class ParseValueHelper
         return array_filter(
             $baseObject->propertyTypes(),
             function ($type) {
-                return $type === \DateTime::class;
+                if (!is_array($type)) {
+                    $type = [$type];
+                }
+                return in_array(\DateTime::class, $type);
             }
         );
     }
@@ -397,7 +403,16 @@ class ParseValueHelper
         return array_filter(
             $baseObject->propertyTypes(),
             function ($type) {
-                return is_subclass_of($type, This\ImmutableData::class);
+                if (!is_array($type)) {
+                    $type = [$type];
+                }
+                return array_reduce(
+                    $type,
+                    function (bool $aggregator, $currentType) {
+                        return $aggregator || is_subclass_of($currentType, This\ImmutableData::class);
+                    },
+                    false
+                );
             }
         );
     }

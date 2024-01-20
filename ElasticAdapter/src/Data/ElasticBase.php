@@ -46,9 +46,9 @@ class ElasticBase extends Dto\ImmutableDto implements Dto\ArrayObjectExporterInt
     /**
      * Where the document is stored, or to be stored.
      */
-    protected int $primaryTerm;
+    protected ?int $primaryTerm;
 
-    protected int $sequenceNumber;
+    protected ?int $sequenceNumber;
 
     public function getIndexDateValue() : ?\DateTime
     {
