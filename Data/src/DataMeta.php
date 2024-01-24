@@ -45,6 +45,11 @@ class DataMeta implements MetaInterface
         return array_keys($this->propertiesCache);
     }
 
+    public function isChanged() : bool
+    {
+        return count($this->dirty) > 0;
+    }
+
     public function isDirty(string $field) : bool
     {
         return in_array($field, $this->dirty);
