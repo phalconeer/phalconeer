@@ -1,0 +1,20 @@
+{
+    "name": "phalconeer/taskadapterelastic",
+    "description": "Phalconeer package for saving tasks to elasticsearch",
+    "type": "package",
+    "require": {
+        "php": ">=8.0.0"
+    },
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Marton Kufferstein",
+            "email": "martin@fantas.ee"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Phalconeer\\TaskAdapterElastic\\": "src/"
+        }
+    }
+}

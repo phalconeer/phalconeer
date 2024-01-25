@@ -77,15 +77,15 @@ abstract class ImmutableDto extends Data\ImmutableData implements This\DtoExport
     {
         foreach ($this->transformer->loadTransformers() as $transformer) {
             if (is_string($transformer)
-                && is_callable([$this, $transformer])) {
+                && method_exists($this, $transformer)) {
                 $inputObject = call_user_func_array([$this, $transformer], [$inputObject, $this]);
+            }
+            if (is_callable([$transformer, 'transform'])) {
+                $inputObject = call_user_func_array([$transformer, 'transform'], [$inputObject, $this]);
             }
             if (is_array($transformer)
                 && is_callable($transformer)) {
                 $inputObject = call_user_func_array($transformer, [$inputObject, $this]);
-            }
-            if (is_callable([$transformer, 'transform'])) {
-                $inputObject = call_user_func_array([$transformer, 'transform'], [$inputObject, $this]);
             }
         }
         return $inputObject;

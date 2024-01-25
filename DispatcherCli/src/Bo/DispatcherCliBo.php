@@ -17,8 +17,8 @@ class DispatcherCliBo
 
     protected function configureDispatcher()
     {
-        $this->dispatcher->setDefaultNamespace($this->config->application->defaultNamespace);
-        if ($this->config->dispatcher->offsetExists('eventListeners')) {
+        $this->dispatcher->setDefaultNamespace($this->config->defaultNamespace);
+        if ($this->config?->dispatcher?->offsetExists('eventListeners')) {
             $eventsManager = new Events\Manager();
             foreach ($this->config->dispatcher->eventListeners as $event => $listener) {
                 $eventsManager->attach($event, new $listener);

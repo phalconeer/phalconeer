@@ -1,7 +1,9 @@
 <?php
-
 namespace Phalconeer\Dispatcher;
 
+use Phalcon\Cli;
+use Phalcon\Config as PhalconConfig;
+use Phalcon\Dispatcher;
 use Phalcon\Mvc;
 use Phalconeer\Bootstrap;
 use Phalconeer\Config;
@@ -18,10 +20,8 @@ class Factory extends Bootstrap\Factory
         Config\Factory::MODULE_NAME,
     ];
     
-    protected function configure() : Mvc\DispatcherInterface
+    protected function getEventListeners(PhalconConfig\Config $config): ?\ArrayObject
     {
-        $config = $this->di->get(Config\Factory::MODULE_NAME)->get(static::MODULE_NAME, Config\Helper\ConfigHelper::$dummyConfig);
-        $applicationConfig = $this->di->get(Config\Factory::MODULE_NAME)->get('application', Config\Helper\ConfigHelper::$dummyConfig);
         $eventListeners = new \ArrayObject();
         if ($config->has('eventListeners')) {
             foreach ($config->get('eventListeners') as $event => $listeners) {
@@ -46,6 +46,16 @@ class Factory extends Bootstrap\Factory
                 }
             }
         }
+
+        return $eventListeners;
+    }
+
+    protected function configure() : Dispatcher\DispatcherInterface
+    {
+        $config = $this->di->get(Config\Factory::MODULE_NAME)->get(static::MODULE_NAME, Config\Helper\ConfigHelper::$dummyConfig);
+        $applicationConfig = $this->di->get(Config\Factory::MODULE_NAME)->get('application', Config\Helper\ConfigHelper::$dummyConfig);
+        $eventListeners = $this->getEventListeners($config);
+
         $dispatcherBo = new This\Bo\DispatcherBo(
             new Mvc\Dispatcher(),
             $applicationConfig,

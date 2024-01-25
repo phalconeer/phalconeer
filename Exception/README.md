@@ -62,10 +62,10 @@ AMMZZYYXXX, where
 * 38 - LiveSession
 * 39 - AuthAdmin
 * 40 - Impression
-* 41 - ?Task
+* 41 - Task
 * 42 - UserAdmin
 * 43 - ?SoapClient
-* 44 - ?
+* 44 - TaskAdmin
 * 45 - ?
 * 46 - ?
 * 47 - ?GoogleApiAuth

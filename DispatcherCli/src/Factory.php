@@ -20,7 +20,7 @@ class Factory extends Bootstrap\Factory
     
     protected function configure() {
         $config = $this->di->get(Config\Factory::MODULE_NAME)->get(
-            static::MODULE_NAME,
+            'application',
             Config\Helper\ConfigHelper::$dummyConfig
         );
         $dispatcherBo = new This\Bo\DispatcherCliBo(

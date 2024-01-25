@@ -4,6 +4,7 @@ namespace Phalconeer\Bootstrap;
 use Phalcon\CLI;
 use Phalconeer\Bootstrap as This;
 use Phalconeer\Exception;
+use Phalconeer\Router;
 
 /**
  * Bootstraps the application.
@@ -12,18 +13,11 @@ use Phalconeer\Exception;
  */
 abstract class BootstrapMicro extends This\Bootstrap
 {
-    /**
-     * Runs the application.
-     *
-     * @return string   The HTTP response body.
-     */
     protected function runApplication()
     {
+        $this->addNamespaceToLoader(Exception\NotFound\DependencyNotFoundException::class);
         if (!class_exists(Exception\NotFound\DependencyNotFoundException::class)) {
-            throw new Exception\NotFoundException(
-                'Autoloader is not configured',
-                Exception\Helper\ExceptionHelper::AUTOLOADER_NOT_CONFIGURED
-            );
+            throw new Exception\NotFoundException('Autoloader is not configured', Exception\Helper\ExceptionHelper::AUTOLOADER_NOT_CONFIGURED);
         }
 
         if (!$this->di->has('router')) {
@@ -35,6 +29,6 @@ abstract class BootstrapMicro extends This\Bootstrap
 
         $console = new CLI\Console();
         $console->setDI($this->di);
-        return $console->handle($this->di['router']->getArguments());
+        return $console->handle($this->di[Router\Factory::MODULE_NAME]->getArguments());
     }
 }

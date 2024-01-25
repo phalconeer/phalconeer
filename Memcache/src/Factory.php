@@ -61,7 +61,7 @@ class Factory extends Bootstrap\Factory
                     This\Helper\ExceptionHelper::MEMCACHE__CONNECTION_CONFIG_NOT_FOUND
                 );
             }
-            $adapterFactory    = new This\bo\MemcacheAdapterFactory(
+            $adapterFactory    = new This\Bo\MemcacheAdapterFactory(
                 new Storage\SerializerFactory()
             );
             if (is_null($cacheControlInstance)) {

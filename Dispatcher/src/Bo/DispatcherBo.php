@@ -2,13 +2,13 @@
 namespace Phalconeer\Dispatcher\Bo;
 
 use Phalcon\Config as PhalconConfig;
-use Phalcon\Mvc;
+use Phalcon\Dispatcher;
 use Phalcon\Events;
 
 class DispatcherBo
 {
     public function __construct(
-        protected Mvc\DispatcherInterface $dispatcher,
+        protected Dispatcher\DispatcherInterface $dispatcher,
         protected PhalconConfig\Config $applicationConfig,
         protected \ArrayObject $eventListeners = new \ArrayObject(),
     )
@@ -34,7 +34,7 @@ class DispatcherBo
         }
     }
 
-    public function getDispatcher() : Mvc\DispatcherInterface
+    public function getDispatcher() : Dispatcher\DispatcherInterface
     {
         return $this->dispatcher;
     }

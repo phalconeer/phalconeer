@@ -113,7 +113,7 @@ abstract class Bootstrap
     /**
      * Runs the application performing all initializations
      */
-    public function run(array $options = array()) : string
+    public function run(array $options = array())
     {
         $this->options = array_merge_recursive($this->options, $options);
         $this->config  = new PhalconConfig\Config($this->options);
