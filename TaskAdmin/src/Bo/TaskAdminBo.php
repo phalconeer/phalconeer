@@ -64,6 +64,24 @@ class TaskAdminBo
         return $erroredTasks->count();
     }
 
+    public function cleanUnprocessedTasks(string $taskName)
+    {
+        $unprocessedTasks = $this->getTasks([
+            'status'            => TaskRegistry\Helper\TaskRegistryHelper::STATUS_NEW,
+            'task'              => $taskName
+        ]);
+        if ($unprocessedTasks->count() === 0) {
+            return 0;
+        }
+        $iterator = $unprocessedTasks->getIterator();
+        while ($iterator->valid()) {
+            $task = $iterator->current()->setStatus(TaskRegistry\Helper\TaskRegistryHelper::STATUS_CANCELLED);
+            $this->dao->save($task);
+            $iterator->next();
+        }
+        return $unprocessedTasks->count();
+    }
+
     public function saveTask(TaskRegistry\Data\TaskExecution $task) : ?TaskRegistry\Data\TaskExecution
     {
         $module = $this->taskBo->getModule($task->task());

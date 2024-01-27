@@ -187,4 +187,9 @@ class Request extends Dto\ImmutableDto implements Psr\Http\Message\RequestInterf
             $host .= ':' . $port;
         }
     }
+
+    public function userAgent() : ?string
+    {
+        return $this->userAgent;
+    }
 }

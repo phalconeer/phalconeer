@@ -14,7 +14,7 @@ class TaskTest extends TaskRegistry\Data\TaskParameters implements Dto\ArrayObje
         'message'                  => Data\Helper\ParseValueHelper::TYPE_STRING,
     ];
 
-    protected string $message;
+    protected ?string $message;
 
     public function message() : ?string
     {

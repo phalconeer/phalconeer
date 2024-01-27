@@ -8,6 +8,8 @@ use Phalconeer\TaskTest as This;
 
 class Factory extends Bootstrap\Factory
 {
+    use TaskRegistry\Trait\RegisterTask;
+
     const MODULE_NAME = 'taskTest';
 
     protected static array $requiredModules = [
@@ -18,22 +20,9 @@ class Factory extends Bootstrap\Factory
     protected static array $configFiles = [
         __DIR__ . '/_config/task_config.php'
     ];
-
-    protected function registerTask()
-    {
-        $taskRegistry = $this->di->get(TaskRegistry\Factory::MODULE_NAME);
-        $config = $this->di->get(Config\Factory::MODULE_NAME)->get(static::MODULE_NAME, Config\Helper\ConfigHelper::$dummyConfig);
-        $listenerConfig = TaskRegistry\Data\ListenerConfig::fromArray($config->toArray());
-        $task = new This\Bo\TaskTestBo($listenerConfig);
-        $taskRegistry->registerTask(
-            $task,
-            $listenerConfig
-        );
-        return $task;
-    }
-
+    
     protected function configure()
     {
-        return $this->registerTask();
+        return $this->registerTask(static::MODULE_NAME, This\Bo\TaskTestBo::class);
     }
 }

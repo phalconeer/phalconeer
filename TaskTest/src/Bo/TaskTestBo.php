@@ -22,6 +22,9 @@ class TaskTestBo extends TaskRegistry\Handler\HandlerBase
          */
         echo PHP_EOL . 'TASK IS NOW BEING RUN!: ' . $detail?->message() . PHP_EOL . PHP_EOL;
         return TaskRegistry\Data\TaskResult::fromArray([
+            'nextIterationDetail'   => $this->validateParameters([
+                'message'   => $detail?->message() . '.',
+            ]),
             'result'    => 'Task is complete',
             'success'   => true
         ]);

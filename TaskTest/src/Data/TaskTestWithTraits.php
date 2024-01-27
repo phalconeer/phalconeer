@@ -12,5 +12,5 @@ class TaskTestWithTraits extends TaskRegistry\Data\TaskParameters implements Dto
         Data\Trait\AutoGetter,
         Data\Trait\ParseTypes;
         
-    protected string $message;
+    protected ?string $message;
 }

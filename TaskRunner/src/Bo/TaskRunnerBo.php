@@ -22,7 +22,7 @@ class TaskRunnerBo
     public function listen()
     {
         $currentOffset = 0;
-        echo '> ' . $this->limit . ' left from ' . $this->taskBo->getSource() . PHP_EOL;
+        echo '> trying ' . $this->limit . ' from ' . $this->taskBo->getSource() . PHP_EOL;
         while ($this->limit > 0)
         {
             $queueStatus = $this->taskBo->getQueueStatus($currentOffset);

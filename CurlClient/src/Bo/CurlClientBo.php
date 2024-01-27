@@ -90,6 +90,9 @@ class CurlClientBo implements This\CurlClientInterface
      */
     private function setOptionsFromRequest($curl, Psr\Http\Message\RequestInterface $request): void
     {
+        /**
+         * @var Http\Data\Request $request
+         */
         $this->setOption($curl, CURLOPT_CUSTOMREQUEST, $request->getMethod())
             ->setOption($curl, CURLOPT_URL, $request->getUri()->__toString())
             ->setOption($curl, CURLOPT_HTTPHEADER, $request->getHeaders())
@@ -97,6 +100,10 @@ class CurlClientBo implements This\CurlClientInterface
 
         if ($request->getUri()->getUserInfo()) {
             $this->setOption($curl, CURLOPT_USERPWD, $request->getUri()->getUserInfo());
+        }
+
+        if ($request->userAgent()) {
+            $this->setOption($curl, CURLOPT_USERAGENT, $request->userAgent());
         }
 
         switch ($request->getMethod()) {
