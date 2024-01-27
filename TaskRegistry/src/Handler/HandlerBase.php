@@ -1,17 +1,21 @@
 <?php
-namespace Phalconeer\Task\Handler;
+namespace Phalconeer\TaskRegistry\Handler;
 
 use Phalconeer\Dto;
-use Phalconeer\Task as This;
-use Phalcon\Config;
+use Phalconeer\TaskRegistry as This;
 
 abstract class HandlerBase implements This\TaskInterface
 {
     const TASK_NAME = 'task-name-has-to-be-set';
 
-    protected Config\Config $config;
+    public function __construct(
+        protected This\Data\ListenerConfig $config
+    )
+    {
+        
+    }
 
-    public function config() : Config\Config
+    public function config() : This\Data\ListenerConfig
     {
         return $this->config;
     }

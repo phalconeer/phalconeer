@@ -1,9 +1,9 @@
 <?php
-namespace Phalconeer\Task\Data;
+namespace Phalconeer\TaskRegistry\Data;
 
 use Phalconeer\Data;
 use Phalconeer\Dto;
-use Phalconeer\Task as This;
+use Phalconeer\TaskRegistry as This;
 
 class TaskResult extends Dto\ImmutableDto
 {
@@ -43,7 +43,7 @@ class TaskResult extends Dto\ImmutableDto
 
     public function setTask(string $task) : self
     {
-        return $this->setKeyValue('task', $task);
+        return $this->setValueByKey('task', $task);
     }
 
     public function addFollowUpTask(This\Data\TaskExecution $task) : self

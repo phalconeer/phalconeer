@@ -2,11 +2,14 @@
 namespace Phalconeer\TaskTest\Data;
 
 use Phalconeer\Data;
-use Phalconeer\Task;
+use Phalconeer\Dto;
+use Phalconeer\TaskRegistry;
 
-class TaskTestWithTraits extends Task\Data\TaskParameters
+class TaskTestWithTraits extends TaskRegistry\Data\TaskParameters implements Dto\ArrayObjectExporterInterface
 {
-    use Data\Trait\AutoGetter,
+    use Dto\Trait\ArrayLoader,
+        Dto\Trait\ArrayObjectExporter,
+        Data\Trait\AutoGetter,
         Data\Trait\ParseTypes;
         
     protected string $message;

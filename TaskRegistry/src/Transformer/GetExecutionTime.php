@@ -1,11 +1,10 @@
 <?php
-namespace Phalconeer\Task\Transformer;
+namespace Phalconeer\TaskRegistry\Transformer;
 
 use Phalconeer\Data;
 use Phalconeer\Dto;
-use Phalconeer\Task as This;
 
-class InitializeFollowUpTasks implements Dto\TransformerStaticInterface
+class GetExecutionTime implements Dto\TransformerStaticInterface
 {
     public static function transform(
         \ArrayObject | Data\CommonInterface $source,
@@ -13,11 +12,10 @@ class InitializeFollowUpTasks implements Dto\TransformerStaticInterface
         \ArrayObject $parameters = null
     ): \ArrayObject
     {
-        if (!$source->offsetExists('followUpTasks')) {
-            $source->offsetSet('followUpTasks', new This\Data\TaskExecutionCollection());
+        if (!$source->offsetExists('executionTime')) {
+            $source->offsetSet('executionTime', microtime(true) - START_TIME);
         }
         
         return $source;
     }
 }
-

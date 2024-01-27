@@ -1,13 +1,12 @@
 <?php
-namespace Phalconeer\Task;
+namespace Phalconeer\TaskRegistry;
 
 use Phalconeer\Dto;
-use Phalconeer\Task as This;
-use Phalcon\Config;
+use Phalconeer\TaskRegistry as This;
 
 interface TaskInterface
 {
-    public function config() : Config\Config;
+    public function config() : This\Data\ListenerConfig;
 
     public function handle(Dto\ArrayObjectExporterInterface $detail = null) : This\Data\TaskResult;
 

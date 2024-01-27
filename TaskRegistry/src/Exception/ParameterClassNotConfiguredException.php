@@ -1,5 +1,5 @@
 <?php
-namespace Phalconeer\Task\Exception;
+namespace Phalconeer\TaskRegistry\Exception;
 
 use Phalconeer\Exception;
 

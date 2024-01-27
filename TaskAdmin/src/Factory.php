@@ -3,7 +3,7 @@ namespace Phalconeer\TaskAdmin;
 
 use Phalconeer\Bootstrap;
 use Phalconeer\Config;
-use Phalconeer\Task;
+use Phalconeer\TaskRegistry;
 use Phalconeer\TaskAdmin as This;
 
 class Factory extends Bootstrap\Factory
@@ -12,7 +12,7 @@ class Factory extends Bootstrap\Factory
     
     protected static array $requiredModules = [
         Config\Factory::MODULE_NAME,
-        Task\Factory::MODULE_NAME,
+        TaskRegistry\Factory::MODULE_NAME,
     ];
     
     protected static array $configFiles = [
@@ -24,11 +24,11 @@ class Factory extends Bootstrap\Factory
         $config = $this->di->get(Config\Factory::MODULE_NAME)->get(static::MODULE_NAME, Config\Helper\ConfigHelper::$dummyConfig);
         $di = $this->di;
 
-        return function (Task\TaskDaoInterface $adapter) use ($config, $di) {
+        return function (TaskRegistry\TaskDaoInterface $adapter) use ($config, $di) {
             return new This\Bo\TaskAdminBo(
                 $adapter,
                 $config,
-                $di->get(Task\Factory::MODULE_NAME, [$adapter])
+                $di->get(TaskRegistry\Factory::MODULE_NAME)
             );
         };
     }

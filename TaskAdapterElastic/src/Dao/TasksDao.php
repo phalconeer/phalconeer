@@ -7,9 +7,9 @@ use Phalconeer\Data;
 use Phalconeer\Dto;
 use Phalconeer\ElasticAdapter;
 use Phalconeer\ElasticAdapter\Helper\ElasticResponseHelper as ERH;
-use Phalconeer\Task;
+use Phalconeer\TaskRegistry;
 
-class TasksDao extends ElasticAdapter\Dao\ElasticDaoBase implements Task\TaskDaoInterface
+class TasksDao extends ElasticAdapter\Dao\ElasticDaoBase implements TaskRegistry\TaskDaoInterface
 {
     public string $indexName = 'tasklog-*';
 
@@ -29,10 +29,10 @@ class TasksDao extends ElasticAdapter\Dao\ElasticDaoBase implements Task\TaskDao
         return true;
     }
 
-    public function getQueueStatus($offset = 0): Task\Data\QueueStatus
+    public function getQueueStatus($offset = 0): TaskRegistry\Data\QueueStatus
     {
         $conditions = [
-            'status'        => Task\Helper\TaskHelper::STATUS_NEW,
+            'status'        => TaskRegistry\Helper\TaskRegistryHelper::STATUS_NEW,
             'expectedRunTime'   => [
                 'operator'          => Condition\Helper\ConditionHelper::OPERATOR_LESS_OR_EQUAL,
                 'value'             => new \DateTime()
@@ -51,9 +51,14 @@ class TasksDao extends ElasticAdapter\Dao\ElasticDaoBase implements Task\TaskDao
             ? $nextTask->offsetGet(ERH::NODE_HITS)[0]
             : null;
 
-        return Task\Data\QueueStatus::fromArray([
+        return TaskRegistry\Data\QueueStatus::fromArray([
             'next'                  => $task,
             'taskListLength'        => $this->getCount($conditions),
         ]);
+    }
+
+    public function indentity(): string
+    {
+        return 'ElasticSearch ' . $this->indexName;
     }
 }

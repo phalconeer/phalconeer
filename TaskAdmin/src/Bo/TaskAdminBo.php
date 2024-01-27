@@ -5,16 +5,15 @@ use Phalconeer\TaskAdmin as This;
 use Phalcon\Config;
 use Phalconeer\Condition;
 use Phalconeer\Dao;
-use Phalconeer\Dto;
 use Phalconeer\ElasticAdapter;
-use Phalconeer\Task;
+use Phalconeer\TaskRegistry;
 
 class TaskAdminBo
 {
     public function __construct(
         protected Dao\DaoReadAndWriteInterface $dao,
         protected Config\Config $config,
-        protected Task\Bo\TaskBo $taskBo
+        protected TaskRegistry\Bo\TaskRegistryBo $taskBo
     )
     {
     }
@@ -24,7 +23,7 @@ class TaskAdminBo
         int $limit = 20,
         int $offset = 0,
         string $orderString = ''
-    ) : ?Task\Data\TaskExecutionCollection
+    ) : ?TaskRegistry\Data\TaskExecutionCollection
     {
         $data = $this->dao->getRecords(
             $whereConditions,
@@ -35,7 +34,7 @@ class TaskAdminBo
 
         return (is_null($data))
             ? null
-            : new Task\Data\TaskExecutionCollection($data);
+            : TaskRegistry\Data\TaskExecutionCollection::fromArray($data);
     }
 
     public function getTaskCount(array $whereConditions)
@@ -46,7 +45,7 @@ class TaskAdminBo
     public function cleanErroredTasks()
     {
         $erroredTasks = $this->getTasks([
-            'status'            => Task\Helper\TaskHelper::STATUS_PROCESSING,
+            'status'            => TaskRegistry\Helper\TaskRegistryHelper::STATUS_PROCESSING,
             'expectedRunTime'   => [
                 'operator'          => Condition\Helper\ConditionHelper::OPERATOR_LESS_OR_EQUAL,
                 'value'             => (new \DateTime())
@@ -58,14 +57,14 @@ class TaskAdminBo
         }
         $iterator = $erroredTasks->getIterator();
         while ($iterator->valid()) {
-            $task = $iterator->current()->setStatus(Task\Helper\TaskHelper::STATUS_ERRORED);
+            $task = $iterator->current()->setStatus(TaskRegistry\Helper\TaskRegistryHelper::STATUS_ERRORED);
             $this->dao->save($task);
             $iterator->next();
         }
         return $erroredTasks->count();
     }
 
-    public function saveTask(Task\Data\TaskExecution $task) : ?Task\Data\TaskExecution
+    public function saveTask(TaskRegistry\Data\TaskExecution $task) : ?TaskRegistry\Data\TaskExecution
     {
         $module = $this->taskBo->getModule($task->task());
         if (is_null($module)) {
@@ -81,8 +80,8 @@ class TaskAdminBo
         return $this->dao->save($task);
     }
 
-    public function deleteTaskRun(Task\Data\TaskExecution $task)
+    public function deleteTaskRun(TaskRegistry\Data\TaskExecution $task)
     {
-        return $this->dao->save($task->setStatus(Task\Helper\TaskHelper::STATUS_CANCELLED));
+        return $this->dao->save($task->setStatus(TaskRegistry\Helper\TaskRegistryHelper::STATUS_CANCELLED));
     }
 }

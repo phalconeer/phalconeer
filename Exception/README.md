@@ -66,7 +66,7 @@ AMMZZYYXXX, where
 * 42 - UserAdmin
 * 43 - ?SoapClient
 * 44 - TaskAdmin
-* 45 - ?
+* 45 - TaskRunner
 * 46 - ?
 * 47 - ?GoogleApiAuth
 * 48 - AuthenticateDeviceId

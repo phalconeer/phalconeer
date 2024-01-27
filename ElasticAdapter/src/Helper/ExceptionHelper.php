@@ -2,7 +2,7 @@
 namespace Phalconeer\ElasticAdapter\Helper;
 
 use Phalconeer\Exception;
-use Phalconeer\Module\ElasticAdapter as This;
+use Phalconeer\ElasticAdapter as This;
 
 /**
  * Module exception code: 40

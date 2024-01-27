@@ -1,10 +1,10 @@
 <?php
-namespace Phalconeer\Task\Transformer;
+namespace Phalconeer\TaskRegistry\Transformer;
 
 use Phalconeer\Data;
 use Phalconeer\Dto;
 use Phalconeer\Id;
-use Phalconeer\Task as This;
+use Phalconeer\TaskRegistry as This;
 
 class GenerateId implements Dto\TransformerStaticInterface
 {
@@ -16,7 +16,7 @@ class GenerateId implements Dto\TransformerStaticInterface
     {
         if (!$source->offsetExists('id')
             || empty($source->offsetGet('id'))) {
-            $source->offsetSet('id', Id\Helper\IdHelper::generateWithDayPrefix(This\Helper\TaskHelper::TASK_UNIQUE_ID_LENGTH));
+            $source->offsetSet('id', Id\Helper\IdHelper::generateWithDayPrefix(This\Helper\TaskRegistryHelper::TASK_UNIQUE_ID_LENGTH));
         }
         
         return $source;

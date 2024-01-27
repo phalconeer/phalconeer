@@ -1,9 +1,9 @@
 <?php
-namespace Phalconeer\Task\Transformer;
+namespace Phalconeer\TaskRegistry\Transformer;
 
 use Phalconeer\Data;
 use Phalconeer\Dto;
-use Phalconeer\Task as This;
+use Phalconeer\TaskRegistry as This;
 
 class GetNextIterationDetailObject implements Dto\TransformerStaticInterface
 {

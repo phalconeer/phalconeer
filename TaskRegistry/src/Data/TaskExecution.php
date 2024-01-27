@@ -1,10 +1,10 @@
 <?php
-namespace Phalconeer\Task\Data;
+namespace Phalconeer\TaskRegistry\Data;
 
 use Phalconeer\Data;
 use Phalconeer\Dto;
 use Phalconeer\ElasticAdapter;
-use Phalconeer\Task as This;
+use Phalconeer\TaskRegistry as This;
 
 class TaskExecution extends ElasticAdapter\Data\ElasticBase
 {
@@ -23,6 +23,7 @@ class TaskExecution extends ElasticAdapter\Data\ElasticBase
         ElasticAdapter\Transformer\ElasticDateLoader::TRAIT_METHOD,
         This\Transformer\GenerateId::class,
         This\Transformer\GetDetailObject::class,
+        [Dto\Transformer\ArrayLoader::class, Dto\Transformer\ArrayLoader::AUTO_CONVERT_METHOD]
     ];
 
     protected ?\DateTime $actualRunTime;
@@ -47,7 +48,7 @@ class TaskExecution extends ElasticAdapter\Data\ElasticBase
 
     protected ?This\Data\TaskResult $result;
 
-    protected string $status = This\Helper\TaskHelper::STATUS_NEW;
+    protected string $status = This\Helper\TaskRegistryHelper::STATUS_NEW;
 
     protected string $task;
 
@@ -55,12 +56,12 @@ class TaskExecution extends ElasticAdapter\Data\ElasticBase
     public function setStatus(string $status) : self
     {
         switch ($status) {
-            case This\Helper\TaskHelper::STATUS_NEW:
-            case This\Helper\TaskHelper::STATUS_PROCESSING:
-            case This\Helper\TaskHelper::STATUS_DONE:
-            case This\Helper\TaskHelper::STATUS_ERRORED:
-            case This\Helper\TaskHelper::STATUS_FAILED:
-            case This\Helper\TaskHelper::STATUS_CANCELLED:
+            case This\Helper\TaskRegistryHelper::STATUS_NEW:
+            case This\Helper\TaskRegistryHelper::STATUS_PROCESSING:
+            case This\Helper\TaskRegistryHelper::STATUS_DONE:
+            case This\Helper\TaskRegistryHelper::STATUS_ERRORED:
+            case This\Helper\TaskRegistryHelper::STATUS_FAILED:
+            case This\Helper\TaskRegistryHelper::STATUS_CANCELLED:
                 return $this->setValueByKey('status', $status);
         }
 
@@ -74,47 +75,47 @@ class TaskExecution extends ElasticAdapter\Data\ElasticBase
 
     public function setDetail(Dto\ArrayObjectExporterInterface $detail) : self
     {
-        return $this->setKeyValue('detail', $detail);
+        return $this->setValueByKey('detail', $detail);
     }
 
     public function setExpectedRunTime(\DateTime $expectedRunTime) : self
     {
-        return $this->setKeyValue('expectedRunTime', $expectedRunTime);
+        return $this->setValueByKey('expectedRunTime', $expectedRunTime);
     }
 
     public function setActualRunTime() : self
     {
-        return $this->setKeyValue('actualRunTime', new \DateTime());
+        return $this->setValueByKey('actualRunTime', new \DateTime());
     }
 
     public function setDefinedOn() : self
     {
-        return $this->setKeyValue('definedOn', This\Helper\TaskHelper::getServerDetails());
+        return $this->setValueByKey('definedOn', This\Helper\TaskRegistryHelper::getServerDetails());
     }
 
     public function setExecutedOn() : self
     {
-        return $this->setKeyValue('executedOn', This\Helper\TaskHelper::getServerDetails());
+        return $this->setValueByKey('executedOn', This\Helper\TaskRegistryHelper::getServerDetails());
     }
 
     public function setIterationId(int $count) : self
     {
-        return $this->setKeyValue('iterationId', $count);
+        return $this->setValueByKey('iterationId', $count);
     }
 
     public function incrementFailCount() : self
     {
-        return $this->setKeyValue('failCount', $this->failCount + 1);
+        return $this->setValueByKey('failCount', $this->failCount + 1);
     }
 
     public function setFailCount(int $count) : self
     {
-        return $this->setKeyValue('failCount', $count);
+        return $this->setValueByKey('failCount', $count);
     }
 
     public function setCreatedBy(string $id) : self
     {
-        return $this->setKeyValue('createdByTaskId', $id);
+        return $this->setValueByKey('createdByTaskId', $id);
     }
 
     public function setResult(This\Data\TaskResult $result = null) : self
@@ -124,6 +125,6 @@ class TaskExecution extends ElasticAdapter\Data\ElasticBase
             // This is needed to be able to decode the detail parameters
             $result = $result->setTask($this->task());
         }
-        return $this->setKeyValue('result', $result);
+        return $this->setValueByKey('result', $result);
     }
 }

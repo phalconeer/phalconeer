@@ -1,5 +1,5 @@
 <?php
-namespace Phalconeer\Task\Data;
+namespace Phalconeer\TaskRegistry\Data;
 
 use Phalconeer\Data;
 use Phalconeer\Dto;

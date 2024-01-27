@@ -3,7 +3,7 @@ namespace Phalconeer\Dto\Transformer;
 
 class ArrayLoader
 {
-    const AUTO_METHOD = 'autoConvertChildren';
+    const AUTO_CONVERT_METHOD = 'autoConvertChildren';
 
     public static function autoConvertChildren(\ArrayObject $inputObject) : \ArrayObject
     {
