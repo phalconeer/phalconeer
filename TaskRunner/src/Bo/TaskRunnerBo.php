@@ -21,6 +21,10 @@ class TaskRunnerBo
 
     public function listen()
     {
+    /**
+     * https://wiki.archlinux.org/title/Bash/Prompt_customization
+     * https://stackoverflow.com/questions/34034730/how-to-enable-color-for-php-cli
+     */
         $currentOffset = 0;
         echo '> trying ' . $this->limit . ' from ' . $this->taskBo->getSource() . PHP_EOL;
         while ($this->limit > 0)
