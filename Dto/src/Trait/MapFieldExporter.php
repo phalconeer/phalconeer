@@ -12,4 +12,16 @@ trait MapFieldExporter
             $field
         );
     }
+
+    public function stripKeys() : self
+    {
+        $target = new self();
+        $iterator = $this->getIterator();
+        while ($iterator->valid()) {
+            $target->offsetSet(null, $iterator->current());
+            $iterator->next();
+        }
+
+        return $target;
+    }
 }
