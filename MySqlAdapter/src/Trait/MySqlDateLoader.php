@@ -10,7 +10,7 @@ trait MySqlDateLoader
         \ArrayObject $inputObject
     ) : \ArrayObject 
     {
-        return This\Transformer\MySqlDateLoader::loadAllMySqlDate(
+        return This\Transformer\MySqlDateLoader::loadAllDate(
             $inputObject,
             new \ArrayObject([
                 'dateProperties'    => Data\Helper\ParseValueHelper::getDateProperties($this)

@@ -25,7 +25,7 @@ class ImmutableDtoCollection extends Data\ImmutableCollection implements This\Dt
     {
         if (!isset($this->transformer)
             || is_null($this->transformer)) {
-            $this->transformer = new This\TransfromerMeta();
+            $this->transformer = new This\TransformerMeta();
         }
         $this->transformer->setConvertChildren(static::$convertChildren);
         $this->transformer->setPreserveKeys(static::$preserveKeys);

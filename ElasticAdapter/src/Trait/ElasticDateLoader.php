@@ -10,7 +10,7 @@ trait ElasticDateLoader
         \ArrayObject $inputObject
     ) : \ArrayObject 
     {
-        return This\Transformer\ElasticDateLoader::loadAllElasticDate(
+        return This\Transformer\ElasticDateLoader::loadAllDate(
             $inputObject,
             new \ArrayObject([
                 'dateProperties'    => Data\Helper\ParseValueHelper::getDateProperties($this)

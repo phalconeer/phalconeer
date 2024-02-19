@@ -11,7 +11,7 @@ trait ElasticDateExporter
 
     public function exportAllElasticDate() : \ArrayObject 
     {
-        return This\Transformer\ElasticDateExporter::exportAllElasticDate(
+        return This\Transformer\ElasticDateExporter::exportAllDate(
             $this->toArrayObject(),
             new \ArrayObject([
                 'dateProperties'    => Data\Helper\ParseValueHelper::getDateProperties($this)

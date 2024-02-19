@@ -28,7 +28,7 @@ abstract class ImmutableDto extends Data\ImmutableData implements This\DtoExport
     {
         if (!isset($this->transformer)
             || is_null($this->transformer)) {
-            $this->transformer = new TransfromerMeta();
+            $this->transformer = new TransformerMeta();
         }
         $this->transformer->setConvertChildren(static::$convertChildren);
         $this->transformer->setPreserveKeys(static::$preserveKeys);

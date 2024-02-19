@@ -3,7 +3,7 @@ namespace Phalconeer\Dto;
 
 use Phalconeer\Dto as This;
 
-class TransfromerMeta implements This\TransformerMetaInterface
+class TransformerMeta implements This\TransformerMetaInterface
 {
     protected ?bool $convertChildren = true;
 

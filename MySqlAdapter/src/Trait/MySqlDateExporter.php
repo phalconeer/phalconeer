@@ -11,7 +11,7 @@ trait MySqlDateExporter
 
     public function exportAllMySqlDate() : \ArrayObject 
     {
-        return This\Transformer\MySqlDateExporter::exportAllMySqlDate(
+        return This\Transformer\MySqlDateExporter::exportAllDate(
             $this->toArrayObject(),
             new \ArrayObject([
                 'dateProperties'    => Data\Helper\ParseValueHelper::getDateProperties($this)
