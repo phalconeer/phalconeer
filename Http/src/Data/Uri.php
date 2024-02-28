@@ -300,8 +300,11 @@ final class Uri extends Dto\ImmutableDto implements Psr\Http\Message\UriInterfac
         return $this->setValueByKey('query', $query);
     }
 
-    public function withQueryVariable(string $key, string $value, $append = true): self
+    public function withQueryVariable(string $key, string $value = null, $append = true): self
     {
+        if (is_null($value)) {
+            return $this;
+        }
         $query = $this->convertQuery($key . '=' . $value);
         if ($append === true) {
             $query = $this->query .
