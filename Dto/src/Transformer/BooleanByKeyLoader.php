@@ -40,10 +40,17 @@ class BooleanByKeyLoader implements Dto\TransformerInterface
             : $parameters->offsetGet('boolProperties');
         $sourceData = $source->getArrayCopy();
         foreach ($boolProperties as $boolProperty => $type) {
-            $source->offsetSet(
-                $boolProperty,
-                in_array($boolProperty, $sourceData)
-            );
+            if (array_key_exists($boolProperty, $sourceData)) {
+                $source->offsetSet(
+                    $boolProperty,
+                    $sourceData[$boolProperty]
+                );
+            } else {
+                $source->offsetSet(
+                    $boolProperty,
+                    in_array($boolProperty, $sourceData)
+                );
+            }
         }
         return $source;
     }
