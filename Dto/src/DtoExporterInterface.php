@@ -1,8 +1,6 @@
 <?php
 namespace Phalconeer\Dto;
 
-use Phalconeer\Data;
-
 interface DtoExporterInterface
 {
     public function exportWithTransformers(

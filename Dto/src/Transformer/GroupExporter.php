@@ -4,7 +4,7 @@ namespace Phalconeer\Dto\Transformer;
 use Phalconeer\Data;
 use Phalconeer\Dto as This;
 
-class GroupExporter implements This\TransformerInterface
+class GroupExporter implements This\TransformerVariableInterface
 {
     public function __construct(public string $groupBy)
     {

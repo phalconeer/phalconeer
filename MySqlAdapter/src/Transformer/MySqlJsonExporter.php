@@ -4,26 +4,23 @@ namespace Phalconeer\MySqlAdapter\Transformer;
 use Phalconeer\Data;
 use Phalconeer\Dto;
 
-class MySqlJsonExporter implements Dto\TransformerInterface
+class MySqlJsonExporter implements Dto\TransformerStaticInterface
 {
-    const TRAIT_METHOD = 'exportAllMySqlJson';
-
-    public function transform(
+    public static function transformStatic(
         \ArrayObject | Data\CommonInterface $source,
         Data\CommonInterface $baseObject = null,
         \ArrayObject $parameters = null
     )
     {
-        if (is_array($source)) {
-            $source = new \ArrayObject($source);
-        }
+        $source = Dto\Transformer\ArrayObjectExporter::normalizeArrayObject($source);
         if (!$source instanceof \ArrayObject) {
             return $source;
         }
         if (is_null($parameters)) {
             $parameters = new \ArrayObject();
         }
-        if (!is_null($baseObject)) {
+        if (!$parameters->offsetExists('dateProperties')
+            && !is_null($baseObject)) {
             $parameters->offsetSet('jsonProperties', Data\Helper\ParseValueHelper::getNestedProperties($baseObject));
         }
         return self::exportAllMySqlJson($source);

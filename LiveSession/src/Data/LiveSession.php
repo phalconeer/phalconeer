@@ -3,12 +3,10 @@ namespace Phalconeer\LiveSession\Data;
 
 use Phalconeer\Data;
 use Phalconeer\Dto;
-use Phalconeer\MySqlAdapter;
 
 class LiveSession extends Dto\ImmutableDto
 {
-    use MySqlAdapter\Trait\MySqlDateExporter,
-        Dto\Trait\ArrayLoader,
+    use Dto\Trait\ArrayLoader,
         Dto\Trait\ArrayObjectExporter,
         Dto\Trait\JsonExporter,
         Data\Trait\ParseTypes,

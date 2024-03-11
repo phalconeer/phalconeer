@@ -23,27 +23,24 @@ trait ArrayObjectNotNullExporter
             );
         }
         $result = new \ArrayObject();
-        array_map(
-            function ($propertyName) use ($result)
-            {
-                if (!isset($this->{$propertyName})
-                    || is_null($this->{$propertyName})) {
-                    return;
-                }
-                if ($this->getConvertChildren()) {
-                    $result->offsetSet(
-                        $propertyName,
-                        $this->getConvertedValue($propertyName, $this->getPreserveKeys())
-                    );
-                } else {
-                    $result->offsetSet(
-                        $propertyName,
-                        $this->getValue($propertyName)
-                    );
-                }
-            },
-            $this->properties()
-        );
+        foreach ($this->properties() as $propertyName) {
+            if (!isset($this->{$propertyName})
+                || is_null($this->{$propertyName})) {
+                break;
+            }
+            if ($this->getConvertChildren()) {
+                $result->offsetSet(
+                    $propertyName,
+                    $this->getConvertedValue($propertyName, $this->getPreserveKeys())
+                );
+            } else {
+                $result->offsetSet(
+                    $propertyName,
+                    $this->getValue($propertyName)
+                );
+            }
+        }
+
         return $result;
     }
 }

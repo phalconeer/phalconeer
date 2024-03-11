@@ -4,7 +4,7 @@ namespace Phalconeer\Dto\Transformer;
 use Phalconeer\Data;
 use Phalconeer\Dto as This;
 
-class FilterExporter implements This\TransformerInterface
+class FilterExporter implements This\TransformerVariableInterface
 {
     public function __construct(public array $filter)
     {

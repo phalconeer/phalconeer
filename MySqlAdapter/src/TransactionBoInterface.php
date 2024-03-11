@@ -1,9 +1,9 @@
 <?php
 namespace Phalconeer\MySqlAdapter;
 
-use Phalconeer\Dao\DaoReadInterface;
+use Phalconeer\Dao;
 
 interface TransactionBoInterface
 {
-    public function getDao() : DaoReadInterface;
+    public function getDao() : Dao\DaoReadInterface;
 }

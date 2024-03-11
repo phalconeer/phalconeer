@@ -7,8 +7,7 @@ use Phalconeer\Dto\Test as This;
 
 class TestAliasLoader extends This\Mock\Test
 {
-    use Dto\Trait\AliasLoader,
-        Data\Trait\ParseTypes;
+    use Data\Trait\ParseTypes;
 
     protected static array $properties = [
         'nestedObject'          => TestAliasLoader::class,
@@ -19,6 +18,6 @@ class TestAliasLoader extends This\Mock\Test
     ];
 
     protected static array $loadTransformers = [
-        Dto\Transformer\AliasLoader::TRAIT_METHOD,
+        Dto\Transformer\AliasLoader::class,
     ];
 }

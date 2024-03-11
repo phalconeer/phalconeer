@@ -4,24 +4,23 @@ namespace Phalconeer\Dto\Transformer;
 use Phalconeer\Data;
 use Phalconeer\Dto;
 
-abstract class AbstractDateExporter implements Dto\TransformerInterface
+abstract class AbstractDateExporter implements Dto\TransformerStaticInterface
 {
-    public function transform(
+    public static function transformStatic(
         \ArrayObject | Data\CommonInterface $source,
         Data\CommonInterface $baseObject = null,
         \ArrayObject $parameters = null
-    )
+    ) : \ArrayObject
     {
-        if (is_array($source)) {
-            $source = new \ArrayObject($source);
-        }
+        $source = Dto\Transformer\ArrayObjectExporter::normalizeArrayObject($source);
         if (!$source instanceof \ArrayObject) {
             return $source;
         }
         if (is_null($parameters)) {
             $parameters = new \ArrayObject();
         }
-        if (!is_null($baseObject)) {
+        if (!$parameters->offsetExists('dateProperties')
+            && !is_null($baseObject)) {
             $parameters->offsetSet('dateProperties', Data\Helper\ParseValueHelper::getDateProperties($baseObject));
         }
         return static::exportAllDate($source, $parameters);

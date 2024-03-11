@@ -4,7 +4,7 @@ namespace Phalconeer\Dto\Test\Mock;
 use Phalconeer\Dto;
 use Phalconeer\Dto\Test as This;
 
-class TestAliasExporterWithMask extends This\Mock\Test
+class TestAliasExporterWithMask extends This\Mock\Test implements Dto\ArrayObjectExporterInterface
 {
     use Dto\Trait\AliasExporter;
 
@@ -18,6 +18,6 @@ class TestAliasExporterWithMask extends This\Mock\Test
     ];
 
     protected static array $exportTransformers = [
-        Dto\Transformer\AliasExporter::TRAIT_METHOD,
+        Dto\Transformer\AliasExporter::class,
     ];
 }

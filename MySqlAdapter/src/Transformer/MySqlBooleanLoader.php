@@ -4,26 +4,22 @@ namespace Phalconeer\MySqlAdapter\Transformer;
 use Phalconeer\Data;
 use Phalconeer\Dto;
 
-class MySqlBooleanLoader implements Dto\TransformerInterface
+class MySqlBooleanLoader implements Dto\TransformerStaticInterface
 {
-    const TRAIT_METHOD = 'loadAllMySqlBoolean';
-
-    public function transform(
+    public static function transformStatic(
         \ArrayObject | Data\CommonInterface $source,
         Data\CommonInterface $baseObject = null,
         \ArrayObject $parameters = null
     )
     {
-        if (is_array($source)) {
-            $source = new \ArrayObject($source);
-        }
         if (!$source instanceof \ArrayObject) {
             return $source;
         }
         if (is_null($parameters)) {
             $parameters = new \ArrayObject();
         }
-        if (!is_null($baseObject)) {
+        if (!$parameters->offsetExists('dateProperties')
+            && !is_null($baseObject)) {
             $parameters->offsetSet('boolProperties', Data\Helper\ParseValueHelper::getBoolProperties($baseObject));
         }
         return self::loadAllMySqlBoolean($source, $parameters);

@@ -7,7 +7,7 @@ use Phalconeer\TaskRegistry as This;
 
 class GetNextIterationDetailObject implements Dto\TransformerStaticInterface
 {
-    public static function transform(
+    public static function transformStatic(
         \ArrayObject | Data\CommonInterface $source,
         Data\CommonInterface $baseObject = null,
         \ArrayObject $parameters = null

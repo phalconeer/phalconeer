@@ -6,8 +6,7 @@ use Phalconeer\Data\Helper\ParseValueHelper as PVH;
 
 class ElasticBase extends Dto\ImmutableDto implements Dto\ArrayObjectExporterInterface
 {
-    use Dto\Trait\AliasLoader,
-        Dto\Trait\AliasExporter;
+    use Dto\Trait\AliasExporter;
 
     const INDEX_DATE_FIELD = '';
 
@@ -32,11 +31,11 @@ class ElasticBase extends Dto\ImmutableDto implements Dto\ArrayObjectExporterInt
     ];
 
     protected static array $loadTransformers = [
-        Dto\Transformer\AliasLoader::TRAIT_METHOD,
+        Dto\Transformer\AliasLoader::class,
     ];
 
     protected static array $exportTransformers = [
-        Dto\Transformer\AliasExporter::TRAIT_METHOD,
+        Dto\Transformer\AliasExporter::class,
     ];
 
     protected string $id;

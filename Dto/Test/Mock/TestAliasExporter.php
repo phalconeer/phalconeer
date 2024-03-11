@@ -1,15 +1,16 @@
 <?php
 namespace Phalconeer\Dto\Test\Mock;
 
+use Phalconeer\Data;
 use Phalconeer\Dto;
 use Phalconeer\Dto\Test as This;
 
-class TestAliasExporter extends This\Mock\Test
+class TestAliasExporter extends This\Mock\Test implements Dto\ArrayObjectExporterInterface
 {
     use Dto\Trait\AliasExporter;
 
     protected static array $properties = [
-        'nestedObject'          => TestAliasExporter::class,
+        'nestedObject'              => TestAliasExporter::class,
     ];
 
     protected static array $exportAliases = [
@@ -17,6 +18,6 @@ class TestAliasExporter extends This\Mock\Test
     ];
 
     protected static array $exportTransformers = [
-        Dto\Transformer\AliasExporter::TRAIT_METHOD,
+        Dto\Transformer\AliasExporter::class,
     ];
 }

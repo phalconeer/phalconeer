@@ -47,15 +47,14 @@ abstract class ImmutableDto extends Data\ImmutableData implements This\DtoExport
         $result = $this;
         foreach ($transformers as $transformer) {
             if (is_string($transformer)
-                && is_callable([$this, $transformer])) {
+                && method_exists($this, $transformer)) {
                 $result = call_user_func_array([$this, $transformer], [$result, $this, $parameters]);
             }
             if (is_object($transformer)
-                && $transformer instanceof This\TransformerInterface) {
+                && $transformer instanceof This\TransformerVariableInterface) {
                 $result = $transformer->transform($result, $this, $parameters);
-            }
-            if (is_callable([$transformer, 'transform'])) {
-                $result = call_user_func_array([$transformer, 'transform'], [$result, $this, $parameters]);
+            } elseif (is_callable([$transformer, 'transformStatic'])) {
+                $result = call_user_func_array([$transformer, 'transformStatic'], [$result, $this, $parameters]);
             }
             if (is_array($transformer)
                 && is_callable($transformer)) {
@@ -80,8 +79,8 @@ abstract class ImmutableDto extends Data\ImmutableData implements This\DtoExport
                 && method_exists($this, $transformer)) {
                 $inputObject = call_user_func_array([$this, $transformer], [$inputObject, $this]);
             }
-            if (is_callable([$transformer, 'transform'])) {
-                $inputObject = call_user_func_array([$transformer, 'transform'], [$inputObject, $this]);
+            if (is_callable([$transformer, 'transformStatic'])) {
+                $inputObject = call_user_func_array([$transformer, 'transformStatic'], [$inputObject, $this]);
             }
             if (is_array($transformer)
                 && is_callable($transformer)) {

@@ -4,7 +4,7 @@ namespace Phalconeer\Dto\Transformer;
 use Phalconeer\Data;
 use Phalconeer\Dto as This;
 
-class JsonFieldExporter implements This\TransformerInterface
+class JsonFieldExporter implements This\TransformerVariableInterface
 {
     public function __construct(public string $field)
     {
@@ -16,9 +16,7 @@ class JsonFieldExporter implements This\TransformerInterface
         \ArrayObject $parameters = null
     )
     {
-        if (is_array($source)) {
-            $source = new \ArrayObject($source);
-        }
+        $source = This\Transformer\ArrayObjectExporter::normalizeArrayObject($source);
         if (!$source instanceof \ArrayObject) {
             return $source;
         }

@@ -6,18 +6,13 @@ use Phalconeer\User as UserModule;
 
 class User extends UserModule\Data\User
 {
-    use MySqlAdapter\Trait\MySqlBooleanExporter,
-        MySqlAdapter\Trait\MySqlBooleanLoader,
-        MySqlAdapter\Trait\MySqlDateExporter,
-        MySqlAdapter\Trait\MySqlDateLoader;
-
     protected static array $exportTransformers = [
-        MySqlAdapter\Transformer\MySqlBooleanExporter::TRAIT_METHOD,
-        MySqlAdapter\Transformer\MySqlDateExporter::TRAIT_METHOD,
+        MySqlAdapter\Transformer\MySqlBooleanExporter::class,
+        MySqlAdapter\Transformer\MySqlDateExporter::class,
     ];
 
     protected static array $loadTransformers = [
-        MySqlAdapter\Transformer\MySqlBooleanLoader::TRAIT_METHOD,
-        MySqlAdapter\Transformer\MySqlDateLoader::TRAIT_METHOD,
+        MySqlAdapter\Transformer\MySqlBooleanLoader::class,
+        MySqlAdapter\Transformer\MySqlDateLoader::class,
     ];
 }

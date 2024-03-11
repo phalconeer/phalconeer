@@ -167,7 +167,7 @@ class AliasExporterTest extends Test\UnitTestCase
             'undocumented'      => '123'
         ]);
         $expectedOutput = new \ArrayObject([
-            'stringProperty'    => null, //Export alias is setup, but externalStringProperty is not member of the Data obnject so ti will be null
+            'stringProperty'    => null, //Export alias is setup, but externalStringProperty is not member of the Data obnject so it will be null
             'intProperty'       => 10,
             'floatProperty'     => 1.2342342,
             'arrayProperty'     => ['a', 'b'],

@@ -4,17 +4,14 @@ namespace Phalconeer\Dto\Transformer;
 use Phalconeer\Data;
 use Phalconeer\Dto;
 
-abstract class AbstractDateLoader implements Dto\TransformerInterface
+abstract class AbstractDateLoader implements Dto\TransformerStaticInterface
 {
-    public function transform(
+    public static function transformStatic(
         \ArrayObject | Data\CommonInterface $source,
         Data\CommonInterface $baseObject = null,
         \ArrayObject $parameters = null
     )
     {
-        if (is_array($source)) {
-            $source = new \ArrayObject($source);
-        }
         if (!$source instanceof \ArrayObject) {
             return $source;
         }

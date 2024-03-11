@@ -1,12 +1,12 @@
 <?php
 namespace Phalconeer\RestResponse;
 
-use Phalconeer\Data;
+use Phalconeer\Dto;
 
 /**
  * Interface for the entities used by our REST API system.
  */
-interface ResourceInterface extends Data\CommonInterface
+interface ResourceInterface extends Dto\ArrayObjectExporterInterface
 {
 
     /**

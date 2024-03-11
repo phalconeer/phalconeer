@@ -22,23 +22,20 @@ trait ArrayObjectExporter
             );
         }
         $result = new \ArrayObject();
-        array_map(
-            function ($propertyName) use ($result)
-            {
-                if ($this->getConvertChildren()) {
-                    $result->offsetSet(
-                        $propertyName,
-                        $this->getConvertedValue($propertyName, $this->getPreserveKeys())
-                    );
-                } else {
-                    $result->offsetSet(
-                        $propertyName,
-                        $this->getValue($propertyName)
-                    );
-                }
-            },
-            $this->properties()
-        );
+        foreach ($this->properties() as $propertyName) {
+            if ($this->getConvertChildren()) {
+                $result->offsetSet(
+                    $propertyName,
+                    $this->getConvertedValue($propertyName, $this->getPreserveKeys())
+                );
+            } else {
+                $result->offsetSet(
+                    $propertyName,
+                    $this->getValue($propertyName)
+                );
+            }
+        }
+
         return $result;
     }
 }

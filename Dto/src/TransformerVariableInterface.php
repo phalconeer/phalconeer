@@ -3,11 +3,11 @@ namespace Phalconeer\Dto;
 
 use Phalconeer\Data;
 
-interface TransformerStaticInterface
+interface TransformerVariableInterface
 {
-    public static function transformStatic(
+    public function transform(
         \ArrayObject | Data\CommonInterface $source,
         Data\CommonInterface $baseObject = null,
         \ArrayObject $parameters = null
     );
-}
+} 

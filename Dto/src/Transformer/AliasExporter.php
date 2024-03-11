@@ -6,27 +6,43 @@ use Phalconeer\Dto as This;
 
 class AliasExporter implements This\TransformerInterface
 {
-    const TRAIT_METHOD = 'exportAliases';
-
-    public function __construct(public array $exportAliases)
+    public function __construct(protected array $exportAliases)
     {
     }
 
     public function transform(
+        \ArrayObject | Data\CommonInterface $source = null,
+        Data\CommonInterface $baseObject = null,
+        \ArrayObject $parameters = null
+    )
+    {
+        if (is_null($source)) {
+            return $source;
+        }
+        $source = This\Transformer\ArrayObjectExporter::normalizeArrayObject($source);
+        if (!$source instanceof \ArrayObject) {
+            return $source;
+        }
+
+        return self::exportAliasesWithArray(
+            $source,
+            $parameters?->offsetGet('aliases') ?? $this->exportAliases
+        );
+    }
+
+    public static function transformStatic(
         \ArrayObject | Data\CommonInterface $source,
         Data\CommonInterface $baseObject = null,
         \ArrayObject $parameters = null
     )
     {
-        if (is_array($source)) {
-            $source = new \ArrayObject($source);
-        }
+        $source = This\Transformer\ArrayObjectExporter::normalizeArrayObject($source);
         if (!$source instanceof \ArrayObject) {
             return $source;
         }
         return self::exportAliasesWithArray(
             $source,
-            $this->exportAliases
+            $parameters?->offsetGet('aliases') ?? $baseObject->transformer->exportAliases()
         );
     }
 

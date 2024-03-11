@@ -29,7 +29,7 @@ class GetDetailObject implements Dto\TransformerStaticInterface
         return $source;
     }
 
-    public static function transform(
+    public static function transformStatic(
         \ArrayObject | Data\CommonInterface $source,
         Data\CommonInterface $baseObject = null,
         \ArrayObject $parameters = null
