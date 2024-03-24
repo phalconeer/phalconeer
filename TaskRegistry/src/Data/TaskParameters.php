@@ -14,7 +14,7 @@ class TaskParameters extends Dto\ImmutableDto
         Dto\Transformer\ArrayObjectExporter::TRAIT_METHOD,
     ];
 
-    protected static $_properties = [
+    protected static array $properties = [
         'runDelay'                  => Data\Helper\ParseValueHelper::TYPE_INT,
     ];
 

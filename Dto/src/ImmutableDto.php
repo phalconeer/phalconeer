@@ -54,6 +54,8 @@ abstract class ImmutableDto extends Data\ImmutableData implements This\DtoExport
                 && $transformer instanceof This\TransformerVariableInterface) {
                 $result = $transformer->transform($result, $this, $parameters);
             } elseif (is_callable([$transformer, 'transformStatic'])) {
+                // This is needed when a transformer inherits both static and variable interface
+                // variable interface ahs precedence
                 $result = call_user_func_array([$transformer, 'transformStatic'], [$result, $this, $parameters]);
             }
             if (is_array($transformer)
@@ -79,7 +81,12 @@ abstract class ImmutableDto extends Data\ImmutableData implements This\DtoExport
                 && method_exists($this, $transformer)) {
                 $inputObject = call_user_func_array([$this, $transformer], [$inputObject, $this]);
             }
-            if (is_callable([$transformer, 'transformStatic'])) {
+            if (is_object($transformer)
+                && $transformer instanceof This\TransformerVariableInterface) {
+                $inputObject = $transformer->transform($inputObject, $this);
+            } elseif (is_callable([$transformer, 'transformStatic'])) {
+                // This is needed when a transformer inherits both static and variable interface
+                // variable interface ahs precedence
                 $inputObject = call_user_func_array([$transformer, 'transformStatic'], [$inputObject, $this]);
             }
             if (is_array($transformer)
@@ -100,7 +107,7 @@ abstract class ImmutableDto extends Data\ImmutableData implements This\DtoExport
         $parentClassName = get_parent_class(static::class);
         return ($parentClassName
             && method_exists($parentClassName, __FUNCTION__)) ? 
-            array_merge(
+            array_merge_recursive(
                 $parentClassName::getExportAliases(), static::$exportAliases) : 
             static::$exportAliases;
     }
@@ -110,12 +117,12 @@ abstract class ImmutableDto extends Data\ImmutableData implements This\DtoExport
         $parentClassName = get_parent_class(static::class);
         return ($parentClassName
             && method_exists($parentClassName, __FUNCTION__))
-            ? array_merge(
+            ? array_merge_recursive(
                 $parentClassName::getExportTransformers(),
                 static::$exportTransformers,
                 $baseTransformers
             )
-            : array_merge(static::$exportTransformers, $baseTransformers);
+            : array_merge_recursive(static::$exportTransformers, $baseTransformers);
     }
 
     public static function getLoadAliases() : array
@@ -123,7 +130,7 @@ abstract class ImmutableDto extends Data\ImmutableData implements This\DtoExport
         $parentClassName = get_parent_class(static::class);
         return ($parentClassName
             && method_exists($parentClassName, __FUNCTION__)) ? 
-            array_merge(
+            array_merge_recursive(
                 $parentClassName::getLoadAliases(), static::$loadAliases) : 
             static::$loadAliases;
     }
@@ -131,9 +138,10 @@ abstract class ImmutableDto extends Data\ImmutableData implements This\DtoExport
     public static function getLoadTransformers() : array
     {
         $parentClassName = get_parent_class(static::class);
+
         return ($parentClassName
             && method_exists($parentClassName, __FUNCTION__))
-            ? array_merge(
+            ? array_merge_recursive(
                 $parentClassName::getLoadTransformers(),
                 ((isset(static::$loadTransformers)) ? static::$loadTransformers : []),
             )

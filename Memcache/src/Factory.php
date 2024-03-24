@@ -67,7 +67,7 @@ class Factory extends Bootstrap\Factory
             if (is_null($cacheControlInstance)) {
                 $cacheControlInstance = $cacheControl->getCacheControl();
             }
-            $options = array_merge(
+            $options = array_merge_recursive(
                 $config->get('default', Config\Helper\ConfigHelper::$dummyConfig)->toArray(),
                 $config->connections->get($connectionType, Config\Helper\ConfigHelper::$dummyConfig)->toArray(),
                 [

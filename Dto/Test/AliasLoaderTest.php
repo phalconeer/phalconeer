@@ -69,4 +69,42 @@ class AliasLoaderTest extends Test\UnitTestCase
             'Chained alias loader did not function well'
         );
     }
+
+    public function testAliasLoaderObject()
+    {
+        $testData = new \ArrayObject([
+            'externalStringProperty'    => 'This is a string',
+            'intProperty'       => 10,
+            'floatProperty'     => 1.2342342,
+            'boolProperty'      => true,
+            'arrayProperty'     => ['a', 'b'],
+            'callableProperty'  => function () {},
+            'arrayObject'       => new \ArrayObject(['--', '!!']),
+            'dateTimeObject'    => new \DateTime('@0'),
+            'nestedObject'      => new \ArrayObject([
+                'stringProperty'    => 'This is a nested string',
+                'intProperty'       => 99,
+                'floatProperty'     => 0.000003,
+                'boolProperty'      => false,
+                'arrayProperty'     => [3, 4],
+            ]),
+            'undocumented'      => '123'
+        ]);
+        $aliasTransformer = new Dto\Transformer\AliasLoader([
+            'externalStringProperty'    => 'stringProperty',
+        ]);
+        $dto = new This\Mock\Test(
+            $testData,
+            [
+                $aliasTransformer
+            ]
+        );
+
+        $this->assertEquals(
+            $testData['externalStringProperty'],
+            $dto->stringProperty(),
+            'Alias loader did not function well'
+        );
+    }
+
 }

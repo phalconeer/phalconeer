@@ -94,7 +94,7 @@ class SqlDaoBase extends Dao\DaoBase implements Dao\DaoReadAndWriteInterface
             }
             return $data;
         }
-        $this->lastErrorInfo = array_merge(
+        $this->lastErrorInfo = array_merge_recursive(
             $this->$connection->getErrorInfo(),
             [
                 'query'         => $query

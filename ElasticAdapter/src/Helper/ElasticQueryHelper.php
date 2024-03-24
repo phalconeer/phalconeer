@@ -423,7 +423,7 @@ class ElasticQueryHelper
             function($normalizedConditions, $logicalOperator) use ($nestedConditions, $conditions) {
                 $objectTypes       = $nestedConditions[$logicalOperator];
                 $extractConditions = function($extractedConditions, $fieldName) use ($conditions) {
-                    return array_merge(
+                    return array_merge_recursive(
                         $extractedConditions,
                         [
                             $fieldName => $conditions[$fieldName]

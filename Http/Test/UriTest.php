@@ -5,11 +5,6 @@ use ArrayObject;
 use Test;
 use Phalconeer\Http;
 
-/**
- * Description of AccountingAccountBoTest
- *
- * @author Fulee
- */
 class UriTest extends Test\UnitTestCase
 {
     /**

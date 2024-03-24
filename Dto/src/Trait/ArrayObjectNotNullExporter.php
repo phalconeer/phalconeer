@@ -26,7 +26,7 @@ trait ArrayObjectNotNullExporter
         foreach ($this->properties() as $propertyName) {
             if (!isset($this->{$propertyName})
                 || is_null($this->{$propertyName})) {
-                break;
+                continue;
             }
             if ($this->getConvertChildren()) {
                 $result->offsetSet(

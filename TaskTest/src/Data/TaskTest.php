@@ -10,7 +10,7 @@ class TaskTest extends TaskRegistry\Data\TaskParameters implements Dto\ArrayObje
     use Dto\Trait\ArrayLoader,
         Dto\Trait\ArrayObjectExporter;
 
-    protected static $_properties = [
+    protected static array $properties = [
         'message'                  => Data\Helper\ParseValueHelper::TYPE_STRING,
     ];
 

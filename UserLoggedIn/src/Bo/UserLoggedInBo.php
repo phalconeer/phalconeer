@@ -6,12 +6,12 @@ use Phalconeer\LiveSession;
 use Phalconeer\User;
 use Phalconeer\UserLoggedIn as This;
 
-class UserLoggedInBo implements Auth\LoginSuccessfulHandlerInterface
+class UserLoggedInBo implements Auth\LoginSuccessfulHandlerInterface, This\UserLoggedInInterface
 {
     protected ?User\Data\User $loggedIn = null;
 
     public function __construct(
-        protected $userBoClass = This\Bo\UserBo::class,
+        protected $userBoClass = User\Bo\UserBo::class,
     )
     {
     }
@@ -36,7 +36,7 @@ class UserLoggedInBo implements Auth\LoginSuccessfulHandlerInterface
         };
     }
 
-    public function getLoggedIn() : ?User\Data\User
+    public function getLoggedIn() : ?User\UserInterface
     {
         return $this->loggedIn;
     }

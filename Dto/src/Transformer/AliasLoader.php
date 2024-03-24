@@ -4,8 +4,31 @@ namespace Phalconeer\Dto\Transformer;
 use Phalconeer\Data;
 use Phalconeer\Dto as This;
 
-class AliasLoader implements This\TransformerStaticInterface
+class AliasLoader implements This\TransformerInterface
 {
+    public function __construct(
+        protected array $aliases
+    )
+    {
+        
+    }
+
+    public function transform(
+        \ArrayObject | Data\CommonInterface $source,
+        Data\CommonInterface $baseObject = null,
+        \ArrayObject $parameters = null
+    )
+    {
+        if (!$source instanceof \ArrayObject) {
+            return $source;
+        }
+        $aliases = $parameters?->offsetGet('aliases') ?? $this->aliases;
+        return self::loadAliasesWithArray(
+            $source,
+            $aliases ?? []
+        );
+    }
+
     public static function transformStatic(
         \ArrayObject | Data\CommonInterface $source,
         Data\CommonInterface $baseObject = null,

@@ -64,7 +64,7 @@ class RouterBo
                     $routeName,
                     $subRouteName
                 ]),
-                array_merge($groupParameters, $subRouteData),
+                array_merge_recursive($groupParameters, $subRouteData),
                 $group
             );
         }

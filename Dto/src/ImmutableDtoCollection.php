@@ -38,12 +38,12 @@ class ImmutableDtoCollection extends Data\ImmutableCollection implements This\Dt
         $parentClassName = get_parent_class(static::class);
         return ($parentClassName
             && method_exists($parentClassName, __FUNCTION__))
-            ? array_merge(
+            ? array_merge_recursive(
                 $parentClassName::getExportTransformers(),
                 static::$exportTransformers,
                 $baseTransformers
             )
-            : array_merge(static::$exportTransformers, $baseTransformers);
+            : array_merge_recursive(static::$exportTransformers, $baseTransformers);
     }
 
     protected function parseComplexType($value)

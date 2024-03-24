@@ -60,16 +60,15 @@ abstract class DaoBase
             return new \ArrayObject($result);
         }
         $camelizer = new Str\Camelize();
-        $camelizedResult = array_reduce(
-            array_keys($result),
-            function (array $aggregate, string $key) use ($camelizer, $result) {
-                $aggregate[lcfirst($camelizer($key))] = $result[$key];
-                return $aggregate;
-            },
-            []
-        );
+        $camelizedResult = new \ArrayObject();
+        foreach (array_keys($result) as $key) {
+            $camelizedResult->offsetSet(
+                lcfirst($camelizer($key)),
+                $result[$key]
+            );
+        }
 
-        return new \ArrayObject($camelizedResult);
+        return $camelizedResult;
     }
 
     protected function getResultObjectSet(

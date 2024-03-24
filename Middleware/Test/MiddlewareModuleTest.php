@@ -5,11 +5,6 @@ use Test;
 use Phalconeer\Middleware;
 use Phalconeer\Middleware\Test as This;
 
-/**
- * Description of AccountingAccountBoTest
- *
- * @author Fulee
- */
 class MiddlewareModuleTest extends Test\UnitTestCase
 {
     public function testZeroLengthChain()

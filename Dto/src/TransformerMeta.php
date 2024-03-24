@@ -85,7 +85,7 @@ class TransformerMeta implements This\TransformerMetaInterface
 
     public function addExportAliases(array $exportAliases) : self
     {
-        $this->exportAliases = array_merge($this->exportAliases, $exportAliases);
+        $this->exportAliases = array_merge_recursive($this->exportAliases, $exportAliases);
         return $this;
     } 
 
