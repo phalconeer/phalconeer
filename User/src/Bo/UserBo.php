@@ -11,8 +11,8 @@ class UserBo implements MySqlAdapter\TransactionBoInterface
 
     public function __construct(
         protected Dao\DaoReadInterface $dao,
-        protected ?string $userClass = This\Dto\User::class,
-        protected ?string $collectionClass = This\Dto\UserCollection::class
+        protected ?string $userClass = This\Data\User::class,
+        protected ?string $collectionClass = This\Data\UserCollection::class
     )
     {
     }
