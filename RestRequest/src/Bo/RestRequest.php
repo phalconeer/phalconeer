@@ -20,7 +20,7 @@ class RestRequest extends Http\Request
 
     public function __construct(
         protected Filter\Filter $filter,
-        protected PhalconConfig\Config $config
+        public PhalconConfig\Config $config
     )
     {
         $this->filter = $filter;

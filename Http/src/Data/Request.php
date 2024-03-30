@@ -125,7 +125,7 @@ class Request extends Dto\ImmutableDto implements Psr\Http\Message\RequestInterf
      * @param string $method Case-sensitive method.
      * @return static
      */
-    public function withMethod(string $method) : Psr\Http\Message\RequestInterface
+    public function withMethod($method) : Psr\Http\Message\RequestInterface
     {
         return $this->setValueByKey('method', $method);
     }

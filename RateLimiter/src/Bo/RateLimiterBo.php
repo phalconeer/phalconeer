@@ -3,12 +3,14 @@ namespace Phalconeer\RateLimiter\Bo;
 
 use Phalcon\Config as PhalconConfig;
 use Phalconeer\Condition;
+use Phalconeer\Dao;
 use Phalconeer\Impression;
 
 class RateLimiterBo
 {
     public function __construct(
-        protected Impression\Bo\ImpressionBo $impression,
+        protected Dao\DaoReadInterface $adapter,
+        protected Impression\ImpressionBoInterface $impression,
         protected PhalconConfig\Config $config
     )
     {
@@ -32,14 +34,11 @@ class RateLimiterBo
         ?int $interval = null //seconds
     ) : bool
     {
-        if (is_null($limit)) {
-            $limit = $this->config->get('limit', 5);
-        }
-        if (is_null($interval)) {
-            $interval = $this->config->get('interval', 60);
-        }
+        $limit = $limit ?? $this->config->get('limit', 5);
+        $interval = $interval ?? $this->config->get('interval', 60);
+        
         $hash = $this->tag($identifiers);
-        $impressionCount = $this->impression->getImpressionCount([
+        $impressionCount = $this->adapter->getCount([
             'tags'          => $hash,
             'requestTime'   => [
                 'operator'      => Condition\Helper\ConditionHelper::OPERATOR_GREATER_OR_EQUAL,

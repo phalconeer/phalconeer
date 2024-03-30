@@ -1,26 +1,26 @@
 <?php
 namespace Phalconeer\Impression\Bo;
 
-use Phalcon\Http as PhalconHttp;
 use Phalconeer\Dao;
 use Phalconeer\Http;
 use Phalconeer\Impression as This;
+use Phalcon;
 
-class ImpressionBo
+class ImpressionBo implements This\ImpressionBoInterface
 {
-    protected string $impressionClass = This\Data\Impression::class;
+    protected This\ImpressionInterface $impression;
+
+    protected string $impressionClass;
+
+    protected \ArrayObject $adapters;
 
     public function __construct(
-        protected Dao\DaoReadAndWriteInterface $dao,
-        protected PhalconHttp\Request $request,
-        protected ?This\ImpressionInterface $impression = null,
+        protected Phalcon\Http\Request $request,
+        protected Phalcon\Config\Config $config,
     )
     {
-        if (is_null($this->impression)) {
-            $this->impression = new This\Data\Impression();
-        }
-        $this->impressionClass = get_class($this->impression);
-        $this->mergeData([
+        $this->impressionClass = $this->config->get('impressionClass', This\Data\Impression::class);
+        $this->impression = new $this->impressionClass(new \ArrayObject([
             'accept'        => $this->request->getServer('HTTP_ACCEPT') . $this->request->getServer('HTTP_ACCEPT_CHARSET'),
             'header'        => $this->request->getHeaders(),
             'host'          => $this->request->getHttpHost(),
@@ -33,13 +33,15 @@ class ImpressionBo
             'server'        => $this->request->getServer('SERVER_ADDR'),
             'useragent'     => $this->request->getUserAgent(),
             'xForwrded'     => $this->request->getServer('HTTP_X_FORWARDED_FOR'),
-        ]);
+        ]));
+
+        $this->adapters = new \ArrayObject();
     }
 
     public function mergeData(array $data = [])
     {
         $this->impression = $this->impression->merge(
-            new $this->impressionClass(new \ArrayObject())
+            new $this->impressionClass(new \ArrayObject($data))
         );
     }
 
@@ -54,9 +56,18 @@ class ImpressionBo
         $this->impression = $this->impression->setBody($body);
     }
 
+    public function addAdapter(Dao\DaoReadAndWriteInterface $adapter)
+    {
+        $this->adapters->offsetSet(null, $adapter);
+    }
+
     public function save()
     {
-        return $this->dao->save($this->impression);
+        $iterator = $this->adapters->getIterator();
+        while ($iterator->valid()) {
+            $iterator->current()->save($this->impression);
+            $iterator->next();
+        }
     }
 
     public function addTag(string $tag)
@@ -64,8 +75,8 @@ class ImpressionBo
         $this->impression = $this->impression->addTag($tag);
     }
 
-    public function getImpressionCount(array $whereConditions)
+    public function impression() : This\ImpressionInterface
     {
-        return $this->dao->getCount($whereConditions);
+        return clone($this->impression);
     }
 }

@@ -1,12 +1,11 @@
 <?php
 namespace Phalconeer\RestResponse;
 
-use Phalcon\Events;
-use Phalcon\Mvc\Application;
 use Phalconeer\Bootstrap;
 use Phalconeer\Config;
 use Phalconeer\RestRequest;
 use Phalconeer\RestResponse as This;
+use Phalcon;
 
 class Factory extends Bootstrap\Factory
 {
@@ -29,18 +28,17 @@ class Factory extends Bootstrap\Factory
         return $response;
     }
 
-    protected function attachEventListeners(This\Bo\RestResponse $response) : This\Bo\RestResponse
+    protected function attachEventListeners(Phalcon\Http\Response $response) : Phalcon\Http\ResponseInterface
     {
-        $responseConfig = $this->di->get(Config\Factory::MODULE_NAME)->get(static::MODULE_NAME, Config\Helper\ConfigHelper::$dummyConfig);
+        $config = $this->di->get(Config\Factory::MODULE_NAME)->restResponse;
 
-        if ($responseConfig 
-            && $responseConfig->offsetExists('eventListeners')) {
-            $eventsManager = new Events\Manager();
-            foreach ($responseConfig->eventListeners as $event => $listener) {
-                foreach ($listener->toArray() as $currentListener) {
-                    $eventsManager->attach($event, new $currentListener);
-                }
+        if ($config 
+            && $config->has('eventListeners')) {
+            $eventsManager = new Phalcon\Events\Manager();
+            foreach ($config->eventListeners as $listener) {
+                $eventsManager->attach('response', $this->di->get($listener));
             }
+
             $response->setEventsManager($eventsManager);
         }
 

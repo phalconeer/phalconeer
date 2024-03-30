@@ -4,6 +4,7 @@ namespace Phalconeer\RateLimiter;
 use Phalconeer\Bootstrap;
 use Phalconeer\Condition;
 use Phalconeer\Config;
+use Phalconeer\Dao;
 use Phalconeer\Impression;
 use Phalconeer\RateLimiter as This;
 
@@ -20,12 +21,10 @@ class Factory extends Bootstrap\Factory
     protected function configure() {
         $di = $this->di;
         $moduleName = static::MODULE_NAME;
-        return function (Impression\Bo\ImpressionBo $impressionBo = null) use ($di, $moduleName){
-            if (is_null($impressionBo)) {
-                $impressionBo = $di->get(Impression\Factory::MODULE_NAME);
-            }
+        return function (Dao\DaoReadInterface $adapter) use ($di, $moduleName){
             return new This\Bo\RateLimiterBo(
-                $impressionBo,
+                $adapter,
+                $di->get(Impression\Factory::MODULE_NAME),
                 $di->get(Config\Factory::MODULE_NAME)->get($moduleName, Config\Helper\ConfigHelper::$dummyConfig),
             );
         };

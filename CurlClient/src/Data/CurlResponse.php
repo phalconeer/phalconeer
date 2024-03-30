@@ -63,35 +63,35 @@ class CurlResponse implements Psr\Http\Message\ResponseInterface, Http\MessageIn
         return $this->response->getHeaders();
     }
 
-    public function hasHeader(string $name) : bool
+    public function hasHeader($name) : bool
     {
         $this->response = $this->response->hasHeader($name);
         return $this->response;
     }
 
-    public function getHeader(string $name) : array
+    public function getHeader($name) : array
     {
         return $this->response->getHeader($name);
     }
 
-    public function getHeaderLine(string $name) : string
+    public function getHeaderLine($name) : string
     {
         return $this->getHeaderLine($name);
     }
 
-    public function withHeader(string $name, $value) : Psr\Http\Message\MessageInterface
+    public function withHeader($name, $value) : Psr\Http\Message\MessageInterface
     {
         $this->response = $this->response->withHeader($name, $value);
         return $this->response;
     }
 
-    public function withAddedHeader(string $name, $value) : Psr\Http\Message\MessageInterface
+    public function withAddedHeader($name, $value) : Psr\Http\Message\MessageInterface
     {
         $this->response = $this->response->withAddedHeader($name, $value);
         return $this->response;
     }
 
-    public function withoutHeader(string $name) : Psr\Http\Message\MessageInterface
+    public function withoutHeader($name) : Psr\Http\Message\MessageInterface
     {
         $this->response = $this->response->withoutHeader($name);
         return $this->response;
@@ -113,7 +113,7 @@ class CurlResponse implements Psr\Http\Message\ResponseInterface, Http\MessageIn
         return $this->response->getStatusCode();
     }
 
-    public function withStatus(int $code, string $reasonPhrase = '') : Psr\Http\Message\ResponseInterface
+    public function withStatus($code, $reasonPhrase = '') : Psr\Http\Message\ResponseInterface
     {
         $this->response = $this->response->withStatus($code, $reasonPhrase);
         return $this->response;

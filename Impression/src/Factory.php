@@ -9,23 +9,44 @@ class Factory extends Bootstrap\Factory
 {
     const MODULE_NAME = 'impression';
     
-    protected static $instances = [];
-
     protected static array $requiredModules = [
         Config\Factory::MODULE_NAME,
         'request',
     ];
 
+    protected ?This\Bo\ImpressionBo $bo = null;
+
+    protected function setupAdapters()
+    {
+        $config = $this->di->get(Config\Factory::MODULE_NAME)->get(static::MODULE_NAME, Config\Helper\ConfigHelper::$dummyConfig);
+
+        if ($config->has('adapters')) {
+            $iterator = $config->adapters->getIterator();
+            while ($iterator->valid()) {
+                $this->bo->addAdapter($this->di->get($iterator->current()));
+                $iterator->next();
+            }
+        }
+    }
+
+    protected function setup()
+    {
+        $config = $this->di->get(Config\Factory::MODULE_NAME)->get(static::MODULE_NAME, Config\Helper\ConfigHelper::$dummyConfig);
+
+        $this->bo = new This\Bo\ImpressionBo(
+            $this->di->get('request'),
+            $config
+        );
+
+        $this->setupAdapters();
+    }
+
     protected function configure()
     {
-        $request = $this->di->get('request');
+        if (is_null($this->bo)) {
+            $this->setup();
+        }
 
-        return function ($impression = null) use ($request) {
-            return new This\Bo\ImpressionBo(
-                new This\Dao\DummyDao(),
-                $request,
-                $impression
-            );
-        };
+        return $this->bo;
     }
 }
