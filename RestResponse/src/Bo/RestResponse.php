@@ -16,7 +16,7 @@ class RestResponse extends Http\Response
 
     protected string $format = This\Helper\RestResponseHelper::FORMAT_JSON;
 
-    protected This\ResourceInterface $resource;
+    protected ?This\ResourceInterface $resource = null;
 
     public function __construct(
         $content = null,
