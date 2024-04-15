@@ -35,6 +35,8 @@ class ImpressionBo implements This\ImpressionBoInterface
             'xForwrded'     => $this->request->getServer('HTTP_X_FORWARDED_FOR'),
         ]));
 
+        $this->setBody();
+
         $this->adapters = new \ArrayObject();
     }
 
@@ -50,10 +52,7 @@ class ImpressionBo implements This\ImpressionBoInterface
         if (is_null($body)) {
             $body = json_decode($this->request->getRawBody(), true);
         }
-        if (is_null($body)) {
-            $body = [Http\Helper\MessageHelper::FULL_TEXT_BODY_ELASTIC => $this->request->getRawBody()];
-        }
-        $this->impression = $this->impression->setBody($body);
+        $this->impression = $this->impression->setBody($body ?? $this->request->getRawBody());
     }
 
     public function addAdapter(Dao\DaoReadAndWriteInterface $adapter)
