@@ -4,7 +4,7 @@ namespace Phalconeer\Dto\Transformer;
 use Phalconeer\Data;
 use Phalconeer\Dto as This;
 
-class MapFieldExporter implements This\TransformerVariableInterface
+class MapFieldExporter implements This\TransformerInstanceInterface
 {
     public function __construct(public string | array $mapField)
     {

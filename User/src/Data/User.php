@@ -11,8 +11,6 @@ class User extends Dto\ImmutableDto implements This\UserInterface
         Data\Trait\ParseTypes,
         Data\Trait\AutoGetter;
 
-    protected static array $sensitiveProperties = [];
-
     protected ?int $id = null;
 
     protected ?\DateTime $lastLogin = null;
@@ -22,14 +20,6 @@ class User extends Dto\ImmutableDto implements This\UserInterface
     public function getPrimaryKey() : array
     {
         return ['id'];
-    }
-
-    public static function getSensitiveProperties() : array
-    {
-        $parentClassName = get_parent_class(static::class);
-        return method_exists($parentClassName, __FUNCTION__) ? 
-            array_merge_recursive($parentClassName::getSensitiveProperties(), static::$sensitiveProperties) : 
-            static::$sensitiveProperties;
     }
 
     public function id() : ?int

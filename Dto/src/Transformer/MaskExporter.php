@@ -5,7 +5,7 @@ use Phalconeer\Dto as This;
 use Phalconeer\Data;
 use Phalconeer\Dto;
 
-class MaskExporter implements Dto\TransformerVariableInterface
+class MaskExporter implements Dto\TransformerInstanceInterface
 {
     public function __construct(
         protected array $mask

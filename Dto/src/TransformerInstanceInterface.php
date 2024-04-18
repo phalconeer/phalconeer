@@ -3,7 +3,7 @@ namespace Phalconeer\Dto;
 
 use Phalconeer\Data;
 
-interface TransformerVariableInterface
+interface TransformerInstanceInterface
 {
     public function transform(
         \ArrayObject | Data\CommonInterface $source,

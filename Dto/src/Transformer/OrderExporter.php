@@ -4,7 +4,7 @@ namespace Phalconeer\Dto\Transformer;
 use Phalconeer\Data;
 use Phalconeer\Dto as This;
 
-class OrderExporter implements This\TransformerVariableInterface
+class OrderExporter implements This\TransformerInstanceInterface
 {
     public function __construct(
         protected string $sortBy = 'order'

@@ -51,7 +51,7 @@ abstract class ImmutableDto extends Data\ImmutableData implements This\DtoExport
                 $result = call_user_func_array([$this, $transformer], [$result, $this, $parameters]);
             }
             if (is_object($transformer)
-                && $transformer instanceof This\TransformerVariableInterface) {
+                && $transformer instanceof This\TransformerInstanceInterface) {
                 $result = $transformer->transform($result, $this, $parameters);
             } elseif (is_callable([$transformer, 'transformStatic'])) {
                 // This is needed when a transformer inherits both static and variable interface
@@ -82,7 +82,7 @@ abstract class ImmutableDto extends Data\ImmutableData implements This\DtoExport
                 $inputObject = call_user_func_array([$this, $transformer], [$inputObject, $this]);
             }
             if (is_object($transformer)
-                && $transformer instanceof This\TransformerVariableInterface) {
+                && $transformer instanceof This\TransformerInstanceInterface) {
                 $inputObject = $transformer->transform($inputObject, $this);
             } elseif (is_callable([$transformer, 'transformStatic'])) {
                 // This is needed when a transformer inherits both static and variable interface

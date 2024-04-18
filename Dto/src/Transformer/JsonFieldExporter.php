@@ -4,7 +4,7 @@ namespace Phalconeer\Dto\Transformer;
 use Phalconeer\Data;
 use Phalconeer\Dto as This;
 
-class JsonFieldExporter implements This\TransformerVariableInterface
+class JsonFieldExporter implements This\TransformerInstanceInterface
 {
     public function __construct(public string $field)
     {
