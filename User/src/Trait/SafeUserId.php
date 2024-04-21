@@ -3,7 +3,7 @@ namespace Phalconeer\User\Trait;
 
 trait SafeUserId
 {
-    protected string $safeUserId;
+    protected ?string $safeUserId;
 
     public function setSafeUserId(string $safeUserId) : self
     {

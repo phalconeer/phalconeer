@@ -1,10 +1,10 @@
 <?php
 namespace Phalconeer\Router;
 
-use Phalcon\Mvc;
 use Phalconeer\Bootstrap;
 use Phalconeer\Config;
 use Phalconeer\Router as This;
+use Phalcon\Mvc;
 
 /**
  * Initializes the router.

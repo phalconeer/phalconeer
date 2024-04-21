@@ -5,4 +5,5 @@ trait PhoneNumber
 {
     protected ?string $phoneNumber;
 
+    protected ?bool $phoneNumberConfirmed;
 }

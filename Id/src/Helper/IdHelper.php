@@ -39,4 +39,25 @@ class IdHelper
             self::generate($length)
         ]);
     }
+
+    /**
+     * Generate packed random ID
+     * By default it returns url unsafe characters resulting from base64 encoding
+     * 
+     * @param array $nonAlphanumericReplacements
+     * To use it, pass in some characters to replace '+' and '/'
+     * eg.: ['+' => 'fn', '/' => 'tc']
+     * Passing in single character alphanumeric strings can lead to accidental string clashes
+     */
+    public static function generateIndependentSafeUserId(
+        string $seed = null,
+        array $nonAlphanumericReplacements = []
+    )
+    {
+        if (is_null($seed)) {
+            $seed = self::generate(12);
+        }
+        $shortCode = base64_encode(pack('H*', $seed));
+        return strtr($shortCode, $nonAlphanumericReplacements);
+    }
 }

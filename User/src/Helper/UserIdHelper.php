@@ -1,8 +1,6 @@
 <?php
 namespace Phalconeer\User\Helper;
 
-use Phalconeer\Id;
-
 class UserIdHelper
 {
     const DEFAULT_ENCODER_ODD = [
@@ -31,54 +29,50 @@ class UserIdHelper
         'c',
     ];
 
+    public static function encodeNumber(
+        int $number,
+        array $oddEncoder = self::DEFAULT_ENCODER_ODD,
+        array $evenEncoder = self::DEFAULT_ENCODER_EVEN
+    ) : string
+    {
+        $result = '';
+        foreach (str_split($number) as $index => $digit) {
+            if ($index % 2) {
+                $result .= $oddEncoder[(int) $digit];
+            } else {
+                $result .= $evenEncoder[(int) $digit];
+            }
+        }
+
+        return $result;
+    }
+
     public static function generateSafeUserId(
         int $userId,
-        int $applicationId,
+        int $applicationId = null,
         array $oddEncoder = self::DEFAULT_ENCODER_ODD,
-        array $evenEncoder = self::DEFAULT_ENCODER_EVEN) : string
+        array $evenEncoder = self::DEFAULT_ENCODER_EVEN
+    ) : string
     {
-        $index = 0;
-        $encodedApplicationId = array_reduce(
-            str_split($applicationId),
-            function ($aggregator, $currentDigit) use ($oddEncoder, $evenEncoder, &$index) {
-                if (++$index % 2) {
-                    $aggregator .= $oddEncoder[(int) $currentDigit];
-                } else {
-                    $aggregator .= $evenEncoder[(int) $currentDigit];
-                }
-                return $aggregator;
-            },
-            ''
-        );
-        $index = 0;
-        $encodedUserId = array_reduce(
-            str_split($userId * 111),
-            function ($aggregator, $currentDigit) use ($oddEncoder, $evenEncoder, &$index) {
-                if (++$index % 2) {
-                    $aggregator .= $oddEncoder[(int) $currentDigit];
-                } else {
-                    $aggregator .= $evenEncoder[(int) $currentDigit];
-                }
-                return $aggregator;
-            },
-            ''
+        $applicationEncoded = (is_null($applicationId))
+            ? null
+            : self::encodeNumber(
+                $applicationId,
+                $oddEncoder,
+                $evenEncoder
+            );
+        $userEncoded = self::encodeNumber(
+            $userId * 111,
+            $oddEncoder,
+            $evenEncoder
         );
 
         return implode(
             '',
-            [
-                $encodedApplicationId,
-                $encodedUserId
-            ]
+            array_filter([
+                $applicationEncoded,
+                $userEncoded
+            ])
         );
-    }
-
-    public static function generateIndependentSafeUserId(string $seed = null)
-    {
-        if (is_null($seed)) {
-            $seed = Id\Helper\IdHelper::generate(12);
-        }
-        $shortCode = base64_encode(pack('H*', $seed));
-        return strtr($shortCode, ['+' => 'fn', '/' => 'tc']);
     }
 }

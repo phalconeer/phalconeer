@@ -1,19 +1,19 @@
 <?php
 namespace Phalconeer\Router\Bo;
 
-use Phalcon\Config as PhalconConfig;
 use Phalcon\Mvc;
 use Phalcon\Mvc\Router;
 use Phalconeer\Config;
 use Phalconeer\Router as This;
+use Phalcon;
 
 class RouterBo
 {
 
     public function __construct(
         protected Mvc\Router $router,
-        protected PhalconConfig\Config $routerConfiguration,
-        protected PhalconConfig\Config $applicationConfiguration
+        protected Phalcon\Config\Config $routerConfiguration,
+        protected Phalcon\Config\Config $applicationConfiguration
     )
     {
         $this->baseSetup();
@@ -105,7 +105,7 @@ class RouterBo
      */
     protected function includeRoutingTables() : array
     {
-        if (!($this->routerConfiguration->get('routingTables') instanceof PhalconConfig\Config)) {
+        if (!($this->routerConfiguration->get('routingTables') instanceof Phalcon\Config\Config)) {
             throw new This\Exception\NoRoutingTablesDefinedException(
                 'No routing tables are found in the configuration',
                 This\Helper\ExceptionHelper::ROUTER__NO_ROUTING_TABLES

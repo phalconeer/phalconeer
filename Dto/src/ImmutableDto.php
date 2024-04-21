@@ -107,7 +107,7 @@ abstract class ImmutableDto extends Data\ImmutableData implements This\DtoExport
         $parentClassName = get_parent_class(static::class);
         return ($parentClassName
             && method_exists($parentClassName, __FUNCTION__)) ? 
-            array_merge_recursive(
+            array_merge(
                 $parentClassName::getExportAliases(), static::$exportAliases) : 
             static::$exportAliases;
     }
@@ -130,7 +130,7 @@ abstract class ImmutableDto extends Data\ImmutableData implements This\DtoExport
         $parentClassName = get_parent_class(static::class);
         return ($parentClassName
             && method_exists($parentClassName, __FUNCTION__)) ? 
-            array_merge_recursive(
+            array_merge(
                 $parentClassName::getLoadAliases(), static::$loadAliases) : 
             static::$loadAliases;
     }

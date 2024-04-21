@@ -3,5 +3,5 @@ namespace Phalconeer\User\Trait;
 
 trait Password
 {
-    protected string $password;
+    protected ?string $password;
 }
