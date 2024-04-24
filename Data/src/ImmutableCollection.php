@@ -8,7 +8,7 @@ abstract class ImmutableCollection implements This\CollectionInterface
 {
     protected \ArrayObject $collection;
 
-    protected ?This\CollectionMetaInterface $collectionMeta;
+    public ?This\CollectionMetaInterface $collectionMeta;
 
     protected string $collectionType;
 
@@ -182,6 +182,12 @@ abstract class ImmutableCollection implements This\CollectionInterface
             && !$isSilent) {
             $this->collectionMeta->setDirty(true);
         }
+        return $this;
+    }
+
+    public function setMeta(?This\CollectionMetaInterface $collectionMeta = null) : self
+    {
+        $this->collectionMeta = $collectionMeta;
         return $this;
     }
 }

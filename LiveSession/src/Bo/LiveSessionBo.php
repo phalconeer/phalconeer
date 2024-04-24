@@ -75,22 +75,22 @@ class LiveSessionBo implements This\LiveSessionInterface
     ) : bool
     {
         $scopeFullName = implode('.', 
-                array_filter([
-                    $this->application->getPrivilegeScheme(),
-                    $scope
-                ])
-            );
+            array_filter([
+                $this->application->getPrivilegeScheme(),
+                $scope
+            ])
+        );
         $resourcePermission = implode('.', 
-                array_reduce(
-                    array_keys($restriction),
-                    function ($aggregator, $key) use ($restriction) {
-                        $aggregator[] = $key;
-                        $aggregator[] = $restriction[$key];
-                        return $aggregator;
-                    },
-                    [$scopeFullName]
-                )
-            );
+            array_reduce(
+                array_keys($restriction),
+                function ($aggregator, $key) use ($restriction) {
+                    $aggregator[] = $key;
+                    $aggregator[] = $restriction[$key];
+                    return $aggregator;
+                },
+                [$scopeFullName]
+            )
+        );
 
         $session = $this->getSession($sessionId);
         if (is_null($session)) {
@@ -101,20 +101,15 @@ class LiveSessionBo implements This\LiveSessionInterface
          * Restricted permission always overwrites unrestricted if they have different status (allowed / denied)
          * If there are no restricted permissions defined, the resourcePermission value is equal to the scopeFullName
          */
-        return
-            in_array($resourcePermission, $session->scopes())
-            || (
-                in_array($scopeFullName, $session->scopes())
-                && (
-                    $scopeFullName == $resourcePermission
-                    || !in_array($resourcePermission, $session->deniedPermissions())
-                    )
-                )
-            || (
-                !in_array($scopeFullName, $session->deniedPermissions())
-                && !in_array($resourcePermission, $session->deniedPermissions()
-                    )
-                );
+        $hasResourcePermission = in_array($resourcePermission, $session->scopes());
+        $hasUnrestrictedPermission = in_array($scopeFullName, $session->scopes())
+            && $scopeFullName == $resourcePermission
+                || !in_array($resourcePermission, $session->deniedPermissions());
+        $permissionIsNotDenied = (!in_array($scopeFullName, $session->deniedPermissions())
+            && !in_array($resourcePermission, $session->deniedPermissions()));
+        return $hasResourcePermission
+            || $hasUnrestrictedPermission
+            || $permissionIsNotDenied;
     }
 
     public function getSession(string $sessionId = null) : ?This\Data\LiveSession
