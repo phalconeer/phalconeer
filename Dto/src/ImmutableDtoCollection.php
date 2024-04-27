@@ -46,10 +46,11 @@ class ImmutableDtoCollection extends Data\ImmutableCollection implements This\Dt
             : array_merge_recursive(static::$exportTransformers, $baseTransformers);
     }
 
-    protected function parseComplexType($value)
+    protected function parseComplexType($value, ?string $className = null)
     {
+        $className = $className ?? $this->collectionType;
         if (is_array($value)) {
-            return new $this->collectionType(
+            return new $className(
                 new \ArrayObject($value),
                 $this->loadTransformers,
                 $this->loadAliases,
@@ -57,7 +58,7 @@ class ImmutableDtoCollection extends Data\ImmutableCollection implements This\Dt
         }
 
         if ($value instanceof \ArrayObject) {
-            return new $this->collectionType(
+            return new $className(
                 $value,
                 $this->loadTransformers,
                 $this->loadAliases,
@@ -65,7 +66,7 @@ class ImmutableDtoCollection extends Data\ImmutableCollection implements This\Dt
         }
 
         if ($value instanceof \stdClass) {
-            return new $this->collectionType(
+            return new $className(
                 new \ArrayObject(get_object_vars($value)),
                 $this->loadTransformers,
                 $this->loadAliases,
