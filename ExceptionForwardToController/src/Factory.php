@@ -15,7 +15,7 @@ class Factory extends Bootstrap\Factory
     ];
 
     protected static array $configFiles = [
-        __DIR__ . '/_config/config_dispatcher.php'
+        __DIR__ . '/_config/dispatcher_config.php'
     ];
 
     protected function configure()

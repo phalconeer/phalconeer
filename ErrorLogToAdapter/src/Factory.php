@@ -1,15 +1,14 @@
 <?php
-namespace Phalconeer\ExceptionLogToAdapter;
+namespace Phalconeer\ErrorLogToAdapter;
 
 use Phalconeer\Bootstrap;
 use Phalconeer\Config;
-use Phalconeer\ExceptionLogToAdapter as This;
-use Phalconeer\ExceptionListener;
+use Phalconeer\ErrorLogToAdapter as This;
 use Phalconeer\Middleware;
 
 class Factory extends Bootstrap\Factory
 {
-    const MODULE_NAME = 'exceptionLogToAdapter';
+    const MODULE_NAME = 'errorLogToAdapter';
 
     protected static array $configFiles = [
         __DIR__ . '/_config/dispatcher_config.php',
@@ -17,7 +16,6 @@ class Factory extends Bootstrap\Factory
 
     protected static array $requiredModules = [
         Config\Factory::MODULE_NAME,
-        ExceptionListener\Factory::MODULE_NAME,
         Middleware\Factory::MODULE_NAME,
         'request'
     ];
@@ -31,13 +29,8 @@ class Factory extends Bootstrap\Factory
             $adapters[] = $this->di->get($iterator->key(), [$iterator->current()]);
             $iterator->next();
         }
-
-        $exceptionDescriptors = $this->di->get(Config\Factory::MODULE_NAME)
-            ->get('exceptionDescriptors', Config\Helper\ConfigHelper::$dummyConfig);
-
-        return new This\Bo\ExceptionLogToAdapterBo(
+        return new This\Bo\ErrorLogToAdapterBo(
             $adapters,
-            $exceptionDescriptors
         );
     }
 }

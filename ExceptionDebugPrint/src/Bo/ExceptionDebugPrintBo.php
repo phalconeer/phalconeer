@@ -5,7 +5,7 @@ use Phalcon\Config as PhalconConfig;
 use Phalcon\Dispatcher;
 use Phalcon\Events;
 use Phalcon\Http;
-use Phalconeer\Exception;
+use Phalconeer\ExceptionListener;
 use Phalconeer\Middleware;
 
 class ExceptionDebugPrintBo
@@ -24,15 +24,15 @@ class ExceptionDebugPrintBo
     {
         if (DEBUG_ON
             && $this->request->hasHeader('X-Debug')) {
-            $exceptiontoExport = Exception\Export\Exception::fromException($exception);
+            $exceptionExport = ExceptionListener\Data\Exception::fromException($exception);
 
-            if ($this->exceptionDescriptors->has($exceptiontoExport->code())) {
+            if ($this->exceptionDescriptors->has($exceptionExport->code())) {
                 echo 'VISIBLE ERROR MESSAGE'. PHP_EOL;
-                echo \Phalconeer\Dev\TVarDumper::dump($this->exceptionDescriptors->get($exceptiontoExport->code())) . PHP_EOL . PHP_EOL;
+                echo \Phalconeer\Dev\TVarDumper::dump($this->exceptionDescriptors->get($exceptionExport->code())) . PHP_EOL . PHP_EOL;
             } else {
                 echo 'NO ERROR MESSAGE SET!' . PHP_EOL . PHP_EOL;
             }
-            echo \Phalconeer\Dev\TVarDumper::dump($exceptiontoExport);
+            echo \Phalconeer\Dev\TVarDumper::dump($exceptionExport);
             die();
         }
         return false;

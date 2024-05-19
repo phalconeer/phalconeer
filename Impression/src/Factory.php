@@ -4,6 +4,7 @@ namespace Phalconeer\Impression;
 use Phalconeer\Bootstrap;
 use Phalconeer\Config;
 use Phalconeer\Impression as This;
+use Phalcon;
 
 class Factory extends Bootstrap\Factory
 {
@@ -16,12 +17,12 @@ class Factory extends Bootstrap\Factory
 
     protected ?This\Bo\ImpressionBo $bo = null;
 
+    protected ?Phalcon\Config\Config $moduleConfig = null;
+
     protected function setupAdapters()
     {
-        $config = $this->di->get(Config\Factory::MODULE_NAME)->get(static::MODULE_NAME, Config\Helper\ConfigHelper::$dummyConfig);
-
-        if ($config->has('adapters')) {
-            $iterator = $config->adapters->getIterator();
+        if ($this->moduleConfig->has('adapters')) {
+            $iterator = $this->moduleConfig->adapters->getIterator();
             while ($iterator->valid()) {
                 $this->bo->addAdapter($this->di->get($iterator->current()));
                 $iterator->next();
@@ -31,20 +32,21 @@ class Factory extends Bootstrap\Factory
 
     protected function setup()
     {
-        $config = $this->di->get(Config\Factory::MODULE_NAME)->get(static::MODULE_NAME, Config\Helper\ConfigHelper::$dummyConfig);
-
         $this->bo = new This\Bo\ImpressionBo(
             $this->di->get('request'),
-            $config
+            $this->moduleConfig
         );
-
-        $this->setupAdapters();
     }
 
     protected function configure()
     {
+        if (is_null($this->moduleConfig)) {
+            $this->moduleConfig = $this->di->get(Config\Factory::MODULE_NAME)->get(static::MODULE_NAME, Config\Helper\ConfigHelper::$dummyConfig);
+        }
+
         if (is_null($this->bo)) {
             $this->setup();
+            $this->setupAdapters();
         }
 
         return $this->bo;

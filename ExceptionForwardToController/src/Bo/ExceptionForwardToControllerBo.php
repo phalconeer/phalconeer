@@ -4,7 +4,7 @@ namespace Phalconeer\ExceptionForwardToController\Bo;
 use Phalcon\Config as PhalconConfig;
 use Phalcon\Dispatcher;
 use Phalcon\Events;
-use Phalconeer\Exception;
+use Phalconeer\ExceptionListener;
 use Phalconeer\ExceptionForwardToController as This;
 
 class ExceptionForwardToControllerBo
@@ -21,11 +21,11 @@ class ExceptionForwardToControllerBo
         Dispatcher\DispatcherInterface $dispatcher,
         \Exception $exception)
     {
-        $exceptionToExport = Exception\Export\Exception::fromException($exception);
+        $exceptionToExport = ExceptionListener\Data\Exception::fromException($exception);
 
         if ($this->exceptionDescriptors->has($exceptionToExport->code())) {
             $errorDetails = $this->exceptionDescriptors->get($exceptionToExport->code());
-            $exceptionToExport = Exception\Export\Exception::fromArray([
+            $exceptionToExport = ExceptionListener\Data\Exception::fromArray([
                 'id'            => $exceptionToExport->id(),
                 'code'          => $exceptionToExport->code(),
                 'statusCode'    => $errorDetails->statusCode,
@@ -41,5 +41,6 @@ class ExceptionForwardToControllerBo
                 $exceptionToExport
             ]
         ]);
+        return false;
     }
 }

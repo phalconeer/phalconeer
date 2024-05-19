@@ -2,27 +2,38 @@
 namespace Phalconeer\ExceptionLogToAdapter\Bo;
 
 use Phalcon\Config as PhalconConfig;
-use Phalconeer\Exception;
-use Phalconeer\ExceptionLogToAdapter as This;
-use Phalconeer\Middleware;
+use Phalcon\Dispatcher;
+use Phalcon\Events;
+use Phalconeer\ExceptionListener;
 
-class ExceptionLogToAdapterBo extends Middleware\Bo\DefaultMiddleware implements Exception\Export\ExceptionHandlerInterface
+class ExceptionLogToAdapterBo
 {
     public function __construct(
-        protected This\LogToAdapterInterface $adapter,
+        protected array $adapters,
         protected PhalconConfig\Config $exceptionDescriptors
     )
     {
     }
 
-    public function handle(
-        Exception\Export\Exception $exception,
-        callable $next
-    ) : ?bool
+    public function beforeException(
+        Events\Event $event,
+        Dispatcher\DispatcherInterface $dispatcher,
+        \Exception $exception)
     {
-        $this->adapter->save($exception, $this->exceptionDescriptors);
+        $exceptionToExport = ExceptionListener\Data\Exception::fromException($exception);
 
-        $next($exception);
-        return null;
+        if ($this->exceptionDescriptors->has($exceptionToExport->code())) {
+            $errorDetails = $this->exceptionDescriptors->get($exceptionToExport->code());
+            $exceptionToExport = ExceptionListener\Data\Exception::fromArray([
+                'id'            => $exceptionToExport->id(),
+                'code'          => $exceptionToExport->code(),
+                'statusCode'    => $errorDetails->statusCode,
+                'message'       => $errorDetails->message,
+            ]);
+        }
+
+        foreach ($this->adapters as $adapter) {
+            $adapter->save($exceptionToExport);
+        }
     }
 }

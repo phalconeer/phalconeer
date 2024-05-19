@@ -47,8 +47,10 @@ class LiveSessionBo implements This\LiveSessionInterface
         if ($this->adapter->createSession($sessionObject)) {
             return $sessionObject;
         }
-
-        return null;
+        throw new This\Exception\AdapterFailedSessionCreationException(
+            get_class($this->adapter),
+            This\Helper\ExceptionHelper::LIVE_SESSION__ADAPTER_NOT_WORKING
+        );
     }
 
     public function refreshSessionExpiration(string $sessionId) : ?This\Data\LiveSession

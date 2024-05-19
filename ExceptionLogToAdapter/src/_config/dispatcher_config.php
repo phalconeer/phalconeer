@@ -1,5 +1,5 @@
 <?php
-use Phalconeer\ExceptionDebugPrint as This;
+use Phalconeer\ExceptionLogToAdapter as This;
 
 return [
     'dispatcher'        => [

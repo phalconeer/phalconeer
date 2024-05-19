@@ -1,11 +1,11 @@
 <?php
 namespace Phalconeer\ExceptionLogToAdapter;
 
-use Phalconeer\ExceptionListener;
+use Phalconeer\ErrorHandler;
 
 interface LogToAdapterInterface
 {
     public function save(
-        ExceptionListener\Data\Exception $exception,
+        ErrorHandler\Data\Error $error,
     );
 }
