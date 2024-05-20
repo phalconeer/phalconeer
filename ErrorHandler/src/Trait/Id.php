@@ -1,7 +1,7 @@
 <?php
 namespace Phalconeer\ErrorHandler\Trait;
 
-trait File
+trait Id
 {
-    protected string $file;
+    protected string $id;
 }

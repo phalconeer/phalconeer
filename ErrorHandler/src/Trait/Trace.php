@@ -1,7 +1,7 @@
 <?php
 namespace Phalconeer\ErrorHandler\Trait;
 
-trait File
+trait Trace
 {
-    protected string $file;
+    protected ?array $trace;
 }
