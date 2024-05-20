@@ -1,13 +1,11 @@
 <?php
 namespace Phalconeer\ErrorHandler\Listener;
 
-use Phalconeer\Config;
 use Phalconeer\ErrorHandler as This;
 use Phalconeer\ExceptionListener;
 use Phalconeer\Id;
 use Phalconeer\LiveSession;
 use Phalconeer\Middleware;
-use Phalcon;
 
 class ErrorHandler
 {
@@ -50,8 +48,10 @@ class ErrorHandler
         $handlerChain = Middleware\Helper\MiddlewareHelper::createChain(
             Middleware\Helper\MiddlewareHelper::createMiddlewaresContainer($this->handlers),
             function () use ($exportError) {
-                echo 'INTERNAL SERVER ERROR' . PHP_EOL . PHP_EOL . $exportError->id();
-                exit();
+                if ($exportError->errno() == E_ERROR ) {
+                    echo 'INTERNAL SERVER ERROR' . PHP_EOL . PHP_EOL . $exportError->id();
+                    exit();
+                }
             },
             This\ErrorHandlerInterface::class
         );

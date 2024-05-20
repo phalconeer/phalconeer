@@ -31,6 +31,8 @@ class Exception extends Dto\ImmutableDto implements Dto\ArrayObjectExporterInter
         Dto\Transformer\ArrayObjectExporter::TRAIT_METHOD,
     ];
 
+    protected static array $idCache = [];
+
     public function getPrimaryKey(): array
     {
         return ['id'];
@@ -38,9 +40,14 @@ class Exception extends Dto\ImmutableDto implements Dto\ArrayObjectExporterInter
 
     public static function fromException(\Exception $exception) : self
     {
+        $code = $exception->getCode() ?? 0;
+        if (!array_key_exists($code, static::$idCache)) {
+            static::$idCache[$code] = Id\Helper\ReadableIdHelper::getId();
+        }
+
         $exportException = self::fromArray([
-            'id'                => Id\Helper\ReadableIdHelper::getId(),
-            'code'              => $exception->getCode(),
+            'id'                => static::$idCache[$code],
+            'code'              => $code,
             'message'           => $exception->getMessage(),
             'type'              => get_class($exception),
             'file'              => $exception->getFile(),
