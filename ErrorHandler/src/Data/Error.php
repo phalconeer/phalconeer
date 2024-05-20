@@ -13,9 +13,19 @@ class Error extends Dto\ImmutableDto
         This\Trait\Id,
         This\Trait\Line,
         This\Trait\Message,
+        This\Trait\RequestTime,
         This\Trait\Server,
         This\Trait\Trace,
         Dto\Trait\ArrayLoader,
+        Dto\Trait\ArrayObjectExporter,
         Data\Trait\AutoGetter,
         Data\Trait\ParseTypes;
+
+    protected static array $exportTransformers = [
+        Dto\Transformer\ArrayObjectExporter::TRAIT_METHOD,
+    ];
+
+    protected static array $loadTransformers = [
+        This\Transformer\AutoFillRequestTime::class,
+    ];
 }

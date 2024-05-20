@@ -11,7 +11,7 @@ class Factory extends Bootstrap\Factory
     const MODULE_NAME = 'errorLogToAdapter';
 
     protected static array $configFiles = [
-        __DIR__ . '/_config/dispatcher_config.php',
+        __DIR__ . '/_config/error_handler_config.php',
     ];
 
     protected static array $requiredModules = [
