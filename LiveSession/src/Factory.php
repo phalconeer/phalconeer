@@ -26,7 +26,9 @@ class Factory extends Bootstrap\Factory
         );
 
         return new This\Bo\LiveSessionBo(
-            new This\Bo\DummyAdapter(),
+            new \ArrayObject([
+                This\Helper\LiveSessionHelper::LIVE_SESSION_TYPE_DEFAULT => new This\Bo\DummyAdapter()
+            ]),
             $this->di->get(Application\Factory::MODULE_NAME),
             $config
         );

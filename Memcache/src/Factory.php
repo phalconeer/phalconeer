@@ -46,13 +46,14 @@ class Factory extends Bootstrap\Factory
     protected function configure()
     {
         $config = $this->di->get(Config\Factory::MODULE_NAME)->get(static::MODULE_NAME);
-        $applicationConfig = $this->di->get(Config\Factory::MODULE_NAME)->get('application');
+        $defaultApplicationBo = $this->di->get(Application\Factory::MODULE_NAME);
         $cacheControl = $this->di->get(CacheControl\Factory::MODULE_NAME);
         return function (
-            $connectionType,
-            $prefix = null,
-            Cache\Data\CacheSettings $cacheControlInstance = null
-        ) use ($applicationConfig, $cacheControl, $config) {
+            string $connectionType,
+            string $prefix = null,
+            Cache\Data\CacheSettings $cacheControlInstance = null,
+            Application\ApplicationInterface $applicationBo = null,
+        ) use ($defaultApplicationBo, $cacheControl, $config) {
             if (is_null($config)
                 || !$config->offsetExists('connections')
                 || !$config->connections->offsetExists($connectionType)) {
@@ -67,13 +68,17 @@ class Factory extends Bootstrap\Factory
             if (is_null($cacheControlInstance)) {
                 $cacheControlInstance = $cacheControl->getCacheControl();
             }
+            if (is_null($applicationBo)) {
+                $applicationBo = $defaultApplicationBo;
+            }
+
             $options = array_merge_recursive(
                 $config->get('default', Config\Helper\ConfigHelper::$dummyConfig)->toArray(),
                 $config->connections->get($connectionType, Config\Helper\ConfigHelper::$dummyConfig)->toArray(),
                 [
                     'cacheSettings'     => $cacheControlInstance,
                     'prefix'            => implode('_', array_filter([
-                        $applicationConfig->name,
+                        $applicationBo->getName(),
                         $prefix
                     ]))
                 ]

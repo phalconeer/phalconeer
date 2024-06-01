@@ -14,6 +14,7 @@ class Impression extends Dto\ImmutableDto implements This\ImpressionInterface, D
         Dto\Trait\ArrayObjectExporter,
         This\Trait\Accept,
         This\Trait\Body,
+        This\Trait\Cookies,
         This\Trait\Header,
         This\Trait\Host,
         This\Trait\Ip,

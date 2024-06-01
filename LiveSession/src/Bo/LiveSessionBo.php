@@ -9,16 +9,22 @@ use Phalconeer\LiveSession as This;
 class LiveSessionBo implements This\LiveSessionInterface
 {
     public function __construct(
-        protected ?This\LiveSessionAdapterInterface $adapter = null,
+        protected ?\ArrayObject $adapters = null,
         protected Application\ApplicationInterface $application,
         protected PhalconConfig\Config $config
     )
     {
+        if (is_null($this->adapters)) {
+            $this->adapters = new \ArrayObject();
+        }
     }
 
-    public function setAdapter(This\LiveSessionAdapterInterface $adapter)
+    public function addAdapter(This\LiveSessionAdapterInterface $adapter, ?string $type = This\Helper\LiveSessionHelper::LIVE_SESSION_TYPE_DEFAULT)
     {
-        $this->adapter = $adapter;
+        $this->adapters->offsetSet(
+            $type,
+            $adapter
+        );
     }
 
     protected function getSessionExpiration() : \DateTime
@@ -26,9 +32,10 @@ class LiveSessionBo implements This\LiveSessionInterface
         return new \DateTime('+' . $this->config->sessionDuration . ' seconds');
     }
 
-    public function createSession(This\Data\LiveSession $sessionObject) : ?This\Data\LiveSession
+    public function createSession(This\Data\LiveSession $sessionObject, string $type = This\Helper\LiveSessionHelper::LIVE_SESSION_TYPE_DEFAULT) : ?This\Data\LiveSession
     {
-        if (is_null($this->adapter)) {
+        if (is_null($this->adapters)
+            || !$this->adapters->offsetExists($type)) {
             throw new This\Exception\UndefinedLiveSessionAdapterException(
                 '',
                 This\Helper\ExceptionHelper::LIVE_SESSION__ADAPTER_NOTSET
@@ -44,20 +51,20 @@ class LiveSessionBo implements This\LiveSessionInterface
             $sessionObject = $sessionObject->setExpires($this->getSessionExpiration());
         }
 
-        if ($this->adapter->createSession($sessionObject)) {
+        if ($this->adapters->offsetGet($type)->createSession($sessionObject)) {
             return $sessionObject;
         }
         throw new This\Exception\AdapterFailedSessionCreationException(
-            get_class($this->adapter),
+            get_class($this->adapters->offsetGet($type)),
             This\Helper\ExceptionHelper::LIVE_SESSION__ADAPTER_NOT_WORKING
         );
     }
 
-    public function refreshSessionExpiration(string $sessionId) : ?This\Data\LiveSession
+    public function refreshSessionExpiration(string $sessionId, string $type = This\Helper\LiveSessionHelper::LIVE_SESSION_TYPE_DEFAULT) : ?This\Data\LiveSession
     {
 
-        $newSession = $this->getSession($sessionId)->setExpires($this->getSessionExpiration());
-        if ($this->adapter->createSession($newSession)) {
+        $newSession = $this->getSession($sessionId, $type)->setExpires($this->getSessionExpiration());
+        if ($this->adapters->offsetGet($type)->createSession($newSession)) {
             return $newSession;
         }
 
@@ -65,15 +72,16 @@ class LiveSessionBo implements This\LiveSessionInterface
 
     }
 
-    public function isValid(string $sessionId) : bool
+    public function isValid(string $sessionId, string $type = This\Helper\LiveSessionHelper::LIVE_SESSION_TYPE_DEFAULT) : bool
     {
-        return $this->adapter->isValid($sessionId);
+        return $this->adapters->offsetGet($type)->isValid($sessionId);
     }
 
     public function hasScope(
         string $sessionId,
         string $scope,
-        array $restriction = []
+        array $restriction = [],
+        string $type = This\Helper\LiveSessionHelper::LIVE_SESSION_TYPE_DEFAULT
     ) : bool
     {
         $scopeFullName = implode('.', 
@@ -94,7 +102,7 @@ class LiveSessionBo implements This\LiveSessionInterface
             )
         );
 
-        $session = $this->getSession($sessionId);
+        $session = $this->getSession($sessionId, $type);
         if (is_null($session)) {
             return false;
         }
@@ -114,16 +122,16 @@ class LiveSessionBo implements This\LiveSessionInterface
             || $permissionIsNotDenied;
     }
 
-    public function getSession(string $sessionId = null) : ?This\Data\LiveSession
+    public function getSession(string $sessionId = null, string $type = This\Helper\LiveSessionHelper::LIVE_SESSION_TYPE_DEFAULT) : ?This\Data\LiveSession
     {
         if (is_null($sessionId)) {
             return null;
         }
-        return $this->adapter->getSession($sessionId);
+        return $this->adapters->offsetGet($type)->getSession($sessionId);
     }
 
-    public function deleteSession(string $sessionId) : bool
+    public function deleteSession(string $sessionId, string $type = This\Helper\LiveSessionHelper::LIVE_SESSION_TYPE_DEFAULT) : bool
     {
-        return $this->adapter->deleteSession($sessionId);
+        return $this->adapters->offsetGet($type)->deleteSession($sessionId);
     }
 }

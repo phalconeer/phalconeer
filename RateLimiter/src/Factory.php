@@ -20,13 +20,10 @@ class Factory extends Bootstrap\Factory
 
     protected function configure() {
         $di = $this->di;
-        $moduleName = static::MODULE_NAME;
-        return function (Dao\DaoReadInterface $adapter) use ($di, $moduleName){
-            return new This\Bo\RateLimiterBo(
-                $adapter,
-                $di->get(Impression\Factory::MODULE_NAME),
-                $di->get(Config\Factory::MODULE_NAME)->get($moduleName, Config\Helper\ConfigHelper::$dummyConfig),
-            );
-        };
+        return new This\Bo\RateLimiterBo(
+            new This\Dao\AllowAllDao(),
+            $di->get(Impression\Factory::MODULE_NAME),
+            $di->get(Config\Factory::MODULE_NAME)->get(static::MODULE_NAME, Config\Helper\ConfigHelper::$dummyConfig),
+        );
     }
 }

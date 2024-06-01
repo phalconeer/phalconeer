@@ -16,7 +16,8 @@ class AuthenticationBo
 
     public function __construct(
         protected LiveSession\LiveSessionInterface $liveSession,
-        protected Scope\ScopeAdapterInterface $scope
+        protected Scope\ScopeAdapterInterface $scope,
+        protected string $liveSessionType = LiveSession\Helper\LiveSessionHelper::LIVE_SESSION_TYPE_DEFAULT,
     )
     {
         $this->authenticators = new \ArrayObject();
@@ -59,7 +60,7 @@ class AuthenticationBo
 
     protected function loadSession(AuthMethod\Data\AuthenticationResponse $authenticationResponse) : ?LiveSession\Data\LiveSession
     {
-        return $this->liveSession->getSession($authenticationResponse->sessionId());
+        return $this->liveSession->getSession($authenticationResponse->sessionId(), $this->liveSessionType);
     }
 
     protected function createSession(AuthMethod\Data\AuthenticationResponse $authenticationResponse) : ?LiveSession\Data\LiveSession
@@ -69,7 +70,8 @@ class AuthenticationBo
                 'userId'                => $authenticationResponse->userId(),
                 'scopes'                => $this->scope->getAllowedScopes($authenticationResponse),
                 'deniedPermissions'     => $this->scope->getDeniedScopes($authenticationResponse),
-            ])
+            ]),
+            $this->liveSessionType
         );
 
         return $session;
@@ -93,6 +95,7 @@ class AuthenticationBo
             && !$this->authenticators->offsetExists($authenticationRequest->method())) {
             throw new This\Exception\AuthenticatorNotFoundException($authenticationRequest->method());
         }
+        $authenticationRequest = $authenticationRequest->setLiveSessionType($this->liveSessionType);
 
         $authenticationResponse = new AuthMethod\Data\AuthenticationResponse();
         $authenticators = (empty($authenticationRequest->method()))
@@ -129,7 +132,7 @@ class AuthenticationBo
 
     public function logout($sessionId) : void
     {
-        $this->liveSession->deleteSession($sessionId);
+        $this->liveSession->deleteSession($sessionId, $this->liveSessionType);
         $this->handleLogout($sessionId);
     }
 }

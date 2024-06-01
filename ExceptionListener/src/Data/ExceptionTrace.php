@@ -1,6 +1,7 @@
 <?php
 namespace Phalconeer\ExceptionListener\Data;
 
+use Phalconeer\ExceptionListener as This;
 use Phalconeer\Data;
 use Phalconeer\Dto;
 
@@ -13,6 +14,7 @@ class ExceptionTrace extends Dto\ImmutableDto
 
     protected static array $exportTransformers = [
         Dto\Transformer\ArrayObjectExporter::TRAIT_METHOD,
+        This\Transformer\LogSafeArguments::class,
     ];
 
     protected ?array $arguments;

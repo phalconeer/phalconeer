@@ -3,7 +3,6 @@ namespace Phalconeer\AuthAdmin\Bo;
 
 use Phalconeer\AuthAdmin as This;
 use Phalconeer\AuthMethod;
-use Phalconeer\Id;
 use Phalconeer\LiveSession;
 use Phalconeer\Scope;
 
@@ -27,26 +26,16 @@ class AuthenticationAdminBo
         );
     }
 
-    public function createCredentials(array $userData, string $method)
+    public function createCredentials(AuthMethod\Data\AuthenticationRequest $authenticationRequest)
     {
-        if (!$this->authenticationCreators->offsetExists($method)) {
+        if (!$this->authenticationCreators->offsetExists($authenticationRequest->method())) {
             throw new This\Exception\AuthenticationCreatorNotFoundException(
-                $method,
+                $authenticationRequest->method(),
                 This\Helper\ExceptionHelper::AUTHENTICATION_ADMIN__USER_CREATOR_NOT_FOUND
             );
         }
         
-
-        $authenticationRequest = new AuthMethod\Data\AuthenticationRequest(new \ArrayObject([
-            'requestId'     => Id\Helper\IdHelper::getUuidv4(),
-            'requestTime'   => new \DateTime(),
-            'userId'        => $userData['id'] ?? null,
-            'username'      => $userData['username'] ?? '',
-            'password'      => $userData['password'] ?? '',
-            'method'        => $method
-        ]));
-        
-        if (!$this->authenticationCreators->offsetGet($method)
+        if (!$this->authenticationCreators->offsetGet($authenticationRequest->method())
             ->create($authenticationRequest)) {
             throw new This\Exception\FailedToSaveUserException(
                 '',

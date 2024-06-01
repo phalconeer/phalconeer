@@ -32,21 +32,19 @@ class AuthenticateDeviceIdAdminBo
 
     public function create(AuthMethod\Data\AuthenticationRequest $authenticationRequest) : Dto\ImmutableDto
     {
-        $existingDeviceId = $this->authDao->getRecord([
+        $existingDevice = $this->authDao->getRecord([
             'deviceId'      => $authenticationRequest->username(),
         ]);
-        $existingUserId = $this->authDao->getRecord([
+        $existingUser = $this->authDao->getRecord([
             'userId'        => $authenticationRequest->userId(),
         ]);
 
-        if (!is_null($existingDeviceId)) {
+        if (!is_null($existingDevice)) {
             throw new This\Exception\DeviceIdExist($authenticationRequest->username(), This\Helper\ExceptionHelper::CREATE_MEMBER_TOKEN__DEVICE_ID_EXISTS);
         }
 
-        if (!is_null($existingUserId)) {
-            $credential = new AuthenticateDeviceId\Data\UserCredentialDevice(new \ArrayObject([
-                'userId'            => $existingUserId
-            ]));
+        if (!is_null($existingUser)) {
+            $credential = new AuthenticateDeviceId\Data\UserCredentialDevice($existingUser);
         } else {
             $credential = new AuthenticateDeviceId\Data\UserCredentialDevice(new \ArrayObject([
                 'userId'            => $authenticationRequest->userId()
@@ -61,17 +59,8 @@ class AuthenticateDeviceIdAdminBo
         return $this->authDao->save($credential);
     }
 
-    public function assertDeviceIdAlreadyTaken($deviceId) : bool
-    {
-        $existingDeviceId = $this->authDao->getRecord([
-            'deviceId'      => $deviceId,
-        ]);
-
-        return (!is_null($existingDeviceId));
-    }
-
     public function getMethodName() : string
     {
-        return This\Factory::MODULE_NAME;
+        return AuthenticateDeviceId\Factory::MODULE_NAME;
     }
 }

@@ -39,7 +39,7 @@ class Factory extends Bootstrap\Factory
             $this->di->get(CacheControl\Factory::MODULE_NAME)
         );
 
-        $this->di->get(LiveSession\Factory::MODULE_NAME)->setAdapter($adapter);
+        $this->di->get(LiveSession\Factory::MODULE_NAME)->addAdapter($adapter);
 
         return Bootstrap\Helper\BootstrapHelper::MODULE_LOADED;
     }

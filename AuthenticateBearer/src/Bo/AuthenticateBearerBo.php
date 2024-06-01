@@ -5,11 +5,13 @@ use Phalconeer\Auth;
 use Phalconeer\AuthMethod;
 use Phalconeer\AuthenticateBearer as This;
 use Phalconeer\LiveSession;
+use Phalcon;
 
 class AuthenticateBearerBo implements Auth\AuthenticatorInterface
 {
     public function __construct(
-        protected LiveSession\LiveSessionInterface $liveSession)
+        protected LiveSession\LiveSessionInterface $liveSession,
+    )
     {
     }
 
@@ -17,7 +19,10 @@ class AuthenticateBearerBo implements Auth\AuthenticatorInterface
         AuthMethod\Data\AuthenticationRequest $authenticationRequest
     ) : AuthMethod\Data\AuthenticationResponse
     {
-        $session = $this->liveSession->getSession($authenticationRequest->password());
+        $session = $this->liveSession->getSession(
+            $authenticationRequest->sessionId(),
+            $authenticationRequest->liveSessionType(),
+        );
         if (is_null($session)) {
             return AuthMethod\Data\AuthenticationResponse::fromArray([
                 'method'            => $this->getMethodName(),

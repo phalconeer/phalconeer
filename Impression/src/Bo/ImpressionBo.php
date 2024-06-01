@@ -22,6 +22,7 @@ class ImpressionBo implements This\ImpressionBoInterface
         $this->impressionClass = $this->config->get('impressionClass', This\Data\Impression::class);
         $this->impression = new $this->impressionClass(new \ArrayObject([
             'accept'        => $this->request->getServer('HTTP_ACCEPT') . $this->request->getServer('HTTP_ACCEPT_CHARSET'),
+            'cookies'       => $_COOKIE,
             'header'        => $this->request->getHeaders(),
             'host'          => $this->request->getHttpHost(),
             'ip'            => $this->request->getClientAddress(false),
