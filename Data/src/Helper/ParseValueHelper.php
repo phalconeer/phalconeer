@@ -275,22 +275,15 @@ class ParseValueHelper
             $validationError = self::validateValue($value, $type);
             $validatedType = $type;
         } else {
-            $validationError = array_reduce(
-                $type,
-                function ($aggregate, $currentType) use ($value, &$validatedType) {
-                    if (is_null($aggregate)) {
-                        return $aggregate; //If one type matches, it is valid
-                    }
-                    if (is_null(self::validateValue($value, $currentType))) {
-                        $validatedType = $currentType;
-                        return null;
-                    }
-                    return $aggregate;
-                },
-                This\Helper\ExceptionHelper::ALL_TYPE_VALIDATIONS_FAILED
-            );
+            $validationError = This\Helper\ExceptionHelper::ALL_TYPE_VALIDATIONS_FAILED;
+            foreach ($type as $currentType) {
+                if (!is_null($validationError)
+                    && is_null(self::validateValue($value, $currentType))) {
+                    $validationError = null;
+                    $validatedType = $currentType;
+                }
+            }
         }
-
 
         if (!is_null($validationError)) {
             self::handleValidationError(
@@ -371,49 +364,50 @@ class ParseValueHelper
         throw new Exception\TypeMismatchException($message, $error);
     }
 
-    public static function getBoolProperties(This\CommonInterface $baseObject)
+    public static function getBoolProperties(This\CommonInterface $baseObject) : array
     {
-        return array_filter(
-            $baseObject->propertyTypes(),
-            function ($type) {
-                if (!is_array($type)) {
-                    $type = [$type];
-                }
-                return in_array(This\Helper\ParseValueHelper::TYPE_BOOL, $type)
-                    || in_array(This\Helper\ParseValueHelper::TYPE_BOOLEAN, $type);
+        $booleanTypes = [];
+        foreach ($baseObject->propertyTypes() as $property => $type) {
+            if (!is_array($type)) {
+                $type = [$type];
             }
-        );
+            if (in_array(This\Helper\ParseValueHelper::TYPE_BOOL, $type)
+                || in_array(This\Helper\ParseValueHelper::TYPE_BOOLEAN, $type))
+            {
+                $booleanTypes[$property] = $type;
+            }
+        }
+        return $booleanTypes;
     }
 
-    public static function getDateProperties(This\CommonInterface $baseObject)
+    public static function getDateProperties(This\CommonInterface $baseObject) : array
     {
-        return array_filter(
-            $baseObject->propertyTypes(),
-            function ($type) {
-                if (!is_array($type)) {
-                    $type = [$type];
-                }
-                return in_array(\DateTime::class, $type);
+        $dateTypes = [];
+        foreach ($baseObject->propertyTypes() as $property => $type) {
+            if (!is_array($type)) {
+                $type = [$type];
             }
-        );
+            if (in_array(\DateTime::class, $type))
+            {
+                $dateTypes[$property] = $type;
+            }
+        }
+        return $dateTypes;
     }
 
-    public static function getNestedProperties(This\CommonInterface $baseObject)
+    public static function getNestedProperties(This\CommonInterface $baseObject) : array
     {
-        return array_filter(
-            $baseObject->propertyTypes(),
-            function ($type) {
-                if (!is_array($type)) {
-                    $type = [$type];
-                }
-                return array_reduce(
-                    $type,
-                    function (bool $aggregator, $currentType) {
-                        return $aggregator || is_subclass_of($currentType, This\ImmutableData::class);
-                    },
-                    false
-                );
+        $nestedTypes = [];
+        foreach ($baseObject->propertyTypes() as $property => $type) {
+            if (!is_array($type)) {
+                $type = [$type];
             }
-        );
+            foreach ($type as $currentType) {
+                if (is_subclass_of($currentType, This\ImmutableData::class)) {
+                    $nestedTypes[$property] = $type;
+                }
+            }
+        }
+        return $nestedTypes;
     }
 }

@@ -41,7 +41,7 @@ abstract class ImmutableData implements This\DataInterface
                 );
             } catch (Exception\TypeMismatchException $exception) {
                 throw new Exception\TypeMismatchException(
-                    'Invalid type, expected: `' . $propertyType . '` or ArrayObject for [' . $propertyName . '] @' . static::class . PHP_EOL . $exception->getMessage(),
+                    'Invalid type, expected: `' . ((is_array($propertyType)) ? implode(', ', $propertyType) : $propertyType). '` or ArrayObject for [' . $propertyName . '] @' . static::class . PHP_EOL . $exception->getMessage(),
                     $exception->getCode() ?? This\Helper\ExceptionHelper::TYPE_MISMATCH,
                     $exception
                 );
