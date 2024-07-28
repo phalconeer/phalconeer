@@ -16,7 +16,7 @@ class ApplicationBo implements This\ApplicationInterface
             throw new This\Exception\ApplicationIdNotSet();
         }
         $appData = array_filter([
-            'id'                => $this->config->id,
+            'id'                => $this->config->get('id'),
             'name'              => $this->config->get('name'),
             'privilegeScheme'   => $this->config->get('privilegeScheme'),
             'version'           => APP_VERSION
@@ -42,7 +42,7 @@ class ApplicationBo implements This\ApplicationInterface
     }
 
     /**
-     * Returns application priviliege scheme.
+     * Returns application privilege scheme.
      * Privileges schemes are used to share privilige "namespaces" between applications.
      */
     public function getPrivilegeScheme() : ?string

@@ -18,7 +18,7 @@ class MySqlJsonLoader implements Dto\TransformerStaticInterface
         if (is_null($parameters)) {
             $parameters = new \ArrayObject();
         }
-        if (!$parameters->offsetExists('dateProperties')
+        if (!$parameters->offsetExists('jsonProperties')
             && !is_null($baseObject)) {
             $parameters->offsetSet('jsonProperties', Data\Helper\ParseValueHelper::getNestedProperties($baseObject));
         }

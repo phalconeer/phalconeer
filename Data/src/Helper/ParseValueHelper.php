@@ -410,4 +410,20 @@ class ParseValueHelper
         }
         return $nestedTypes;
     }
+
+    public static function getPropertiesWithClass(This\CommonInterface $baseObject, string $className) : array
+    {
+        $exactTypes = [];
+        foreach ($baseObject->propertyTypes() as $property => $type) {
+            if (!is_array($type)) {
+                $type = [$type];
+            }
+            foreach ($type as $currentType) {
+                if ($currentType === $className) {
+                    $exactTypes[$property] = $type;
+                }
+            }
+        }
+        return $exactTypes;
+    }
 }

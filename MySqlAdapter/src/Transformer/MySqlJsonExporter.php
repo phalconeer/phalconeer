@@ -19,7 +19,7 @@ class MySqlJsonExporter implements Dto\TransformerStaticInterface
         if (is_null($parameters)) {
             $parameters = new \ArrayObject();
         }
-        if (!$parameters->offsetExists('dateProperties')
+        if (!$parameters->offsetExists('jsonProperties')
             && !is_null($baseObject)) {
             $parameters->offsetSet('jsonProperties', Data\Helper\ParseValueHelper::getNestedProperties($baseObject));
         }
@@ -51,13 +51,15 @@ class MySqlJsonExporter implements Dto\TransformerStaticInterface
     }
 
     public static function exportMySqlJson(
-        \ArrayObject | Dto\ArrayExporterInterface $data
-    ) : string 
+        \ArrayObject | Dto\ArrayNotNullExporterInterface $data
+    ) : ?string 
     {
         $toEncode = ($data instanceof \ArrayObject)
             ? $data->getArrayCopy()
-            : $data->toArray();
+            : $data->toArrayWithoutNulls();
 
-        return json_encode(array_filter($toEncode));
+        return (empty($toEncode))
+            ? null
+            : json_encode(array_filter($toEncode));
     }
 }
